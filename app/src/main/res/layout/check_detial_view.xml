@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_content"
+            style="@style/check_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/check_item_content_start_bg"
+            android:paddingTop="10dp" />
+
+        <RadioGroup
+            android:id="@+id/check_result"
+            style="@style/check_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/check_item_content_end_bg">
+
+            <RadioButton
+                android:id="@+id/check_result_radio_1"
+                style="@style/radio_button"
+                android:background="@drawable/rbtn_yes_bg"
+                android:text="@string/result_yes" />
+
+            <RadioButton
+                android:id="@+id/check_result_radio_2"
+                style="@style/radio_button"
+                android:background="@drawable/rbtn_no_bg"
+                android:text="@string/result_no" />
+
+            <RadioButton
+                android:id="@+id/check_result_radio_3"
+                style="@style/radio_button"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/check_default_bg"
+                android:text="@string/result_default" />
+
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_weight="4"
+        android:orientation="vertical">
+
+        <ScrollView
+            style="@style/check_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/check_item_content_start_bg"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/check_content_title"
+                    style="@style/base_layout"
+                    android:text="@string/remark_content" />
+
+                <TextView
+                    android:id="@+id/check_content_info"
+                    style="@style/base_layout"
+                    android:background="#ffffff"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:minHeight="40dp"
+                    android:paddingStart="10dp" />
+
+                <TextView
+                    android:id="@+id/check_content_pic_title"
+                    style="@style/base_layout"
+                    android:text="@string/image_file"
+                    android:visibility="visible" />
+
+                <LinearLayout
+                    android:id="@+id/check_content_pic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/check_content_vdo_title"
+                    style="@style/base_layout"
+                    android:text="@string/video_file"
+                    android:visibility="visible" />
+
+                <LinearLayout
+                    android:id="@+id/check_content_video"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/check_content_ado_title"
+                    style="@style/base_layout"
+                    android:text="@string/audio_file"
+                    android:visibility="visible" />
+
+                <LinearLayout
+                    android:id="@+id/check_content_audio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/check_item_content_end_bg"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/check_content_btn_camera"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/vector_drawable_camera" />
+
+            <ImageView
+                android:id="@+id/check_content_btn_audio"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp"
+                android:src="@drawable/vector_drawable_voice" />
+
+            <ImageView
+                android:id="@+id/check_content_btn_video"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp"
+                android:src="@drawable/vector_drawable_recording" />
+
+            <Button
+                android:id="@+id/check_content_btn_remark"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorNone"
+                android:textSize="18sp"
+                android:text="@string/btn_remark"
+                android:textColor="#8a8a8a" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

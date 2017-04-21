@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_check_plan"
+            android:checked="true"
+            android:icon="@drawable/vector_drawable_plan"
+            android:title="现场检查" />
+        <item
+            android:id="@+id/nav_info_check"
+            android:icon="@drawable/vector_drawable_plans"
+            android:title="计划查询" />
+        <item
+            android:id="@+id/nav_map"
+            android:icon="@drawable/vector_drawable_map"
+            android:title="地图查看" />
+        <!-- <item
+             android:id="@+id/nav_details"
+             android:icon="@drawable/ic_menu_manage"
+             android:title="进度详情" />-->
+        <item
+            android:id="@+id/nav_update_result"
+            android:icon="@drawable/vector_drawable_upload"
+            android:title="上传结果" />
+    </group>
+
+    <item android:title="Setting">
+        <menu>
+            <item
+                android:id="@+id/nav_app_introduce"
+                android:icon="@drawable/vector_drawable_introduce"
+                android:title="使用说明" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/vector_drawable_logout"
+                android:title="注销" />
+            <item
+                android:id="@+id/nav_exit"
+                android:icon="@drawable/vector_drawable_exit"
+                android:title="退出" />
+        </menu>
+    </item>
+
+</menu>

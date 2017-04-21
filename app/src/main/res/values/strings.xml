@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">地下室检查</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_login">登录</string>
+    <string name="title_activity_main">登录</string>
+    <string name="title_activity_security">安全检查</string>
+    <string name="button_submit">提交</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_username">用户名</string>
+    <string name="prompt_password">密码</string>
+    <string name="action_sign_in">登录</string>
+    <string name="action_change_user">切换账号</string>
+    <string name="action_sign_in_short">登录</string>
+    <string name="action_change_short">修改</string>
+    <string name="action_logining">正在登录</string>
+    <string name="error_invalid_username">用户名格式不正确！</string>
+    <string name="error_field_required">请输入用户名</string>
+    <string name="error_invalid_password">密码长度为6位</string>
+    <string name="error_incorrect_password">密码不正确</string>
+    <string name="table_construction_name">工程名称</string>
+    <string name="table_construction_id">工程登记号</string>
+    <string name="table_construction_address">工程地址</string>
+    <!--<string name="table_construction_tel">联系电话</string>-->
+    <string name="table_construction_area">建筑面积</string>
+    <string name="table_construction_type">使用业态</string>
+    <string name="table_construction_manager">管理单位</string>
+    <string name="table_construction_user">使用单位</string>
+    <string name="result_yes">是</string>
+    <string name="result_no">否</string>
+    <string name="result_default">未检查</string>
+
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="table_content">{}</string>
+    <string name="mis_msg_no_camera">相机不可用</string>
+    <string name="mis_error_image_not_exist">照片地址不可用</string>
+    <string name="mis_error_no_permission_camera">无法使用相机，请在权限管理中设置权限</string>
+    <string name="mis_error_no_permission_audio">无法使用录音机，请在权限管理中设置权限</string>
+    <string name="mis_error_no_permission_sdcard">无法使用SD卡，请在权限管理中设置权限</string>
+    <string name="btn_scan">预览</string>
+    <string name="btn_check">检查</string>
+    <string name="image_file">图片文件（0/3）：</string>
+    <string name="video_file">视频文件（0/3）：</string>
+    <string name="audio_file">音频文件（0/3）：</string>
+    <string name="remark_content">备注信息：</string>
+    <string name="btn_remark">备注</string>
+</resources>

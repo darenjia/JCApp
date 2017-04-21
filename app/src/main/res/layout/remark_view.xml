@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/base_layout"
+        android:background="#eedfcc"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="备注信息"
+        android:textSize="18sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#898383" />
+
+    <EditText
+        android:id="@+id/check_result_remark"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="#FAF0E6"
+        android:lineSpacingMultiplier="1.5"
+        android:padding="10dp"
+        android:gravity="start"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#898383" />
+
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#eedfcc"
+        android:text="保存" />
+
+</LinearLayout>

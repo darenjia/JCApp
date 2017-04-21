@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleExtensions">
+    <project path="$PROJECT_DIR$">
+      <sub-project>
+        <project path="$PROJECT_DIR$/..">
+          <extensions>
+            <ext name="ext" type="org.gradle.api.internal.plugins.DefaultExtraPropertiesExtension" />
+            <task name="cleanIdea">Cleans IDEA project files (IML, IPR)&lt;p&gt;&lt;i&gt;Task group: IDE&lt;i&gt;</task>
+            <task name="cleanIdeaModule" type="org.gradle.api.tasks.Delete">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="cleanIdeaProject" type="org.gradle.api.tasks.Delete">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="cleanIdeaWorkspace" type="org.gradle.api.tasks.Delete">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="idea">Generates IDEA project files (IML, IPR, IWS)&lt;p&gt;&lt;i&gt;Task group: IDE&lt;i&gt;</task>
+            <task name="ideaModule" type="org.gradle.plugins.ide.idea.GenerateIdeaModule">Generates IDEA module files (IML)&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="ideaProject" type="org.gradle.plugins.ide.idea.GenerateIdeaProject">Generates IDEA project file (IPR)&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="ideaWorkspace" type="org.gradle.plugins.ide.idea.GenerateIdeaWorkspace">Generates an IDEA workspace file (IWS)&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="androidDependencies" type="com.android.build.gradle.internal.tasks.DependencyReportTask">Displays the Android dependencies of the project&lt;p&gt;&lt;i&gt;Task group: Android&lt;i&gt;</task>
+            <task name="assemble">Assembles all variants of all applications and secondary packages.&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="assembleDebug">Assembles all Debug builds&lt;p&gt;&lt;i&gt;Task group: Build&lt;i&gt;</task>
+            <task name="assembleDebugTest">Assembles the Test build for the Debug build&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="assembleDefault">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="assembleRelease">Assembles all Release builds&lt;p&gt;&lt;i&gt;Task group: Build&lt;i&gt;</task>
+            <task name="bintrayUpload" type="com.jfrog.bintray.gradle.BintrayUploadTask">Publishes artifacts to bintray.com.&lt;p&gt;&lt;i&gt;Task group: publishing&lt;i&gt;</task>
+            <task name="build">Assembles and tests this project.&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="buildDependents">Assembles and tests this project and all projects that depend on it.&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="buildNeeded">Assembles and tests this project and all projects it depends on.&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="bundleDebug" type="org.gradle.api.tasks.bundling.Zip">Assembles a bundle containing the library in Debug.&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="bundleRelease" type="org.gradle.api.tasks.bundling.Zip">Assembles a bundle containing the library in Release.&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="check">Runs all checks.&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="checkDebugManifest" type="com.android.build.gradle.internal.tasks.CheckManifest">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="checkReleaseManifest" type="com.android.build.gradle.internal.tasks.CheckManifest">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="clean" type="org.gradle.api.tasks.Delete">Deletes the build directory.&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="compileDebugAidl" type="com.android.build.gradle.tasks.AidlCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugJava" type="org.gradle.api.tasks.compile.JavaCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugNdk" type="com.android.build.gradle.tasks.NdkCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugRenderscript" type="com.android.build.gradle.tasks.RenderscriptCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugSources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugTestAidl" type="com.android.build.gradle.tasks.AidlCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugTestJava" type="org.gradle.api.tasks.compile.JavaCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugTestNdk" type="com.android.build.gradle.tasks.NdkCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugTestRenderscript" type="com.android.build.gradle.tasks.RenderscriptCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugTestSources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileLint">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileReleaseAidl" type="com.android.build.gradle.tasks.AidlCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileReleaseJava" type="org.gradle.api.tasks.compile.JavaCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileReleaseNdk" type="com.android.build.gradle.tasks.NdkCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileReleaseRenderscript" type="com.android.build.gradle.tasks.RenderscriptCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileReleaseSources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="connectedAndroidTest" type="com.android.build.gradle.internal.tasks.DeviceProviderInstrumentTestTask">Installs and runs the tests for Build 'debug' on connected devices.&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="connectedCheck">Runs all device checks on currently connected devices.&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="copyDebugLint" type="org.gradle.api.tasks.Copy">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="copyReleaseLint" type="org.gradle.api.tasks.Copy">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="deviceCheck">Runs all device checks using Device Providers and Test Servers.&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="dexDebugTest" type="com.android.build.gradle.tasks.Dex">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="extractDebugAnnotations" type="com.android.build.gradle.tasks.ExtractAnnotations">Extracts Android annotations for the debug variant into the archive file&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="extractReleaseAnnotations" type="com.android.build.gradle.tasks.ExtractAnnotations">Extracts Android annotations for the release variant into the archive file&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="generateDebugAssets">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugBuildConfig" type="com.android.build.gradle.tasks.GenerateBuildConfig">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugResValues" type="com.android.build.gradle.tasks.GenerateResValues">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugSources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugTestAssets">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugTestBuildConfig" type="com.android.build.gradle.tasks.GenerateBuildConfig">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugTestResValues" type="com.android.build.gradle.tasks.GenerateResValues">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugTestResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugTestSources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateReleaseAssets">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateReleaseBuildConfig" type="com.android.build.gradle.tasks.GenerateBuildConfig">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateReleaseResValues" type="com.android.build.gradle.tasks.GenerateResValues">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateReleaseResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateReleaseSources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="install" type="org.gradle.api.tasks.Upload">Installs the 'archives' artifacts into the local Maven repository.&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="installDebugTest" type="com.android.build.gradle.internal.tasks.InstallVariantTask">Installs the Test build for the Debug build&lt;p&gt;&lt;i&gt;Task group: Install&lt;i&gt;</task>
+            <task name="javadoc" type="org.gradle.api.tasks.javadoc.Javadoc">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="javadocJar" type="org.gradle.api.tasks.bundling.Jar">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="lint" type="com.android.build.gradle.tasks.Lint">Runs lint on all variants.&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="lintDebug" type="com.android.build.gradle.tasks.Lint">Runs lint on the Debug build&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="lintRelease" type="com.android.build.gradle.tasks.Lint">Runs lint on the Release build&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="mergeDebugAssets" type="com.android.build.gradle.tasks.MergeAssets">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="mergeDebugProguardFiles" type="com.android.build.gradle.internal.tasks.MergeFileTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="mergeDebugResources" type="com.android.build.gradle.tasks.MergeResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="mergeDebugTestAssets" type="com.android.build.gradle.tasks.MergeAssets">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="mergeDebugTestResources" type="com.android.build.gradle.tasks.MergeResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="mergeReleaseAssets" type="com.android.build.gradle.tasks.MergeAssets">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="mergeReleaseProguardFiles" type="com.android.build.gradle.internal.tasks.MergeFileTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="mergeReleaseResources" type="com.android.build.gradle.tasks.MergeResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageDebugJar" type="org.gradle.api.tasks.bundling.Jar">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageDebugJniLibs" type="org.gradle.api.tasks.Sync">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageDebugLocalJar" type="org.gradle.api.tasks.Sync">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageDebugRenderscript" type="org.gradle.api.tasks.Sync">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageDebugResources" type="com.android.build.gradle.tasks.MergeResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageDebugTest" type="com.android.build.gradle.tasks.PackageApplication">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageReleaseJar" type="org.gradle.api.tasks.bundling.Jar">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageReleaseJniLibs" type="org.gradle.api.tasks.Sync">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageReleaseLocalJar" type="org.gradle.api.tasks.Sync">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageReleaseRenderscript" type="org.gradle.api.tasks.Sync">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageReleaseResources" type="com.android.build.gradle.tasks.MergeResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="preBuild" type="com.android.build.gradle.internal.tasks.PrepareSdkTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="preDebugBuild">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="preDebugTestBuild">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="preDexDebugTest" type="com.android.build.gradle.tasks.PreDex">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="preReleaseBuild">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="prepareComAndroidSupportAppcompatV72103Library" type="com.android.build.gradle.internal.tasks.PrepareLibraryTask">Prepare com.android.support:appcompat-v7:21.0.3&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="prepareComAndroidSupportSupportV42103Library" type="com.android.build.gradle.internal.tasks.PrepareLibraryTask">Prepare com.android.support:support-v4:21.0.3&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="prepareDebugDependencies" type="com.android.build.gradle.internal.tasks.PrepareDependenciesTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="prepareDebugTestDependencies" type="com.android.build.gradle.internal.tasks.PrepareDependenciesTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="prepareReleaseDependencies" type="com.android.build.gradle.internal.tasks.PrepareDependenciesTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processDebugJavaRes" type="org.gradle.language.jvm.tasks.ProcessResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processDebugManifest" type="com.android.build.gradle.tasks.ProcessManifest">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processDebugResources" type="com.android.build.gradle.tasks.ProcessAndroidResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processDebugTestJavaRes" type="org.gradle.language.jvm.tasks.ProcessResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processDebugTestManifest" type="com.android.build.gradle.tasks.ProcessTestManifest">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processDebugTestResources" type="com.android.build.gradle.tasks.ProcessAndroidResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processReleaseJavaRes" type="org.gradle.language.jvm.tasks.ProcessResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processReleaseManifest" type="com.android.build.gradle.tasks.ProcessManifest">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processReleaseResources" type="com.android.build.gradle.tasks.ProcessAndroidResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="signingReport" type="com.android.build.gradle.internal.tasks.SigningReportTask">Displays the signing info for each variant&lt;p&gt;&lt;i&gt;Task group: Android&lt;i&gt;</task>
+            <task name="sourcesJar" type="org.gradle.api.tasks.bundling.Jar">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="uninstallAll">Uninstall all applications.&lt;p&gt;&lt;i&gt;Task group: Install&lt;i&gt;</task>
+            <task name="uninstallDebugTest" type="com.android.build.gradle.internal.tasks.UninstallTask">Uninstalls the Test build for the Debug build&lt;p&gt;&lt;i&gt;Task group: Install&lt;i&gt;</task>
+            <task name="validateDebugSigning" type="com.android.build.gradle.internal.tasks.ValidateSigningTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="dexDebug" type="com.android.build.gradle.tasks.Dex">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="dexRelease" type="com.android.build.gradle.tasks.Dex">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="installDebug" type="com.android.build.gradle.internal.tasks.InstallVariantTask">Installs the Debug build&lt;p&gt;&lt;i&gt;Task group: Install&lt;i&gt;</task>
+            <task name="lintVitalRelease" type="com.android.build.gradle.tasks.Lint">Runs lint on just the fatal issues in the Release build&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageDebug" type="com.android.build.gradle.tasks.PackageApplication">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageRelease" type="com.android.build.gradle.tasks.PackageApplication">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="preDexDebug" type="com.android.build.gradle.tasks.PreDex">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="preDexRelease" type="com.android.build.gradle.tasks.PreDex">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="prepareComBigkooAlertview100Library" type="com.android.build.gradle.internal.tasks.PrepareLibraryTask">Prepare com.bigkoo:alertview:1.0.0&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="uninstallDebug" type="com.android.build.gradle.internal.tasks.UninstallTask">Uninstalls the Debug build&lt;p&gt;&lt;i&gt;Task group: Install&lt;i&gt;</task>
+            <task name="uninstallRelease" type="com.android.build.gradle.internal.tasks.UninstallTask">Uninstalls the Release build&lt;p&gt;&lt;i&gt;Task group: Install&lt;i&gt;</task>
+            <task name="zipalignDebug" type="com.android.build.gradle.tasks.ZipAlign">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <conf name="classpath" scriptClasspath="true" />
+          </extensions>
+        </project>
+        <project path="$PROJECT_DIR$">
+          <extensions parent="$PROJECT_DIR$/..">
+            <ext name="ext" type="org.gradle.api.internal.plugins.DefaultExtraPropertiesExtension" />
+            <ext name="defaultArtifacts" type="org.gradle.api.internal.plugins.DefaultArtifactPublicationSet" />
+            <ext name="reporting" type="org.gradle.api.reporting.ReportingExtension" />
+            <ext name="sources" type="org.gradle.language.base.internal.DefaultProjectSourceSet" />
+            <ext name="binaries" type="org.gradle.platform.base.internal.DefaultBinaryContainer" />
+            <ext name="android" type="com.android.build.gradle.LibraryExtension" />
+            <ext name="bintray" type="com.jfrog.bintray.gradle.BintrayExtension" />
+            <task name="mergeDebugProguardFiles" type="com.android.build.gradle.internal.tasks.MergeFileTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageReleaseResources" type="com.android.build.gradle.tasks.MergeResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="assembleDebugTest">Assembles the Test build for the Debug build&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="compileReleaseJava" type="org.gradle.api.tasks.compile.JavaCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugTestAssets">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="prepareDebugDependencies" type="com.android.build.gradle.internal.tasks.PrepareDependenciesTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="bundleDebug" type="org.gradle.api.tasks.bundling.Zip">Assembles a bundle containing the library in Debug.&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="copyDebugLint" type="org.gradle.api.tasks.Copy">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processReleaseJavaRes" type="org.gradle.language.jvm.tasks.ProcessResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateReleaseAssets">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="lintDebug" type="com.android.build.gradle.tasks.Lint">Runs lint on the Debug build&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="bundleRelease" type="org.gradle.api.tasks.bundling.Zip">Assembles a bundle containing the library in Release.&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugJava" type="org.gradle.api.tasks.compile.JavaCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugTestJava" type="org.gradle.api.tasks.compile.JavaCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugSources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageReleaseRenderscript" type="org.gradle.api.tasks.Sync">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="mergeReleaseProguardFiles" type="com.android.build.gradle.internal.tasks.MergeFileTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="javadocJar" type="org.gradle.api.tasks.bundling.Jar">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="deviceCheck">Runs all device checks using Device Providers and Test Servers.&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="processDebugResources" type="com.android.build.gradle.tasks.ProcessAndroidResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="lint" type="com.android.build.gradle.tasks.Lint">Runs lint on all variants.&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="compileReleaseNdk" type="com.android.build.gradle.tasks.NdkCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugTestResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="install" type="org.gradle.api.tasks.Upload">Installs the 'archives' artifacts into the local Maven repository.&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="buildNeeded">Assembles and tests this project and all projects it depends on.&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="assembleDefault">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="mergeDebugTestAssets" type="com.android.build.gradle.tasks.MergeAssets">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processDebugTestJavaRes" type="org.gradle.language.jvm.tasks.ProcessResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileReleaseRenderscript" type="com.android.build.gradle.tasks.RenderscriptCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="assembleDebug">Assembles all Debug builds&lt;p&gt;&lt;i&gt;Task group: Build&lt;i&gt;</task>
+            <task name="packageDebugJniLibs" type="org.gradle.api.tasks.Sync">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="cleanIdeaModule" type="org.gradle.api.tasks.Delete">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugTestResValues" type="com.android.build.gradle.tasks.GenerateResValues">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="extractDebugAnnotations" type="com.android.build.gradle.tasks.ExtractAnnotations">Extracts Android annotations for the debug variant into the archive file&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="javadoc" type="org.gradle.api.tasks.javadoc.Javadoc">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="prepareDebugTestDependencies" type="com.android.build.gradle.internal.tasks.PrepareDependenciesTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="mergeReleaseResources" type="com.android.build.gradle.tasks.MergeResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugTestSources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="prepareComAndroidSupportSupportV42103Library" type="com.android.build.gradle.internal.tasks.PrepareLibraryTask">Prepare com.android.support:support-v4:21.0.3&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="checkReleaseManifest" type="com.android.build.gradle.internal.tasks.CheckManifest">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugTestRenderscript" type="com.android.build.gradle.tasks.RenderscriptCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageDebugResources" type="com.android.build.gradle.tasks.MergeResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="prepareReleaseDependencies" type="com.android.build.gradle.internal.tasks.PrepareDependenciesTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="preDebugTestBuild">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processReleaseResources" type="com.android.build.gradle.tasks.ProcessAndroidResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processReleaseManifest" type="com.android.build.gradle.tasks.ProcessManifest">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateReleaseSources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="preReleaseBuild">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="assemble">Assembles all variants of all applications and secondary packages.&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="mergeDebugAssets" type="com.android.build.gradle.tasks.MergeAssets">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="connectedCheck">Runs all device checks on currently connected devices.&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="uninstallAll">Uninstall all applications.&lt;p&gt;&lt;i&gt;Task group: Install&lt;i&gt;</task>
+            <task name="dexDebugTest" type="com.android.build.gradle.tasks.Dex">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="extractReleaseAnnotations" type="com.android.build.gradle.tasks.ExtractAnnotations">Extracts Android annotations for the release variant into the archive file&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="packageDebugJar" type="org.gradle.api.tasks.bundling.Jar">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugAidl" type="com.android.build.gradle.tasks.AidlCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="mergeDebugResources" type="com.android.build.gradle.tasks.MergeResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="bintrayUpload" type="com.jfrog.bintray.gradle.BintrayUploadTask">Publishes artifacts to bintray.com.&lt;p&gt;&lt;i&gt;Task group: publishing&lt;i&gt;</task>
+            <task name="packageReleaseJniLibs" type="org.gradle.api.tasks.Sync">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileLint">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="sourcesJar" type="org.gradle.api.tasks.bundling.Jar">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="androidDependencies" type="com.android.build.gradle.internal.tasks.DependencyReportTask">Displays the Android dependencies of the project&lt;p&gt;&lt;i&gt;Task group: Android&lt;i&gt;</task>
+            <task name="prepareComAndroidSupportAppcompatV72103Library" type="com.android.build.gradle.internal.tasks.PrepareLibraryTask">Prepare com.android.support:appcompat-v7:21.0.3&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugSources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="copyReleaseLint" type="org.gradle.api.tasks.Copy">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageReleaseJar" type="org.gradle.api.tasks.bundling.Jar">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processDebugJavaRes" type="org.gradle.language.jvm.tasks.ProcessResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="preDexDebugTest" type="com.android.build.gradle.tasks.PreDex">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processDebugTestManifest" type="com.android.build.gradle.tasks.ProcessTestManifest">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugNdk" type="com.android.build.gradle.tasks.NdkCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugTestAidl" type="com.android.build.gradle.tasks.AidlCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugResValues" type="com.android.build.gradle.tasks.GenerateResValues">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="check">Runs all checks.&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="installDebugTest" type="com.android.build.gradle.internal.tasks.InstallVariantTask">Installs the Test build for the Debug build&lt;p&gt;&lt;i&gt;Task group: Install&lt;i&gt;</task>
+            <task name="validateDebugSigning" type="com.android.build.gradle.internal.tasks.ValidateSigningTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="connectedAndroidTest" type="com.android.build.gradle.internal.tasks.DeviceProviderInstrumentTestTask">Installs and runs the tests for Build 'debug' on connected devices.&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="mergeDebugTestResources" type="com.android.build.gradle.tasks.MergeResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageDebugTest" type="com.android.build.gradle.tasks.PackageApplication">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="preBuild" type="com.android.build.gradle.internal.tasks.PrepareSdkTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileReleaseSources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileReleaseAidl" type="com.android.build.gradle.tasks.AidlCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="lintRelease" type="com.android.build.gradle.tasks.Lint">Runs lint on the Release build&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="buildDependents">Assembles and tests this project and all projects that depend on it.&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="generateDebugAssets">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="idea">Generates IDEA project files (IML, IPR, IWS)&lt;p&gt;&lt;i&gt;Task group: IDE&lt;i&gt;</task>
+            <task name="checkDebugManifest" type="com.android.build.gradle.internal.tasks.CheckManifest">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="mergeReleaseAssets" type="com.android.build.gradle.tasks.MergeAssets">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugRenderscript" type="com.android.build.gradle.tasks.RenderscriptCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageDebugRenderscript" type="org.gradle.api.tasks.Sync">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateReleaseBuildConfig" type="com.android.build.gradle.tasks.GenerateBuildConfig">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugTestSources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="ideaModule" type="org.gradle.plugins.ide.idea.GenerateIdeaModule">Generates IDEA module files (IML)&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="cleanIdea">Cleans IDEA project files (IML, IPR)&lt;p&gt;&lt;i&gt;Task group: IDE&lt;i&gt;</task>
+            <task name="compileDebugTestNdk" type="com.android.build.gradle.tasks.NdkCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateReleaseResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="signingReport" type="com.android.build.gradle.internal.tasks.SigningReportTask">Displays the signing info for each variant&lt;p&gt;&lt;i&gt;Task group: Android&lt;i&gt;</task>
+            <task name="clean" type="org.gradle.api.tasks.Delete">Deletes the build directory.&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="preDebugBuild">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageReleaseLocalJar" type="org.gradle.api.tasks.Sync">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="uninstallDebugTest" type="com.android.build.gradle.internal.tasks.UninstallTask">Uninstalls the Test build for the Debug build&lt;p&gt;&lt;i&gt;Task group: Install&lt;i&gt;</task>
+            <task name="generateDebugBuildConfig" type="com.android.build.gradle.tasks.GenerateBuildConfig">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="build">Assembles and tests this project.&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="assembleRelease">Assembles all Release builds&lt;p&gt;&lt;i&gt;Task group: Build&lt;i&gt;</task>
+            <task name="processDebugTestResources" type="com.android.build.gradle.tasks.ProcessAndroidResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processDebugManifest" type="com.android.build.gradle.tasks.ProcessManifest">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugTestBuildConfig" type="com.android.build.gradle.tasks.GenerateBuildConfig">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageDebugLocalJar" type="org.gradle.api.tasks.Sync">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateReleaseResValues" type="com.android.build.gradle.tasks.GenerateResValues">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <conf name="_debugCompile" visible="false">## Internal use, do not manually configure ##</conf>
+            <conf name="_debugPublish" visible="false">## Internal use, do not manually configure ##</conf>
+            <conf name="_debugTestCompile" visible="false">## Internal use, do not manually configure ##</conf>
+            <conf name="_debugTestPublish" visible="false">## Internal use, do not manually configure ##</conf>
+            <conf name="_releaseCompile" visible="false">## Internal use, do not manually configure ##</conf>
+            <conf name="_releasePublish" visible="false">## Internal use, do not manually configure ##</conf>
+            <conf name="androidJacocoAgent" visible="false">The Jacoco agent to use to get coverage data.</conf>
+            <conf name="androidJacocoAnt" visible="false">The Jacoco ant tasks to use to get execute Gradle tasks.</conf>
+            <conf name="androidTestCompile" visible="false">Classpath for compiling the androidTest sources.</conf>
+            <conf name="androidTestProvided" visible="false">Classpath for only compiling the androidTest sources.</conf>
+            <conf name="androidTestPublish" visible="false">Classpath only used when publishing 'androidTest'.</conf>
+            <conf name="androidTestWearApp" visible="false">Link to a wear app to embed for object 'androidTest'.</conf>
+            <conf name="archives">Configuration for archive artifacts.</conf>
+            <conf name="compile" visible="false">Classpath for compiling the main sources.</conf>
+            <conf name="debugCompile" visible="false">Classpath for compiling the debug sources.</conf>
+            <conf name="debugProvided" visible="false">Classpath for only compiling the debug sources.</conf>
+            <conf name="debugPublish" visible="false">Classpath only used when publishing 'debug'.</conf>
+            <conf name="debugWearApp" visible="false">Link to a wear app to embed for object 'debug'.</conf>
+            <conf name="default">Configuration for default artifacts.</conf>
+            <conf name="provided" visible="false">Classpath for only compiling the main sources.</conf>
+            <conf name="publish" visible="false">Classpath only used when publishing 'main'.</conf>
+            <conf name="releaseCompile" visible="false">Classpath for compiling the release sources.</conf>
+            <conf name="releaseProvided" visible="false">Classpath for only compiling the release sources.</conf>
+            <conf name="releasePublish" visible="false">Classpath only used when publishing 'release'.</conf>
+            <conf name="releaseWearApp" visible="false">Link to a wear app to embed for object 'release'.</conf>
+            <conf name="wearApp" visible="false">Link to a wear app to embed for object 'main'.</conf>
+            <conf name="classpath" scriptClasspath="true" />
+          </extensions>
+        </project>
+        <project path="$PROJECT_DIR$/../app">
+          <extensions parent="$PROJECT_DIR$/..">
+            <ext name="ext" type="org.gradle.api.internal.plugins.DefaultExtraPropertiesExtension" />
+            <ext name="defaultArtifacts" type="org.gradle.api.internal.plugins.DefaultArtifactPublicationSet" />
+            <ext name="reporting" type="org.gradle.api.reporting.ReportingExtension" />
+            <ext name="sources" type="org.gradle.language.base.internal.DefaultProjectSourceSet" />
+            <ext name="binaries" type="org.gradle.platform.base.internal.DefaultBinaryContainer" />
+            <ext name="android" type="com.android.build.gradle.AppExtension" />
+            <task name="androidDependencies" type="com.android.build.gradle.internal.tasks.DependencyReportTask">Displays the Android dependencies of the project&lt;p&gt;&lt;i&gt;Task group: Android&lt;i&gt;</task>
+            <task name="assemble">Assembles all variants of all applications and secondary packages.&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="assembleDebug">Assembles all Debug builds&lt;p&gt;&lt;i&gt;Task group: Build&lt;i&gt;</task>
+            <task name="assembleDebugTest">Assembles the Test build for the Debug build&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="assembleRelease">Assembles all Release builds&lt;p&gt;&lt;i&gt;Task group: Build&lt;i&gt;</task>
+            <task name="build">Assembles and tests this project.&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="buildDependents">Assembles and tests this project and all projects that depend on it.&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="buildNeeded">Assembles and tests this project and all projects it depends on.&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="check">Runs all checks.&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="checkDebugManifest" type="com.android.build.gradle.internal.tasks.CheckManifest">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="checkReleaseManifest" type="com.android.build.gradle.internal.tasks.CheckManifest">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="clean" type="org.gradle.api.tasks.Delete">Deletes the build directory.&lt;p&gt;&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="cleanIdea">Cleans IDEA project files (IML, IPR)&lt;p&gt;&lt;i&gt;Task group: IDE&lt;i&gt;</task>
+            <task name="cleanIdeaModule" type="org.gradle.api.tasks.Delete">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugAidl" type="com.android.build.gradle.tasks.AidlCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugJava" type="org.gradle.api.tasks.compile.JavaCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugNdk" type="com.android.build.gradle.tasks.NdkCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugRenderscript" type="com.android.build.gradle.tasks.RenderscriptCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugSources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugTestAidl" type="com.android.build.gradle.tasks.AidlCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugTestJava" type="org.gradle.api.tasks.compile.JavaCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugTestNdk" type="com.android.build.gradle.tasks.NdkCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugTestRenderscript" type="com.android.build.gradle.tasks.RenderscriptCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileDebugTestSources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileLint">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileReleaseAidl" type="com.android.build.gradle.tasks.AidlCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileReleaseJava" type="org.gradle.api.tasks.compile.JavaCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileReleaseNdk" type="com.android.build.gradle.tasks.NdkCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileReleaseRenderscript" type="com.android.build.gradle.tasks.RenderscriptCompile">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="compileReleaseSources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="connectedAndroidTest" type="com.android.build.gradle.internal.tasks.DeviceProviderInstrumentTestTask">Installs and runs the tests for Build 'debug' on connected devices.&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="connectedCheck">Runs all device checks on currently connected devices.&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="deviceCheck">Runs all device checks using Device Providers and Test Servers.&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="dexDebug" type="com.android.build.gradle.tasks.Dex">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="dexDebugTest" type="com.android.build.gradle.tasks.Dex">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="dexRelease" type="com.android.build.gradle.tasks.Dex">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugAssets">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugBuildConfig" type="com.android.build.gradle.tasks.GenerateBuildConfig">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugResValues" type="com.android.build.gradle.tasks.GenerateResValues">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugSources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugTestAssets">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugTestBuildConfig" type="com.android.build.gradle.tasks.GenerateBuildConfig">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugTestResValues" type="com.android.build.gradle.tasks.GenerateResValues">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugTestResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateDebugTestSources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateReleaseAssets">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateReleaseBuildConfig" type="com.android.build.gradle.tasks.GenerateBuildConfig">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateReleaseResValues" type="com.android.build.gradle.tasks.GenerateResValues">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateReleaseResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="generateReleaseSources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="idea">Generates IDEA project files (IML, IPR, IWS)&lt;p&gt;&lt;i&gt;Task group: IDE&lt;i&gt;</task>
+            <task name="ideaModule" type="org.gradle.plugins.ide.idea.GenerateIdeaModule">Generates IDEA module files (IML)&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="installDebug" type="com.android.build.gradle.internal.tasks.InstallVariantTask">Installs the Debug build&lt;p&gt;&lt;i&gt;Task group: Install&lt;i&gt;</task>
+            <task name="installDebugTest" type="com.android.build.gradle.internal.tasks.InstallVariantTask">Installs the Test build for the Debug build&lt;p&gt;&lt;i&gt;Task group: Install&lt;i&gt;</task>
+            <task name="lint" type="com.android.build.gradle.tasks.Lint">Runs lint on all variants.&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="lintDebug" type="com.android.build.gradle.tasks.Lint">Runs lint on the Debug build&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="lintRelease" type="com.android.build.gradle.tasks.Lint">Runs lint on the Release build&lt;p&gt;&lt;i&gt;Task group: verification&lt;i&gt;</task>
+            <task name="lintVitalRelease" type="com.android.build.gradle.tasks.Lint">Runs lint on just the fatal issues in the Release build&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="mergeDebugAssets" type="com.android.build.gradle.tasks.MergeAssets">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="mergeDebugResources" type="com.android.build.gradle.tasks.MergeResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="mergeDebugTestAssets" type="com.android.build.gradle.tasks.MergeAssets">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="mergeDebugTestResources" type="com.android.build.gradle.tasks.MergeResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="mergeReleaseAssets" type="com.android.build.gradle.tasks.MergeAssets">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="mergeReleaseResources" type="com.android.build.gradle.tasks.MergeResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageDebug" type="com.android.build.gradle.tasks.PackageApplication">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageDebugTest" type="com.android.build.gradle.tasks.PackageApplication">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="packageRelease" type="com.android.build.gradle.tasks.PackageApplication">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="preBuild" type="com.android.build.gradle.internal.tasks.PrepareSdkTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="preDebugBuild">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="preDebugTestBuild">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="preDexDebug" type="com.android.build.gradle.tasks.PreDex">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="preDexDebugTest" type="com.android.build.gradle.tasks.PreDex">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="preDexRelease" type="com.android.build.gradle.tasks.PreDex">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="preReleaseBuild">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="prepareComAndroidSupportAppcompatV72103Library" type="com.android.build.gradle.internal.tasks.PrepareLibraryTask">Prepare com.android.support:appcompat-v7:21.0.3&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="prepareComAndroidSupportSupportV42103Library" type="com.android.build.gradle.internal.tasks.PrepareLibraryTask">Prepare com.android.support:support-v4:21.0.3&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="prepareComBigkooAlertview100Library" type="com.android.build.gradle.internal.tasks.PrepareLibraryTask">Prepare com.bigkoo:alertview:1.0.0&lt;p&gt;&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="prepareDebugDependencies" type="com.android.build.gradle.internal.tasks.PrepareDependenciesTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="prepareDebugTestDependencies" type="com.android.build.gradle.internal.tasks.PrepareDependenciesTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="prepareReleaseDependencies" type="com.android.build.gradle.internal.tasks.PrepareDependenciesTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processDebugJavaRes" type="org.gradle.language.jvm.tasks.ProcessResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processDebugManifest" type="com.android.build.gradle.tasks.MergeManifests">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processDebugResources" type="com.android.build.gradle.tasks.ProcessAndroidResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processDebugTestJavaRes" type="org.gradle.language.jvm.tasks.ProcessResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processDebugTestManifest" type="com.android.build.gradle.tasks.ProcessTestManifest">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processDebugTestResources" type="com.android.build.gradle.tasks.ProcessAndroidResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processReleaseJavaRes" type="org.gradle.language.jvm.tasks.ProcessResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processReleaseManifest" type="com.android.build.gradle.tasks.MergeManifests">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="processReleaseResources" type="com.android.build.gradle.tasks.ProcessAndroidResources">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="signingReport" type="com.android.build.gradle.internal.tasks.SigningReportTask">Displays the signing info for each variant&lt;p&gt;&lt;i&gt;Task group: Android&lt;i&gt;</task>
+            <task name="uninstallAll">Uninstall all applications.&lt;p&gt;&lt;i&gt;Task group: Install&lt;i&gt;</task>
+            <task name="uninstallDebug" type="com.android.build.gradle.internal.tasks.UninstallTask">Uninstalls the Debug build&lt;p&gt;&lt;i&gt;Task group: Install&lt;i&gt;</task>
+            <task name="uninstallDebugTest" type="com.android.build.gradle.internal.tasks.UninstallTask">Uninstalls the Test build for the Debug build&lt;p&gt;&lt;i&gt;Task group: Install&lt;i&gt;</task>
+            <task name="uninstallRelease" type="com.android.build.gradle.internal.tasks.UninstallTask">Uninstalls the Release build&lt;p&gt;&lt;i&gt;Task group: Install&lt;i&gt;</task>
+            <task name="validateDebugSigning" type="com.android.build.gradle.internal.tasks.ValidateSigningTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <task name="zipalignDebug" type="com.android.build.gradle.tasks.ZipAlign">&lt;i&gt;Task group: other&lt;i&gt;</task>
+            <conf name="_debugApk" visible="false">## Internal use, do not manually configure ##</conf>
+            <conf name="_debugCompile" visible="false">## Internal use, do not manually configure ##</conf>
+            <conf name="_debugTestApk" visible="false">## Internal use, do not manually configure ##</conf>
+            <conf name="_debugTestCompile" visible="false">## Internal use, do not manually configure ##</conf>
+            <conf name="_releaseApk" visible="false">## Internal use, do not manually configure ##</conf>
+            <conf name="_releaseCompile" visible="false">## Internal use, do not manually configure ##</conf>
+            <conf name="androidJacocoAgent" visible="false">The Jacoco agent to use to get coverage data.</conf>
+            <conf name="androidJacocoAnt" visible="false">The Jacoco ant tasks to use to get execute Gradle tasks.</conf>
+            <conf name="androidTestApk" visible="false">Classpath packaged with the compiled 'androidTest' classes.</conf>
+            <conf name="androidTestCompile" visible="false">Classpath for compiling the androidTest sources.</conf>
+            <conf name="androidTestProvided" visible="false">Classpath for only compiling the androidTest sources.</conf>
+            <conf name="androidTestWearApp" visible="false">Link to a wear app to embed for object 'androidTest'.</conf>
+            <conf name="apk" visible="false">Classpath packaged with the compiled 'main' classes.</conf>
+            <conf name="archives">Configuration for archive artifacts.</conf>
+            <conf name="compile" visible="false">Classpath for compiling the main sources.</conf>
+            <conf name="debugApk" visible="false">Classpath packaged with the compiled 'debug' classes.</conf>
+            <conf name="debugCompile" visible="false">Classpath for compiling the debug sources.</conf>
+            <conf name="debugProvided" visible="false">Classpath for only compiling the debug sources.</conf>
+            <conf name="debugWearApp" visible="false">Link to a wear app to embed for object 'debug'.</conf>
+            <conf name="default">Configuration for default artifacts.</conf>
+            <conf name="provided" visible="false">Classpath for only compiling the main sources.</conf>
+            <conf name="releaseApk" visible="false">Classpath packaged with the compiled 'release' classes.</conf>
+            <conf name="releaseCompile" visible="false">Classpath for compiling the release sources.</conf>
+            <conf name="releaseProvided" visible="false">Classpath for only compiling the release sources.</conf>
+            <conf name="releaseWearApp" visible="false">Link to a wear app to embed for object 'release'.</conf>
+            <conf name="wearApp" visible="false">Link to a wear app to embed for object 'main'.</conf>
+            <conf name="classpath" scriptClasspath="true" />
+          </extensions>
+        </project>
+      </sub-project>
+    </project>
+  </component>
+</project>
