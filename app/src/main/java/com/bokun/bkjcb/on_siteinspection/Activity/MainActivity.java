@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.bokun.bkjcb.on_siteinspection.Fragment.CheckPlanFragment;
+import com.bokun.bkjcb.on_siteinspection.Fragment.MapFragment;
 import com.bokun.bkjcb.on_siteinspection.Fragment.TestFragment;
 import com.bokun.bkjcb.on_siteinspection.Fragment.UpLoadFragment;
 import com.bokun.bkjcb.on_siteinspection.R;
@@ -118,7 +119,7 @@ public class MainActivity extends BaseActivity
             loadView("地图", "third");
         } /*else if (id == R.id.nav_details) {
             loadView("工程信息详情", "forth");
-        } */else if (id == R.id.nav_update_result) {
+        } */ else if (id == R.id.nav_update_result) {
             loadView("上传进度", "forth");
         } else if (id == R.id.nav_update_result) {
             LoginActivity.comeToLoginActivity(this);
@@ -137,11 +138,13 @@ public class MainActivity extends BaseActivity
         hideAllFragment();
         FragmentTransaction transaction = manager.beginTransaction();
         if (currentFragment == null) {
-            if (key.equals("first")){
+            if (key.equals("first")) {
                 currentFragment = new CheckPlanFragment();
-            }else if (key.equals("forth")){
+            } else if (key.equals("third")) {
+                currentFragment = MapFragment.newInstance();
+            } else if (key.equals("forth")) {
                 currentFragment = new UpLoadFragment();
-            }else {
+            } else {
                 currentFragment = new TestFragment();
             }
             transaction.add(contentView.getId(), currentFragment);

@@ -60,6 +60,7 @@ public class UploadHelper {
         OkHttpManager okHttpManager = new OkHttpManager(context, new RequestListener() {
             @Override
             public void action(int i, Object object) {
+                LogUtil.logI("请求上传，请求结果：" + i);
                 mHandler.sendEmptyMessage(5);
 //                mHandler.sendEmptyMessage(i);
             }
@@ -83,12 +84,20 @@ public class UploadHelper {
             }
         }
         for (int i = 0; i < paths.size(); i++) {
+            File file = new File(paths.get(i));
+            fileSize += file.length();
+        }
+
+    }
+
+    private void uploadFile() {
+        LogUtil.logI("任务数量：" + paths.size());
+        for (int i = 0; i < paths.size(); i++) {
             String path = paths.get(i);
             File file = new File(path);
             if (file.length() == 0) {
                 continue;
             }
-            fileSize += file.length();
             URL url = null;
             try {
                 url = new URL("");
@@ -105,13 +114,7 @@ public class UploadHelper {
                 }
             });
             tasks.add(task);
-        }
-
-    }
-
-    private void uploadFile() {
-        for (int i = 0; i < tasks.size(); i++) {
-            manager.addTask(tasks.get(i));
+            manager.addTask(task);
         }
 
     }

@@ -114,7 +114,7 @@ public class UpLoadTask implements Runnable {
             loadListener.onFail();
         }*/
         try {
-            Thread.sleep(3000);
+            Thread.sleep(1000);
             LogUtil.logI("一个小任务完成");
             onFinished.finished(this);
         } catch (InterruptedException e) {

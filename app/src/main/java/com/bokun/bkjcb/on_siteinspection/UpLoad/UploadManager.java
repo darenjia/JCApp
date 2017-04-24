@@ -16,7 +16,8 @@ public class UploadManager {
     private ExecutorService service;
 
     private UploadManager() {
-        service = Executors.newFixedThreadPool(10);
+//        service = Executors.newFixedThreadPool(10);
+        service = Executors.newSingleThreadExecutor();
     }
 
     public static UploadManager newInstance() {

@@ -41,15 +41,17 @@ public class UploadService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        LogUtil.logI("开始下载服务");
         helper = new UploadHelper(this);
         CheckPlan checkPlan = (CheckPlan) intent.getExtras().getSerializable("checkplan");
         UIProgressListener listener = new UIProgressListener() {
             @Override
             public void onUIProgress(long currentBytes, long contentLength, boolean done) {
-                int precent = (int) (contentLength / contentLength) * 100;
+                LogUtil.logI("contentLength" + contentLength + "===currentBytes" + currentBytes);
+                double precent = (double) currentBytes / (double) contentLength;
                 LogUtil.logI(precent + "百分比");
                 Intent broadcast = new Intent("com.bokun.jcapp.UPDATE_PROGRESS");
-                broadcast.putExtra("precent", precent);
+                broadcast.putExtra("precent", (int) (precent * 100));
                 LocalBroadcastManager.getInstance(UploadService.this).sendBroadcast(broadcast);
             }
         };

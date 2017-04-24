@@ -28,12 +28,13 @@ import java.util.ArrayList;
 public class UpLoadChirldFragment extends BaseFragment {
 
     private ListView listView;
-    private static ListAdapter adapter;
+    private ListAdapter adapter;
     private ArrayList<CheckPlan> checkPlans;
     private boolean finished;
     private CheckBox progress;
     private BroadcastReceiver receiver;
     private LocalBroadcastManager manager;
+    private LoadData loadTask;
 
     @Override
     public View initView() {
@@ -68,7 +69,6 @@ public class UpLoadChirldFragment extends BaseFragment {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             final CheckPlan checkPlan = checkPlans.get(position);
-            LogUtil.logI("name:" + checkPlan.getName());
             if (convertView == null) {
                 convertView = View.inflate(getContext(), R.layout.upload_item_view, null);
                 viewHolder = new ViewHolder();
@@ -80,34 +80,45 @@ public class UpLoadChirldFragment extends BaseFragment {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             viewHolder.title.setText(checkPlan.getName());
-            viewHolder.button.setText(getState(checkPlan.getState_upload()));
-            LogUtil.logI(checkPlan.getName() + " " + position);
-            viewHolder.button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    LogUtil.logI(checkPlan.getName() + "当前开始任务" + position);
-                    if (isChecked) {
-                        if (position != 0 && checkPlans.get(position - 1).getState_upload() == 0) {
-                            checkPlans.remove(checkPlan);
-                            checkPlan.setState_upload(1);
-                            checkPlans.add(position - 1, checkPlan);
-                            LogUtil.logI("调换顺序" + checkPlans.get(position).getName());
+            if (!finished) {
+                viewHolder.button.setText(getState(checkPlan.getState_upload()));
+                viewHolder.button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        int flag = position;
+                        if (isChecked) {
+                            checkPlan.setState_upload(2);
+                            while (flag != 0 && checkPlans.get(flag - 1).getState_upload() == 0) {
+                                checkPlans.remove(flag);
+                                LogUtil.logI("改变计划状态" + checkPlan.getName());
+                                checkPlans.add(flag - 1, checkPlan);
+                                flag--;
+                            }
                             notifyDataSetChanged();
+                            if (position == 0) {
+                                startUpload(checkPlan);
+                                progress = viewHolder.button;
+                                viewHolder.state.setText("正在上传");
+                            } else {
+                                buttonView.setText("等待");
+                            }
+                        } else {
+                            if (!buttonView.getText().equals("上传")) {
+                                buttonView.setText("继续");
+                            }
                         }
-                        if (position == 0) {
-                            startUpload(checkPlan);
-                            progress = viewHolder.button;
-                        }
-                    } else {
-                        buttonView.setText("继续");
-                        viewHolder.state.setText("正在上传");
                     }
+                });
+                if (checkPlan.getState_upload() == 2) {
+                    LogUtil.logI("设置计划状态" + checkPlan.getName());
+                    viewHolder.button.setChecked(true);
+                } else {
+                    viewHolder.button.setChecked(false);
                 }
-            });
-            if (checkPlan.getState_upload() != 0) {
-                viewHolder.button.setChecked(true);
+            } else {
+                viewHolder.state.setVisibility(View.GONE);
+                viewHolder.button.setVisibility(View.GONE);
             }
-
             return convertView;
         }
 
@@ -139,8 +150,12 @@ public class UpLoadChirldFragment extends BaseFragment {
 
         @Override
         protected void onPostExecute(Object o) {
-            adapter = new ListAdapter();
-            listView.setAdapter(adapter);
+            if (adapter == null) {
+                adapter = new ListAdapter();
+                listView.setAdapter(adapter);
+            } else {
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 
@@ -150,7 +165,11 @@ public class UpLoadChirldFragment extends BaseFragment {
 
     @Override
     public void onStart() {
-        new LoadData().execute();
+        LogUtil.logI("onStart");
+        if (checkPlans == null) {
+            loadTask = new LoadData();
+            loadTask.execute();
+        }
         super.onStart();
     }
 
@@ -166,10 +185,16 @@ public class UpLoadChirldFragment extends BaseFragment {
                 int flag = intent.getExtras().getInt("precent");
                 progress.setText(flag + "%");
                 if (flag == 100) {
+                    CheckPlan checkPlan = checkPlans.get(0);
+                    checkPlan.setState(3);
+                    DataUtil.updateCheckPlanState(getContext(), checkPlan);
                     checkPlans.remove(0);
+                    LogUtil.logI(checkPlans.size() + "");
                     adapter.notifyDataSetChanged();
+                    if (finished) {
+                        loadTask.execute();
+                    }
                 }
-//                LogUtil.logI("size" + checkPlans.size());
             }
         };
         IntentFilter filter = new IntentFilter();
