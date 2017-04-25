@@ -34,7 +34,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.READ_PHONE_STATE
     };
-    private boolean isNeedCheck;
+    private boolean isNeedCheck = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

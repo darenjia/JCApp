@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.location.LocationManager;
 import android.media.MediaMetadataRetriever;
 import android.media.ThumbnailUtils;
 import android.os.Build;
@@ -238,6 +239,13 @@ public class Utils {
         }
     }
 
+    public static boolean gpsIsOpen(Context context) {
+        LocationManager alm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        if (alm.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
+            return true;
+        }
+        return false;
+    }
 
 }
 

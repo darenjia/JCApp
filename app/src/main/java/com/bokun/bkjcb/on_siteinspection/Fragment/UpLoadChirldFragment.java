@@ -130,7 +130,9 @@ public class UpLoadChirldFragment extends BaseFragment {
     }
 
     private void startUpload(CheckPlan checkPlan) {
-        Intent intent = new Intent("android.intent.action.STARTUPLOAD");
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.STARTUPLOAD");//你定义的service的action
+        intent.setPackage(getContext().getPackageName());
         intent.putExtra("checkplan", checkPlan);
         getContext().startService(intent);
         openBroadCast();

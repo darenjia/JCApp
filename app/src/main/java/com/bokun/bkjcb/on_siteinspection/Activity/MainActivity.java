@@ -37,6 +37,7 @@ public class MainActivity extends BaseActivity
     private HashMap<String, Fragment> viewMap;
     private FragmentManager manager;
     private Toolbar toolbar;
+    private MenuItem menuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,7 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-//        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -94,13 +95,16 @@ public class MainActivity extends BaseActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        menuItem = menu.findItem(R.id.action_refresh_map);
+//        menuItem.setVisible(false);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_refresh_map) {
+            MapFragment.newInstance().refreshMap();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -127,13 +131,15 @@ public class MainActivity extends BaseActivity
             AppManager.getAppManager().finishAllActivity();
         }
 
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
     private void loadView(String title, String key) {
         toolbar.setTitle(title);
+        if (menuItem != null) {
+            menuItem.setVisible(false);
+        }
         Fragment currentFragment = viewMap.get(key);
         hideAllFragment();
         FragmentTransaction transaction = manager.beginTransaction();
@@ -142,6 +148,7 @@ public class MainActivity extends BaseActivity
                 currentFragment = new CheckPlanFragment();
             } else if (key.equals("third")) {
                 currentFragment = MapFragment.newInstance();
+                menuItem.setVisible(true);
             } else if (key.equals("forth")) {
                 currentFragment = new UpLoadFragment();
             } else {
@@ -178,5 +185,9 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    public void showLocationButton(boolean is) {
+        menuItem.setVisible(is);
     }
 }

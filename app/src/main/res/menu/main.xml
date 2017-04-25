@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+    <group android:id="@+id/menu_map">
+        <item
+            android:id="@+id/action_search"
+            android:title="@string/action_settings"
+            android:orderInCategory="50"
+            android:actionViewClass="android.support.v7.widget.SearchView"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/action_refresh_map"
+            android:icon="@drawable/vector_drawable_refresh"
+            android:orderInCategory="50"
+            android:title="@string/action_settings"
+            app:showAsAction="ifRoom|withText" />
+    </group>
 </menu>

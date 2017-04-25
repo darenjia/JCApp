@@ -52,7 +52,7 @@ dependencies {
     //导航
     //compile 'com.amap.api:navi-3dmap:latest.integration'
     //搜索
-    //compile 'com.amap.api:search:latest.integration'
+    compile 'com.amap.api:search:latest.integration'
     //定位
     compile 'com.amap.api:location:latest.integration'
 }
