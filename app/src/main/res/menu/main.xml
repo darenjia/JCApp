@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <group android:id="@+id/menu_map">
         <item
-            android:id="@+id/action_search"
-            android:title="@string/action_settings"
-            android:orderInCategory="50"
-            android:actionViewClass="android.support.v7.widget.SearchView"
-            app:showAsAction="ifRoom" />
-        <item
             android:id="@+id/action_refresh_map"
             android:icon="@drawable/vector_drawable_refresh"
             android:orderInCategory="50"

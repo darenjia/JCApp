@@ -4,12 +4,31 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
@@ -31,6 +50,16 @@ import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
+import com.eugene.fithealth.LogQuickSearchData.LogQuickSearch;
+import com.eugene.fithealth.LogQuickSearchData.LogQuickSearchAdapter;
+import com.eugene.fithealth.SearchListView.Item;
+import com.eugene.fithealth.SearchListView.SearchAdapter;
+import com.eugene.fithealth.Utilities.InitiateSearch;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by DengShuai on 2017/4/24.
@@ -162,7 +191,7 @@ public class MapFragment extends MainFragment implements LocationSource {
     protected View initView(LayoutInflater inflater) {
         View view = inflater.inflate(R.layout.map_fragment_view, null);
         mapView = (MapView) view.findViewById(R.id.fragment_mapview);
-
+        initSearchView(view);
         if (aMap == null) {
             aMap = mapView.getMap();
             aMap.setLocationSource(this);// 设置定位监听
@@ -301,5 +330,244 @@ public class MapFragment extends MainFragment implements LocationSource {
             }
         });
         poiSearch.searchPOIAsyn();
+    }
+
+    //搜索框设置
+    private InitiateSearch initiateSearch;
+    private View line_divider, toolbar_shadow;
+    private RelativeLayout view_search;
+    private CardView card_search;
+    private ImageView image_search_back, clearSearch;
+    private EditText edit_text_search;
+    private ListView listView, listContainer;
+    private LogQuickSearchAdapter logQuickSearchAdapter;
+    private Set<String> set;
+    private ArrayList<Item> mItem;
+    private SearchAdapter searchAdapter;
+    private ProgressBar marker_progress;
+    private AsyncTask<String, String, String> mAsyncTask;
+    private ImageButton imageButton;
+
+    private void initSearchView(View view) {
+        initiateSearch = new InitiateSearch();
+        imageButton = (ImageButton) view.findViewById(R.id.search_button);
+        view_search = (RelativeLayout) view.findViewById(R.id.view_search);
+        line_divider = view.findViewById(R.id.line_divider);
+        toolbar_shadow = view.findViewById(R.id.toolbar_shadow);
+        edit_text_search = (EditText) view.findViewById(R.id.edit_text_search);
+        card_search = (CardView) view.findViewById(R.id.card_search);
+        image_search_back = (ImageView) view.findViewById(R.id.image_search_back);
+        clearSearch = (ImageView) view.findViewById(R.id.clearSearch);
+        listView = (ListView) view.findViewById(R.id.listView);
+        listContainer = (ListView) view.findViewById(R.id.listContainer);
+        marker_progress = (ProgressBar) view.findViewById(R.id.marker_progress);
+        marker_progress.getIndeterminateDrawable().setColorFilter(Color.parseColor("#FFFFFF"),//Pink color
+                android.graphics.PorterDuff.Mode.MULTIPLY);
+        logQuickSearchAdapter = new LogQuickSearchAdapter(context, 0, LogQuickSearch.all());
+        mItem = new ArrayList<>();
+        searchAdapter = new SearchAdapter(context, mItem);
+        listView.setAdapter(logQuickSearchAdapter);
+        listContainer.setAdapter(searchAdapter);
+        set = new HashSet<>();
+        SetTypeFace();
+        InitiateToolbarTabs();
+        InitiateSearch();
+        HandleSearch();
+        IsAdapterEmpty();
+    }
+
+    private void InitiateToolbarTabs() {
+    }
+
+    private void InitiateSearch() {
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IsAdapterEmpty();
+                initiateSearch.handleToolBar(context, card_search, view_search, listView, edit_text_search, line_divider);
+            }
+        });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                LogQuickSearch logQuickSearch = logQuickSearchAdapter.getItem(position);
+                edit_text_search.setText(logQuickSearch.getName());
+                listView.setVisibility(View.GONE);
+                ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(edit_text_search.getWindowToken(), 0);
+                toolbar_shadow.setVisibility(View.GONE);
+                search(logQuickSearch.getName(), 0);
+            }
+        });
+        edit_text_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (edit_text_search.getText().toString().length() == 0) {
+                    logQuickSearchAdapter = new LogQuickSearchAdapter(context, 0, LogQuickSearch.all());
+                    listView.setAdapter(logQuickSearchAdapter);
+                    clearSearch.setImageResource(com.eugene.fithealth.R.mipmap.ic_keyboard_voice);
+                    IsAdapterEmpty();
+                } else {
+                    logQuickSearchAdapter = new LogQuickSearchAdapter(context, 0, LogQuickSearch.FilterByName(edit_text_search.getText().toString()));
+                    listView.setAdapter(logQuickSearchAdapter);
+                    clearSearch.setImageResource(com.eugene.fithealth.R.mipmap.ic_close);
+                    IsAdapterEmpty();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        clearSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (edit_text_search.getText().toString().length() == 0) {
+
+                } else {
+                    mAsyncTask.cancel(true);
+                    edit_text_search.setText("");
+                    listView.setVisibility(View.VISIBLE);
+                    clearItems();
+                    ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                    IsAdapterEmpty();
+                }
+            }
+        });
+    }
+
+
+    private void UpdateQuickSearch(String item) {
+        for (int i = 0; i < logQuickSearchAdapter.getCount(); i++) {
+            LogQuickSearch ls = logQuickSearchAdapter.getItem(i);
+            String name = ls.getName();
+            set.add(name.toUpperCase());
+        }
+        if (set.add(item.toUpperCase())) {
+            LogQuickSearch recentLog = new LogQuickSearch();
+            recentLog.setName(item);
+            recentLog.setDate(new Date());
+            recentLog.save();
+            logQuickSearchAdapter.addLog(recentLog);
+            logQuickSearchAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void HandleSearch() {
+        image_search_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initiateSearch.handleToolBar(context, card_search, view_search, listView, edit_text_search, line_divider);
+                listContainer.setVisibility(View.GONE);
+                toolbar_shadow.setVisibility(View.VISIBLE);
+                clearItems();
+            }
+        });
+        edit_text_search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                LogUtil.logI("action:" + actionId);
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    if (edit_text_search.getText().toString().trim().length() > 0) {
+                        clearItems();
+                        ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(edit_text_search.getWindowToken(), 0);
+                        UpdateQuickSearch(edit_text_search.getText().toString());
+                        listView.setVisibility(View.GONE);
+                        search(edit_text_search.getText().toString(), 0);
+                        toolbar_shadow.setVisibility(View.GONE);
+                    }
+                    return true;
+                } else if (actionId == EditorInfo.IME_ACTION_NONE) {
+
+                }
+                return false;
+            }
+        });
+    }
+
+    private void IsAdapterEmpty() {
+        if (logQuickSearchAdapter.getCount() == 0) {
+            line_divider.setVisibility(View.GONE);
+        } else {
+            line_divider.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void SetTypeFace() {
+        Typeface roboto_regular = Typeface.createFromAsset(context.getAssets(), "Roboto-Regular.ttf");
+        edit_text_search.setTypeface(roboto_regular);
+    }
+
+    /**
+     * Handle FatSecret Search
+     */
+
+    private void clearItems() {
+        listContainer.setVisibility(View.GONE);
+        mItem.clear();
+        searchAdapter.notifyDataSetChanged();
+    }
+
+
+    private void search(final String item, final int page_num) {
+        mAsyncTask = new AsyncTask<String, String, String>() {
+            @Override
+            protected void onPreExecute() {
+                marker_progress.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            protected String doInBackground(String... arg0) {
+
+                return "";
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+                marker_progress.setVisibility(View.GONE);
+                searchAdapter.notifyDataSetChanged();
+                if (mItem.size() > 0) {
+                    toolbar_shadow.setVisibility(View.GONE);
+                    TranslateAnimation slide = new TranslateAnimation(0, 0, listContainer.getHeight(), 0);
+                    slide.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                            listContainer.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
+                    slide.setDuration(300);
+                    listContainer.startAnimation(slide);
+                    listContainer.setVerticalScrollbarPosition(0);
+                    listContainer.setSelection(0);
+                } else {
+                    toolbar_shadow.setVisibility(View.VISIBLE);
+                    listContainer.setVisibility(View.GONE);
+                }
+
+            }
+
+            @Override
+            protected void onCancelled() {
+                marker_progress.setVisibility(View.GONE);
+            }
+
+        };
+        mAsyncTask.execute();
     }
 }

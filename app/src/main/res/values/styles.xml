@@ -57,7 +57,7 @@
     </style>
 
     <style name="expandablelistview_group">
-        <item name="android:background">#e0e0e0</item>
+        <item name="android:background">#eaf5f5</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">#504f4f</item>
         <item name="android:padding">12dp</item>
