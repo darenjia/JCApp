@@ -1,10 +1,10 @@
 package com.bokun.bkjcb.on_siteinspection.Fragment;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.ListPopupWindow;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -17,7 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -49,30 +49,27 @@ import java.util.Set;
  */
 
 public class TestFragment extends MainFragment implements PoiSearch.OnPoiSearchListener {
-    private Resources res;
-    private InitiateSearch initiateSearch;
     private View line_divider, toolbar_shadow;
     private RelativeLayout view_search;
     private CardView card_search;
     private ImageView image_search_back, clearSearch;
     private AutoCompleteTextView edit_text_search;
-    private ListView listView, listContainer;
-    private LogQuickSearchAdapter logQuickSearchAdapter;
-    private Set<String> set;
+    private ListView listView, listContainer;//搜索结果列表
+    private LogQuickSearchAdapter logQuickSearchAdapter;//搜索历史适配器
+    private Set<String> set;//判断有没有重复的搜索历史，重复的话不再保存
     private ArrayList<String> mItem;
     private ProgressBar marker_progress;
-    private ImageButton imageButton;
     private PoiResult poiResult; // poi返回的结果
     private int currentPage = 0;// 当前页面，从0开始计数
     private PoiSearch.Query query;// Poi查询条件类
     private PoiSearch poiSearch;// POI搜索
     private StringAdapter resultAdapter;
+    private Button location;
+    private ListPopupWindow listPopupWindow;
 
     @Override
     protected View initView(LayoutInflater inflater) {
         View view = inflater.inflate(R.layout.test_view, null);
-        initiateSearch = new InitiateSearch();
-        imageButton = (ImageButton) view.findViewById(R.id.search_button);
         view_search = (RelativeLayout) view.findViewById(R.id.view_search);
         line_divider = view.findViewById(R.id.line_divider);
         toolbar_shadow = view.findViewById(R.id.toolbar_shadow);
@@ -83,33 +80,37 @@ public class TestFragment extends MainFragment implements PoiSearch.OnPoiSearchL
         listView = (ListView) view.findViewById(R.id.listView);
         listContainer = (ListView) view.findViewById(R.id.listContainer);
         marker_progress = (ProgressBar) view.findViewById(R.id.marker_progress);
+        location = (Button) view.findViewById(R.id.location);
         marker_progress.getIndeterminateDrawable().setColorFilter(Color.parseColor("#FFFFFF"),//Pink color
                 android.graphics.PorterDuff.Mode.MULTIPLY);
+        set = new HashSet<>();
+        SetTypeFace();
         logQuickSearchAdapter = new LogQuickSearchAdapter(context, 0, LogQuickSearch.all());
         mItem = new ArrayList<>();
         listView.setAdapter(logQuickSearchAdapter);
         resultAdapter = new StringAdapter(mItem);
         listContainer.setAdapter(resultAdapter);
-        set = new HashSet<>();
-        SetTypeFace();
-        InitiateToolbarTabs();
+        listPopupWindow = new ListPopupWindow(getContext());
+        listPopupWindow.setAdapter(resultAdapter);
+        listPopupWindow.setAnchorView(location);
+        listPopupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        listPopupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        listPopupWindow.setModal(true);
         InitiateSearch();
         HandleSearch();
         IsAdapterEmpty();
         return view;
     }
 
-    private void InitiateToolbarTabs() {
-    }
-
     private void InitiateSearch() {
-        imageButton.setOnClickListener(new View.OnClickListener() {
+        /*imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                location.setVisibility(View.GONE);
                 IsAdapterEmpty();
-                initiateSearch.handleToolBar(context, card_search, view_search, listView, edit_text_search, line_divider);
+                InitiateSearch.handleToolBar(context, card_search, view_search, listView, edit_text_search, line_divider);
             }
-        });
+        });*/
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -183,6 +184,30 @@ public class TestFragment extends MainFragment implements PoiSearch.OnPoiSearchL
                 }
             }
         });
+        listContainer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (location.getVisibility() != View.VISIBLE) {
+                    location.setVisibility(View.VISIBLE);
+                }
+                location.setText(mItem.get(position));
+                InitiateSearch.handleToolBar(context, card_search, view_search, listView, edit_text_search, line_divider);
+                listContainer.setVisibility(View.GONE);
+            }
+        });
+        location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listPopupWindow.show();
+            }
+        });
+        listPopupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                location.setText(mItem.get(position));
+                listPopupWindow.dismiss();
+            }
+        });
     }
 
 
@@ -206,7 +231,7 @@ public class TestFragment extends MainFragment implements PoiSearch.OnPoiSearchL
         image_search_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initiateSearch.handleToolBar(context, card_search, view_search, listView, edit_text_search, line_divider);
+                InitiateSearch.handleToolBar(context, card_search, view_search, listView, edit_text_search, line_divider);
                 listContainer.setVisibility(View.GONE);
                 toolbar_shadow.setVisibility(View.VISIBLE);
                 clearItems();
@@ -232,6 +257,7 @@ public class TestFragment extends MainFragment implements PoiSearch.OnPoiSearchL
                 return false;
             }
         });
+
     }
 
     private void IsAdapterEmpty() {
@@ -342,7 +368,7 @@ public class TestFragment extends MainFragment implements PoiSearch.OnPoiSearchL
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            TextView textView = new TextView(getContext());
+            TextView textView = (TextView) View.inflate(getContext(), R.layout.expandable_child_item_view, null);
             textView.setText(list.get(position));
             return textView;
         }

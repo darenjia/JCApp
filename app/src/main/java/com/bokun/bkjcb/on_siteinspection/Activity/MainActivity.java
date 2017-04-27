@@ -38,6 +38,7 @@ public class MainActivity extends BaseActivity
     private FragmentManager manager;
     private Toolbar toolbar;
     private MenuItem menuItem;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +87,8 @@ public class MainActivity extends BaseActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (!drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.openDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -96,7 +99,9 @@ public class MainActivity extends BaseActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         menuItem = menu.findItem(R.id.action_refresh_map);
+        this.menu = menu;
 //        menuItem.setVisible(false);
+        menu.setGroupVisible(R.id.menu_map, false);
         return true;
     }
 
@@ -105,6 +110,9 @@ public class MainActivity extends BaseActivity
         int id = item.getItemId();
         if (id == R.id.action_refresh_map) {
             MapFragment.newInstance().refreshMap();
+            return true;
+        } else if (id == R.id.action_search_map) {
+            MapFragment.newInstance().startSearch();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -137,8 +145,9 @@ public class MainActivity extends BaseActivity
 
     private void loadView(String title, String key) {
         toolbar.setTitle(title);
-        if (menuItem != null) {
-            menuItem.setVisible(false);
+        if (menu != null) {
+//            menuItem.setVisible(false);
+            menu.setGroupVisible(R.id.menu_map, false);
         }
         Fragment currentFragment = viewMap.get(key);
         hideAllFragment();
@@ -148,7 +157,8 @@ public class MainActivity extends BaseActivity
                 currentFragment = new CheckPlanFragment();
             } else if (key.equals("third")) {
                 currentFragment = MapFragment.newInstance();
-                menuItem.setVisible(true);
+//                menuItem.setVisible(true);
+                menu.setGroupVisible(R.id.menu_map, true);
             } else if (key.equals("forth")) {
                 currentFragment = new UpLoadFragment();
             } else {

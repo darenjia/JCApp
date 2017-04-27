@@ -4,12 +4,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.ListPopupWindow;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -17,13 +18,13 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -35,15 +36,25 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.amap.api.maps.CameraUpdateFactory;
-import com.amap.api.maps.LocationSource;
-import com.amap.api.maps.MapView;
-import com.amap.api.maps.UiSettings;
-import com.amap.api.maps.model.BitmapDescriptorFactory;
-import com.amap.api.maps.model.LatLng;
-import com.amap.api.maps.model.MarkerOptions;
-import com.amap.api.maps.model.MyLocationStyle;
+import com.amap.api.maps2d.AMap;
+import com.amap.api.maps2d.CameraUpdateFactory;
+import com.amap.api.maps2d.LocationSource;
+import com.amap.api.maps2d.MapView;
+import com.amap.api.maps2d.UiSettings;
+import com.amap.api.maps2d.model.BitmapDescriptor;
+import com.amap.api.maps2d.model.BitmapDescriptorFactory;
+import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.maps2d.model.LatLngBounds;
+import com.amap.api.maps2d.model.Marker;
+import com.amap.api.maps2d.model.MarkerOptions;
+import com.amap.api.maps2d.model.MyLocationStyle;
+import com.amap.api.services.core.AMapException;
+import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
+import com.amap.api.services.core.SuggestionCity;
+import com.amap.api.services.help.Inputtips;
+import com.amap.api.services.help.InputtipsQuery;
+import com.amap.api.services.help.Tip;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.bokun.bkjcb.on_siteinspection.R;
@@ -52,20 +63,20 @@ import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 import com.eugene.fithealth.LogQuickSearchData.LogQuickSearch;
 import com.eugene.fithealth.LogQuickSearchData.LogQuickSearchAdapter;
-import com.eugene.fithealth.SearchListView.Item;
-import com.eugene.fithealth.SearchListView.SearchAdapter;
 import com.eugene.fithealth.Utilities.InitiateSearch;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
  * Created by DengShuai on 2017/4/24.
  */
 
-public class MapFragment extends MainFragment implements LocationSource {
+public class MapFragment extends MainFragment implements LocationSource, PoiSearch.OnPoiSearchListener,
+        AMap.OnMarkerClickListener, AMap.InfoWindowAdapter, AMap.OnMapClickListener {
     //声明AMapLocationClient类对象
     public AMapLocationClient mLocationClient = null;
     //声明定位回调监听器
@@ -73,11 +84,12 @@ public class MapFragment extends MainFragment implements LocationSource {
     //声明AMapLocationClientOption对象
     public AMapLocationClientOption mLocationOption = null;
     private MapView mapView;
-    private com.amap.api.maps.AMap aMap;
+    private com.amap.api.maps2d.AMap aMap;
     private static MapFragment fragment;
     private OnLocationChangedListener mListener = null;//定位监听器
     private NetWorkChangeReciver reciver;
     private String cityCode;
+    private myPoiOverlay poiOverlay;
 
     public static MapFragment newInstance() {
         if (fragment == null) {
@@ -111,11 +123,10 @@ public class MapFragment extends MainFragment implements LocationSource {
         // 是否可触发定位并显示定位层
         aMap.setMyLocationEnabled(true);
         MyLocationStyle myLocationStyle = new MyLocationStyle();
-        /*myLocationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.vector_drawable_location));
-        aMap.setMyLocationStyle(myLocationStyle);*/
-
-        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);//连续定位、且将视角移动到地图中心点，定位点依照设备方向旋转，并且会跟随设备移动。（1秒1次定位）如果不设置myLocationType，默认也会执行此种模式。
-        myLocationStyle.interval(2000); //设置连续定位模式下的定位间隔，只在连续定位模式下生效，单次定位模式下不会生效。单位为毫秒。
+        myLocationStyle.myLocationIcon(BitmapDescriptorFactory
+                .fromResource(R.drawable.location_marker));// 设置小蓝点的图标
+        myLocationStyle.strokeColor(Color.argb(0, 0, 0, 0));// 设置圆形的边框颜色
+        myLocationStyle.radiusFillColor(Color.argb(0, 0, 0, 0));// 设置圆形的填充颜色
         aMap.setMyLocationStyle(myLocationStyle);//设置定位蓝点的Style
         //aMap.getUiSettings().setMyLocationButtonEnabled(true);设置默认定位按钮是否显示，非必需设置。
         myLocationStyle.radiusFillColor(android.R.color.transparent);
@@ -197,6 +208,9 @@ public class MapFragment extends MainFragment implements LocationSource {
             aMap.setLocationSource(this);// 设置定位监听
             aMap.getUiSettings().setMyLocationButtonEnabled(true);// 设置默认定位按钮是否显示
             aMap.setMyLocationEnabled(true);// 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
+            aMap.setOnMarkerClickListener(this);// 添加点击marker监听事件
+            aMap.setInfoWindowAdapter(this);// 添加显示infowindow监听事件
+            aMap.setOnMapClickListener(this);
         }
         return view;
     }
@@ -260,25 +274,6 @@ public class MapFragment extends MainFragment implements LocationSource {
         mListener = null;
     }
 
-    //自定义一个图钉，并且设置图标，当我们点击图钉时，显示设置的信息
-    private MarkerOptions getMarkerOptions(AMapLocation amapLocation) {
-        //设置图钉选项
-        MarkerOptions options = new MarkerOptions();
-        //图标
-        options.icon(BitmapDescriptorFactory.fromResource(R.drawable.vector_drawable_location));
-        //位置
-        options.position(new LatLng(amapLocation.getLatitude(), amapLocation.getLongitude()));
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(amapLocation.getCountry() + "" + amapLocation.getProvince() + "" + amapLocation.getCity() + "" + amapLocation.getDistrict() + "" + amapLocation.getStreet() + "" + amapLocation.getStreetNum());
-        //标题
-        options.title(buffer.toString());
-        //子标题
-        //options.snippet("这里好火");
-        //设置多少帧刷新一次图片资源
-        options.period(60);
-        return options;
-    }
-
     private void setBroadCastReciver() {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
@@ -294,8 +289,85 @@ public class MapFragment extends MainFragment implements LocationSource {
             }
             mLocationClient.startLocation();
         }
+    }
 
-//        initData();
+    public void startSearch() {
+        location.setVisibility(View.GONE);
+        IsAdapterEmpty();
+        InitiateSearch.handleToolBar(context, card_search, view_search, listView, edit_text_search, line_divider);
+    }
+
+    private int[] markers = {R.drawable.poi_marker_1,
+            R.drawable.poi_marker_2,
+            R.drawable.poi_marker_3,
+            R.drawable.poi_marker_4,
+            R.drawable.poi_marker_5,
+            R.drawable.poi_marker_6,
+            R.drawable.poi_marker_7,
+            R.drawable.poi_marker_8,
+            R.drawable.poi_marker_9,
+            R.drawable.poi_marker_10
+    };
+
+    private void whetherToShowDetailInfo(boolean isToShow) {
+        if (isToShow) {
+            mPoiDetail.setVisibility(View.VISIBLE);
+
+        } else {
+            mPoiDetail.setVisibility(View.GONE);
+
+        }
+    }
+
+    @Override
+    public View getInfoWindow(Marker marker) {
+        LogUtil.logI("MarkerInfoWindow" + marker.getSnippet());
+        return null;
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        LogUtil.logI("MarkerInfoContent" + marker.getSnippet());
+        return null;
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        LogUtil.logI("ShowMarkerInfo");
+        if (marker.getObject() != null) {
+            whetherToShowDetailInfo(true);
+            try {
+                PoiItem mCurrentPoi = (PoiItem) marker.getObject();
+                location.setText(mCurrentPoi.getTitle());
+                if (mlastMarker == null) {
+                    mlastMarker = marker;
+                } else {
+                    // 将之前被点击的marker置为原来的状态
+                    resetlastmarker();
+                    mlastMarker = marker;
+                }
+                detailMarker = marker;
+                detailMarker.setIcon(BitmapDescriptorFactory
+                        .fromBitmap(BitmapFactory.decodeResource(
+                                getResources(),
+                                R.drawable.poi_marker_pressed)));
+                setPoiItemDisplayContent(mCurrentPoi);
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+        } else {
+            whetherToShowDetailInfo(false);
+            resetlastmarker();
+        }
+        return false;
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        whetherToShowDetailInfo(false);
+        if (mlastMarker != null) {
+            resetlastmarker();
+        }
     }
 
     class NetWorkChangeReciver extends BroadcastReceiver {
@@ -306,87 +378,65 @@ public class MapFragment extends MainFragment implements LocationSource {
         }
     }
 
-    public void setSearchView(String keyWord) {
-        PoiSearch.Query query = new PoiSearch.Query(keyWord, "", cityCode);
-        //keyWord表示搜索字符串，
-        //第二个参数表示POI搜索类型，二者选填其一，
-        //POI搜索类型共分为以下20种：汽车服务|汽车销售|
-        //汽车维修|摩托车服务|餐饮服务|购物服务|生活服务|体育休闲服务|医疗保健服务|
-        //住宿服务|风景名胜|商务住宅|政府机构及社会团体|科教文化服务|交通设施服务|
-        //金融保险服务|公司企业|道路附属设施|地名地址信息|公共设施
-        //cityCode表示POI搜索区域，可以是城市编码也可以是城市名称，也可以传空字符串，空字符串代表全国在全国范围内进行搜索
-        query.setPageSize(10);// 设置每页最多返回多少条poiitem
-        query.setPageNum(0);//设置查询页码
-        PoiSearch poiSearch = new PoiSearch(getContext(), query);
-        poiSearch.setOnPoiSearchListener(new PoiSearch.OnPoiSearchListener() {
-            @Override
-            public void onPoiSearched(PoiResult poiResult, int i) {
-
-            }
-
-            @Override
-            public void onPoiItemSearched(PoiItem poiItem, int i) {
-
-            }
-        });
-        poiSearch.searchPOIAsyn();
-    }
-
     //搜索框设置
-    private InitiateSearch initiateSearch;
     private View line_divider, toolbar_shadow;
-    private RelativeLayout view_search;
+    private RelativeLayout view_search, mPoiDetail;
     private CardView card_search;
     private ImageView image_search_back, clearSearch;
-    private EditText edit_text_search;
-    private ListView listView, listContainer;
-    private LogQuickSearchAdapter logQuickSearchAdapter;
-    private Set<String> set;
-    private ArrayList<Item> mItem;
-    private SearchAdapter searchAdapter;
+    private AutoCompleteTextView edit_text_search;
+    private ListView listView, listContainer;//搜索结果列表
+    private LogQuickSearchAdapter logQuickSearchAdapter;//搜索历史适配器
+    private Set<String> set;//判断有没有重复的搜索历史，重复的话不再保存
+    private ArrayList<String> mItem;
+    private ArrayList<PoiItem> poiItems;
     private ProgressBar marker_progress;
-    private AsyncTask<String, String, String> mAsyncTask;
-    private ImageButton imageButton;
+    private PoiResult poiResult; // poi返回的结果
+    private int currentPage = 0;// 当前页面，从0开始计数
+    private PoiSearch.Query query;// Poi查询条件类
+    private PoiSearch poiSearch;// POI搜索
+    private StringAdapter resultAdapter;
+    private Button location;
+    private ListPopupWindow listPopupWindow;
+    private TextView mPoiName, mPoiAddress;
+    private Marker mlastMarker, detailMarker;
 
-    private void initSearchView(View view) {
-        initiateSearch = new InitiateSearch();
-        imageButton = (ImageButton) view.findViewById(R.id.search_button);
+    private View initSearchView(View view) {
         view_search = (RelativeLayout) view.findViewById(R.id.view_search);
         line_divider = view.findViewById(R.id.line_divider);
         toolbar_shadow = view.findViewById(R.id.toolbar_shadow);
-        edit_text_search = (EditText) view.findViewById(R.id.edit_text_search);
+        edit_text_search = (AutoCompleteTextView) view.findViewById(R.id.edit_text_search);
         card_search = (CardView) view.findViewById(R.id.card_search);
         image_search_back = (ImageView) view.findViewById(R.id.image_search_back);
         clearSearch = (ImageView) view.findViewById(R.id.clearSearch);
         listView = (ListView) view.findViewById(R.id.listView);
         listContainer = (ListView) view.findViewById(R.id.listContainer);
         marker_progress = (ProgressBar) view.findViewById(R.id.marker_progress);
+        location = (Button) view.findViewById(R.id.location);
+        mPoiDetail = (RelativeLayout) view.findViewById(R.id.poi_detail);
+        mPoiName = (TextView) view.findViewById(R.id.poi_name);
+        mPoiAddress = (TextView) view.findViewById(R.id.poi_address);
         marker_progress.getIndeterminateDrawable().setColorFilter(Color.parseColor("#FFFFFF"),//Pink color
                 android.graphics.PorterDuff.Mode.MULTIPLY);
-        logQuickSearchAdapter = new LogQuickSearchAdapter(context, 0, LogQuickSearch.all());
-        mItem = new ArrayList<>();
-        searchAdapter = new SearchAdapter(context, mItem);
-        listView.setAdapter(logQuickSearchAdapter);
-        listContainer.setAdapter(searchAdapter);
         set = new HashSet<>();
         SetTypeFace();
-        InitiateToolbarTabs();
+        logQuickSearchAdapter = new LogQuickSearchAdapter(context, 0, LogQuickSearch.all());
+        mItem = new ArrayList<>();
+        listView.setAdapter(logQuickSearchAdapter);
+        resultAdapter = new StringAdapter(mItem);
+        listContainer.setAdapter(resultAdapter);
+        listPopupWindow = new ListPopupWindow(getContext());
+        listPopupWindow.setAdapter(resultAdapter);
+        listPopupWindow.setAnchorView(location);
+        listPopupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        listPopupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        listPopupWindow.setModal(true);
         InitiateSearch();
         HandleSearch();
         IsAdapterEmpty();
-    }
-
-    private void InitiateToolbarTabs() {
+        return view;
     }
 
     private void InitiateSearch() {
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IsAdapterEmpty();
-                initiateSearch.handleToolBar(context, card_search, view_search, listView, edit_text_search, line_divider);
-            }
-        });
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -406,16 +456,36 @@ public class MapFragment extends MainFragment implements LocationSource {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (edit_text_search.getText().toString().length() == 0) {
+                String newText = edit_text_search.getText().toString();
+                if (newText.length() == 0) {
                     logQuickSearchAdapter = new LogQuickSearchAdapter(context, 0, LogQuickSearch.all());
                     listView.setAdapter(logQuickSearchAdapter);
                     clearSearch.setImageResource(com.eugene.fithealth.R.mipmap.ic_keyboard_voice);
                     IsAdapterEmpty();
                 } else {
-                    logQuickSearchAdapter = new LogQuickSearchAdapter(context, 0, LogQuickSearch.FilterByName(edit_text_search.getText().toString()));
-                    listView.setAdapter(logQuickSearchAdapter);
+                    /*logQuickSearchAdapter = new LogQuickSearchAdapter(context, 0, LogQuickSearch.FilterByName(edit_text_search.getText().toString()));
+                    listView.setAdapter(logQuickSearchAdapter);*/
                     clearSearch.setImageResource(com.eugene.fithealth.R.mipmap.ic_close);
                     IsAdapterEmpty();
+                    InputtipsQuery inputquery = new InputtipsQuery(newText, "上海");
+                    Inputtips inputTips = new Inputtips(getContext(), inputquery);
+                    inputTips.setInputtipsListener(new Inputtips.InputtipsListener() {
+                        @Override
+                        public void onGetInputtips(List<Tip> list, int rCode) {
+                            if (rCode == AMapException.CODE_AMAP_SUCCESS) {// 正确返回
+                                List<String> listString = new ArrayList<>();
+                                for (int i = 0; i < list.size(); i++) {
+                                    listString.add(list.get(i).getName());
+                                }
+                                ArrayAdapter<String> aAdapter = new ArrayAdapter<>(
+                                        getContext(),
+                                        R.layout.expandable_child_item_view, listString);
+                                edit_text_search.setAdapter(aAdapter);
+                            } else {
+                            }
+                        }
+                    });
+                    inputTips.requestInputtipsAsyn();
                 }
             }
 
@@ -430,7 +500,6 @@ public class MapFragment extends MainFragment implements LocationSource {
                 if (edit_text_search.getText().toString().length() == 0) {
 
                 } else {
-                    mAsyncTask.cancel(true);
                     edit_text_search.setText("");
                     listView.setVisibility(View.VISIBLE);
                     clearItems();
@@ -439,6 +508,38 @@ public class MapFragment extends MainFragment implements LocationSource {
                 }
             }
         });
+        listContainer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (location.getVisibility() != View.VISIBLE) {
+                    location.setVisibility(View.VISIBLE);
+                }
+                InitiateSearch.handleToolBar(context, card_search, view_search, listView, edit_text_search, line_divider);
+                listContainer.setVisibility(View.GONE);
+                moveToTarget(position);
+            }
+        });
+        location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listPopupWindow.show();
+            }
+        });
+        listPopupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                moveToTarget(position);
+                listPopupWindow.dismiss();
+            }
+        });
+    }
+
+    private void moveToTarget(int position) {
+        location.setText(mItem.get(position));
+        PoiItem poiItem = poiItems.get(position);
+        LatLonPoint latLonPoint = poiItem.getLatLonPoint();
+        aMap.moveCamera(CameraUpdateFactory.zoomTo(17));
+        aMap.moveCamera(CameraUpdateFactory.changeLatLng(new LatLng(latLonPoint.getLatitude(), latLonPoint.getLongitude())));
     }
 
 
@@ -462,7 +563,7 @@ public class MapFragment extends MainFragment implements LocationSource {
         image_search_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initiateSearch.handleToolBar(context, card_search, view_search, listView, edit_text_search, line_divider);
+                InitiateSearch.handleToolBar(context, card_search, view_search, listView, edit_text_search, line_divider);
                 listContainer.setVisibility(View.GONE);
                 toolbar_shadow.setVisibility(View.VISIBLE);
                 clearItems();
@@ -488,6 +589,7 @@ public class MapFragment extends MainFragment implements LocationSource {
                 return false;
             }
         });
+
     }
 
     private void IsAdapterEmpty() {
@@ -498,76 +600,283 @@ public class MapFragment extends MainFragment implements LocationSource {
         }
     }
 
+    /**
+     * 设置字体
+     **/
     private void SetTypeFace() {
         Typeface roboto_regular = Typeface.createFromAsset(context.getAssets(), "Roboto-Regular.ttf");
         edit_text_search.setTypeface(roboto_regular);
     }
 
     /**
-     * Handle FatSecret Search
+     * 情况搜索历史
      */
 
     private void clearItems() {
         listContainer.setVisibility(View.GONE);
         mItem.clear();
-        searchAdapter.notifyDataSetChanged();
+        resultAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Handle  Search
+     */
+    private void search(String item, int page_num) {
+        marker_progress.setVisibility(View.VISIBLE);
+        currentPage = 0;
+        // 第一个参数表示搜索字符串，第二个参数表示poi搜索类型，第三个参数表示poi搜索区域（空字符串代表全国）
+        query = new PoiSearch.Query(item, "", "上海");
+        query.setPageSize(10);// 设置每页最多返回多少条poiitem
+        query.setPageNum(currentPage);// 设置查第一页
+        query.setCityLimit(true);
 
-    private void search(final String item, final int page_num) {
-        mAsyncTask = new AsyncTask<String, String, String>() {
-            @Override
-            protected void onPreExecute() {
-                marker_progress.setVisibility(View.VISIBLE);
-            }
+        poiSearch = new PoiSearch(getContext(), query);
+        poiSearch.setOnPoiSearchListener(this);
+        poiSearch.searchPOIAsyn();
+    }
 
-            @Override
-            protected String doInBackground(String... arg0) {
+    /**
+     * 搜索成功的回调
+     */
+    @Override
+    public void onPoiSearched(PoiResult result, int rCode) {
+        if (rCode == AMapException.CODE_AMAP_SUCCESS) {
+            if (result != null && result.getQuery() != null) {// 搜索poi的结果
+                if (result.getQuery().equals(query)) {// 是否是同一条
+                    poiResult = result;
+                    // 取得搜索到的poiitems有多少页
+                    poiItems = poiResult.getPois();// 取得第一页的poiitem数据，页数从数字0开始
+                    List<SuggestionCity> suggestionCities = poiResult
+                            .getSearchSuggestionCitys();// 当搜索不到poiitem数据时，会返回含有搜索关键字的城市信息
 
-                return "";
-            }
-
-            @Override
-            protected void onPostExecute(String result) {
-                super.onPostExecute(result);
-                marker_progress.setVisibility(View.GONE);
-                searchAdapter.notifyDataSetChanged();
-                if (mItem.size() > 0) {
-                    toolbar_shadow.setVisibility(View.GONE);
-                    TranslateAnimation slide = new TranslateAnimation(0, 0, listContainer.getHeight(), 0);
-                    slide.setAnimationListener(new Animation.AnimationListener() {
-                        @Override
-                        public void onAnimationStart(Animation animation) {
-                            listContainer.setVisibility(View.VISIBLE);
+                    if (poiItems != null && poiItems.size() > 0) {
+                        LogUtil.logI("mItem" + mItem);
+                        for (int i = 0; i < poiItems.size(); i++) {
+                            PoiItem poiItem = poiItems.get(i);
+                            mItem.add(poiItem.getTitle());
                         }
-
-                        @Override
-                        public void onAnimationEnd(Animation animation) {
-
+                        //清除POI信息显示
+                        whetherToShowDetailInfo(false);
+                        //并还原点击marker样式
+                        if (mlastMarker != null) {
+                            resetlastmarker();
                         }
-
-                        @Override
-                        public void onAnimationRepeat(Animation animation) {
-
+                        //清理之前搜索结果的marker
+                        if (poiOverlay != null) {
+                            poiOverlay.removeFromMap();
                         }
-                    });
-                    slide.setDuration(300);
-                    listContainer.startAnimation(slide);
-                    listContainer.setVerticalScrollbarPosition(0);
-                    listContainer.setSelection(0);
-                } else {
-                    toolbar_shadow.setVisibility(View.VISIBLE);
-                    listContainer.setVisibility(View.GONE);
+                        aMap.clear();// 清理之前的图标
+                        poiOverlay = new myPoiOverlay(aMap, poiItems);
+                        poiOverlay.removeFromMap();
+                        poiOverlay.addToMap();
+                        poiOverlay.zoomToSpan();
+                    } else if (suggestionCities != null
+                            && suggestionCities.size() > 0) {
+//                        showSuggestCity(suggestionCities);
+                    } else {
+
+                    }
                 }
-
+            } else {
             }
-
-            @Override
-            protected void onCancelled() {
-                marker_progress.setVisibility(View.GONE);
+            marker_progress.setVisibility(View.GONE);
+            resultAdapter.notifyDataSetChanged();
+            if (mItem.size() > 0) {
+                toolbar_shadow.setVisibility(View.GONE);
+                listContainer.setVisibility(View.VISIBLE);
+                listContainer.setVerticalScrollbarPosition(0);
+                listContainer.setSelection(0);
+            } else {
+                toolbar_shadow.setVisibility(View.VISIBLE);
+                listContainer.setVisibility(View.GONE);
             }
+        } else {
+        }
+    }
 
-        };
-        mAsyncTask.execute();
+    @Override
+    public void onPoiItemSearched(PoiItem poiItem, int i) {
+
+    }
+
+    // 将之前被点击的marker置为原来的状态
+    private void resetlastmarker() {
+        int index = poiOverlay.getPoiIndex(mlastMarker);
+        if (index < 10) {
+            mlastMarker.setIcon(BitmapDescriptorFactory
+                    .fromBitmap(BitmapFactory.decodeResource(
+                            getResources(),
+                            markers[index])));
+        } else {
+            mlastMarker.setIcon(BitmapDescriptorFactory.fromBitmap(
+                    BitmapFactory.decodeResource(getResources(), R.drawable.marker_other_highlight)));
+        }
+        mlastMarker = null;
+
+    }
+
+    /**
+     * 设置底部描述
+     */
+    private void setPoiItemDisplayContent(final PoiItem mCurrentPoi) {
+        mPoiName.setText(mCurrentPoi.getTitle());
+        mPoiAddress.setText(mCurrentPoi.getSnippet());
+    }
+
+    /**
+     * listpopWindow适配器
+     */
+    class StringAdapter extends BaseAdapter {
+        List<String> list;
+
+        public StringAdapter(List<String> list) {
+            this.list = list;
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return list.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            TextView textView = (TextView) View.inflate(getContext(), R.layout.expandable_child_item_view, null);
+            textView.setText(list.get(position));
+            return textView;
+        }
+    }
+
+    /**
+     * 自定义PoiOverlay，显示带数字的图标
+     */
+    private class myPoiOverlay {
+        private AMap mamap;
+        private List<PoiItem> mPois;
+        private ArrayList<Marker> mPoiMarks = new ArrayList<Marker>();
+
+        public myPoiOverlay(AMap amap, List<PoiItem> pois) {
+            mamap = amap;
+            mPois = pois;
+        }
+
+        /**
+         * 添加Marker到地图中。
+         *
+         * @since V2.1.0
+         */
+        public void addToMap() {
+            for (int i = 0; i < mPois.size(); i++) {
+                Marker marker = mamap.addMarker(getMarkerOptions(i));
+                PoiItem item = mPois.get(i);
+                marker.setObject(item);
+                mPoiMarks.add(marker);
+            }
+        }
+
+        /**
+         * 去掉PoiOverlay上所有的Marker。
+         *
+         * @since V2.1.0
+         */
+        public void removeFromMap() {
+            for (Marker mark : mPoiMarks) {
+                mark.remove();
+            }
+        }
+
+        /**
+         * 移动镜头到当前的视角。
+         *
+         * @since V2.1.0
+         */
+        public void zoomToSpan() {
+            if (mPois != null && mPois.size() > 0) {
+                if (mamap == null)
+                    return;
+                LatLngBounds bounds = getLatLngBounds();
+                mamap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+            }
+        }
+
+        private LatLngBounds getLatLngBounds() {
+            LatLngBounds.Builder b = LatLngBounds.builder();
+            for (int i = 0; i < mPois.size(); i++) {
+                b.include(new LatLng(mPois.get(i).getLatLonPoint().getLatitude(),
+                        mPois.get(i).getLatLonPoint().getLongitude()));
+            }
+            return b.build();
+        }
+
+        private MarkerOptions getMarkerOptions(int index) {
+            return new MarkerOptions()
+                    .position(
+                            new LatLng(mPois.get(index).getLatLonPoint()
+                                    .getLatitude(), mPois.get(index)
+                                    .getLatLonPoint().getLongitude()))
+                    .title(getTitle(index)).snippet(getSnippet(index))
+                    .icon(getBitmapDescriptor(index));
+        }
+
+        protected String getTitle(int index) {
+            return mPois.get(index).getTitle();
+        }
+
+        protected String getSnippet(int index) {
+            return mPois.get(index).getSnippet();
+        }
+
+        /**
+         * 从marker中得到poi在list的位置。
+         *
+         * @param marker 一个标记的对象。
+         * @return 返回该marker对应的poi在list的位置。
+         * @since V2.1.0
+         */
+        public int getPoiIndex(Marker marker) {
+            for (int i = 0; i < mPoiMarks.size(); i++) {
+                if (mPoiMarks.get(i).equals(marker)) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        /**
+         * 返回第index的poi的信息。
+         *
+         * @param index 第几个poi。
+         * @return poi的信息。poi对象详见搜索服务模块的基础核心包（com.amap.api.services.core）中的类 <strong><a href="../../../../../../Search/com/amap/api/services/core/PoiItem.html" title="com.amap.api.services.core中的类">PoiItem</a></strong>。
+         * @since V2.1.0
+         */
+        public PoiItem getPoiItem(int index) {
+            if (index < 0 || index >= mPois.size()) {
+                return null;
+            }
+            return mPois.get(index);
+        }
+
+        protected BitmapDescriptor getBitmapDescriptor(int arg0) {
+            if (arg0 < 10) {
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(
+                        BitmapFactory.decodeResource(getResources(), markers[arg0]));
+                return icon;
+            } else {
+                BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(
+                        BitmapFactory.decodeResource(getResources(), R.drawable.marker_other_highlight));
+                return icon;
+            }
+        }
+
+
     }
 }
