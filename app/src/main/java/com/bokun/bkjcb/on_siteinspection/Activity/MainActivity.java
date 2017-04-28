@@ -37,8 +37,12 @@ public class MainActivity extends BaseActivity
     private HashMap<String, Fragment> viewMap;
     private FragmentManager manager;
     private Toolbar toolbar;
-    private MenuItem menuItem;
     private Menu menu;
+    private Fragment testFragment;
+    private Fragment lastFragment;
+    private CheckPlanFragment checkPlanFragment;
+    private MapFragment mapFragment;
+    private UpLoadFragment upLoadFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +73,6 @@ public class MainActivity extends BaseActivity
     @Override
     protected void findView() {
         contentView = (ConstraintLayout) findViewById(R.id.content_main);
-        loadView("检查计划", "first");
     }
 
     @Override
@@ -79,7 +82,11 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void loadData() {
-
+        checkPlanFragment = new CheckPlanFragment();
+        mapFragment = MapFragment.newInstance();
+        upLoadFragment = new UpLoadFragment();
+        testFragment = new TestFragment();
+        loadView("检查计划", "first");
     }
 
     @Override
@@ -98,9 +105,7 @@ public class MainActivity extends BaseActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        menuItem = menu.findItem(R.id.action_refresh_map);
         this.menu = menu;
-//        menuItem.setVisible(false);
         menu.setGroupVisible(R.id.menu_map, false);
         return true;
     }
@@ -137,6 +142,7 @@ public class MainActivity extends BaseActivity
             LoginActivity.comeToLoginActivity(this);
         } else if (id == R.id.nav_exit) {
             AppManager.getAppManager().finishAllActivity();
+//            AppManager.getAppManager().AppExit(this);
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
@@ -146,7 +152,6 @@ public class MainActivity extends BaseActivity
     private void loadView(String title, String key) {
         toolbar.setTitle(title);
         if (menu != null) {
-//            menuItem.setVisible(false);
             menu.setGroupVisible(R.id.menu_map, false);
         }
         Fragment currentFragment = viewMap.get(key);
@@ -157,7 +162,6 @@ public class MainActivity extends BaseActivity
                 currentFragment = new CheckPlanFragment();
             } else if (key.equals("third")) {
                 currentFragment = MapFragment.newInstance();
-//                menuItem.setVisible(true);
                 menu.setGroupVisible(R.id.menu_map, true);
             } else if (key.equals("forth")) {
                 currentFragment = new UpLoadFragment();
@@ -167,8 +171,26 @@ public class MainActivity extends BaseActivity
             transaction.add(contentView.getId(), currentFragment);
             viewMap.put(key, currentFragment);
         } else {
+            if (key.equals("third")) {
+                menu.setGroupVisible(R.id.menu_map, true);
+            }
             transaction.show(currentFragment);
         }
+       /* FragmentTransaction transaction = manager.beginTransaction();
+        if (lastFragment == null) {
+            transaction.add(contentView.getId(), checkPlanFragment);
+            lastFragment = checkPlanFragment;
+        } else {
+            if (key.equals("first")) {
+                transaction.replace(contentView.getId(), checkPlanFragment);
+            } else if (key.equals("third")) {
+                transaction.replace(contentView.getId(), mapFragment);
+            } else if (key.equals("forth")) {
+                transaction.replace(contentView.getId(), upLoadFragment);
+            } else {
+                transaction.replace(contentView.getId(), testFragment);
+            }
+        }*/
         transaction.commit();
     }
 
@@ -197,7 +219,7 @@ public class MainActivity extends BaseActivity
         super.onStop();
     }
 
-    public void showLocationButton(boolean is) {
-        menuItem.setVisible(is);
+    public void showMenu(boolean is) {
+        menu.setGroupVisible(R.id.menu_map, is);
     }
 }

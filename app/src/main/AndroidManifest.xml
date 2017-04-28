@@ -51,6 +51,15 @@
         <activity
             android:name=".Activity.SecurityCheckActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".Map.BusRouteDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".Map.DriveRouteDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".Map.WalkRouteDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

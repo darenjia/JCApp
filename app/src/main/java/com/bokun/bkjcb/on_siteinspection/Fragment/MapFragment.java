@@ -26,6 +26,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -48,6 +49,7 @@ import com.amap.api.maps2d.model.LatLngBounds;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.MyLocationStyle;
+import com.amap.api.maps2d.overlay.WalkRouteOverlay;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
@@ -57,9 +59,24 @@ import com.amap.api.services.help.InputtipsQuery;
 import com.amap.api.services.help.Tip;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
+import com.amap.api.services.route.BusRouteResult;
+import com.amap.api.services.route.DrivePath;
+import com.amap.api.services.route.DriveRouteResult;
+import com.amap.api.services.route.RideRouteResult;
+import com.amap.api.services.route.RouteSearch;
+import com.amap.api.services.route.WalkPath;
+import com.amap.api.services.route.WalkRouteResult;
+import com.bokun.bkjcb.on_siteinspection.Activity.MainActivity;
+import com.bokun.bkjcb.on_siteinspection.Map.AMapUtil;
+import com.bokun.bkjcb.on_siteinspection.Map.BusResultListAdapter;
+import com.bokun.bkjcb.on_siteinspection.Map.DriveRouteDetailActivity;
+import com.bokun.bkjcb.on_siteinspection.Map.DrivingRouteOverLay;
+import com.bokun.bkjcb.on_siteinspection.Map.WalkRouteDetailActivity;
 import com.bokun.bkjcb.on_siteinspection.R;
+import com.bokun.bkjcb.on_siteinspection.Utils.LocalTools;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
+import com.bokun.bkjcb.on_siteinspection.Utils.ToastUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 import com.eugene.fithealth.LogQuickSearchData.LogQuickSearch;
 import com.eugene.fithealth.LogQuickSearchData.LogQuickSearchAdapter;
@@ -76,7 +93,8 @@ import java.util.Set;
  */
 
 public class MapFragment extends MainFragment implements LocationSource, PoiSearch.OnPoiSearchListener,
-        AMap.OnMarkerClickListener, AMap.InfoWindowAdapter, AMap.OnMapClickListener {
+        AMap.OnMarkerClickListener, AMap.InfoWindowAdapter, AMap.OnMapClickListener, RouteSearch.OnRouteSearchListener,
+        View.OnClickListener {
     //声明AMapLocationClient类对象
     public AMapLocationClient mLocationClient = null;
     //声明定位回调监听器
@@ -149,10 +167,10 @@ public class MapFragment extends MainFragment implements LocationSource, PoiSear
 //                            aMap.addMarker(getMarkerOptions(aMapLocation));
                         //获取定位信息
                         cityCode = aMapLocation.getCityCode();
+                        mStartPoint = AMapUtil.convertToLatLonPoint(new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude()));
                         StringBuffer buffer = new StringBuffer();
                         buffer.append(aMapLocation.getCountry() + "" + aMapLocation.getProvince() + "" + aMapLocation.getCity() + "" + aMapLocation.getProvince() + "" + aMapLocation.getDistrict() + "" + aMapLocation.getStreet() + "" + aMapLocation.getStreetNum());
-                        Toast.makeText(getContext().getApplicationContext(), buffer.toString(), Toast.LENGTH_LONG).show();
-//                        mLocationClient.stopLocation();//停止定位后，本地定位服务并不会被销毁
+                        ToastUtil.showShortToast(getContext().getApplicationContext(), buffer.toString());
                     } else {
                         //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
                         Log.e("AmapError", "location Error, ErrCode:"
@@ -190,10 +208,12 @@ public class MapFragment extends MainFragment implements LocationSource, PoiSear
         mLocationOption.setWifiScan(true);
         //单位是毫秒，默认30000毫秒，建议超时时间不要低于8000毫秒。
         mLocationOption.setHttpTimeOut(10000);
-        //给定位客户端对象设置定位参数
-        mLocationClient.setLocationOption(mLocationOption);
         //设置是否返回地址信息（默认返回地址信息）
         mLocationOption.setNeedAddress(true);
+        //关闭缓存机制
+        mLocationOption.setLocationCacheEnable(false);
+        //给定位客户端对象设置定位参数
+        mLocationClient.setLocationOption(mLocationOption);
         //启动定位
         mLocationClient.startLocation();
     }
@@ -203,15 +223,13 @@ public class MapFragment extends MainFragment implements LocationSource, PoiSear
         View view = inflater.inflate(R.layout.map_fragment_view, null);
         mapView = (MapView) view.findViewById(R.id.fragment_mapview);
         initSearchView(view);
-        if (aMap == null) {
-            aMap = mapView.getMap();
-            aMap.setLocationSource(this);// 设置定位监听
-            aMap.getUiSettings().setMyLocationButtonEnabled(true);// 设置默认定位按钮是否显示
-            aMap.setMyLocationEnabled(true);// 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
-            aMap.setOnMarkerClickListener(this);// 添加点击marker监听事件
-            aMap.setInfoWindowAdapter(this);// 添加显示infowindow监听事件
-            aMap.setOnMapClickListener(this);
-        }
+        aMap = mapView.getMap();
+        aMap.setLocationSource(this);// 设置定位监听
+        aMap.getUiSettings().setMyLocationButtonEnabled(true);// 设置默认定位按钮是否显示
+        aMap.setMyLocationEnabled(true);// 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
+        aMap.setOnMarkerClickListener(this);// 添加点击marker监听事件
+        aMap.setInfoWindowAdapter(this);// 添加显示infowindow监听事件
+        aMap.setOnMapClickListener(this);
         return view;
     }
 
@@ -219,14 +237,13 @@ public class MapFragment extends MainFragment implements LocationSource, PoiSear
     public void onStop() {
         super.onStop();
         getContext().unregisterReceiver(reciver);
-        if (mLocationClient.isStarted()) {
-            mLocationClient.stopLocation();
-        }
+        LogUtil.logI("onStop");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        LogUtil.logI("onDestory");
         mLocationClient.onDestroy();//销毁定位客户端，同时销毁本地定位服务。
         mapView.onDestroy();
     }
@@ -238,6 +255,8 @@ public class MapFragment extends MainFragment implements LocationSource, PoiSear
     public void onResume() {
         super.onResume();
         mapView.onResume();
+        LogUtil.logI("onResume");
+        ((MainActivity) getContext()).showMenu(true);
     }
 
     /**
@@ -293,6 +312,9 @@ public class MapFragment extends MainFragment implements LocationSource, PoiSear
 
     public void startSearch() {
         location.setVisibility(View.GONE);
+        if (mBottomLayout.getVisibility() != View.GONE) {
+            mBottomLayout.setVisibility(View.GONE);
+        }
         IsAdapterEmpty();
         InitiateSearch.handleToolBar(context, card_search, view_search, listView, edit_text_search, line_divider);
     }
@@ -352,6 +374,7 @@ public class MapFragment extends MainFragment implements LocationSource, PoiSear
                                 getResources(),
                                 R.drawable.poi_marker_pressed)));
                 setPoiItemDisplayContent(mCurrentPoi);
+                mEndPoint = mCurrentPoi.getLatLonPoint();
             } catch (Exception e) {
                 // TODO: handle exception
             }
@@ -370,6 +393,165 @@ public class MapFragment extends MainFragment implements LocationSource, PoiSear
         }
     }
 
+    @Override
+    public void onBusRouteSearched(BusRouteResult result, int errorCode) {
+        mBottomLayout.setVisibility(View.GONE);
+        aMap.clear();// 清理地图上的所有覆盖物
+        if (errorCode == AMapException.CODE_AMAP_SUCCESS) {
+            if (result != null && result.getPaths() != null) {
+                if (result.getPaths().size() > 0) {
+                    mBusRouteResult = result;
+                    BusResultListAdapter mBusResultListAdapter = new BusResultListAdapter(getContext(), mBusRouteResult);
+                    mBusResultList.setAdapter(mBusResultListAdapter);
+                } else if (result != null && result.getPaths() == null) {
+                    ToastUtil.show(getContext(), "未查询到结果");
+                }
+            } else {
+                ToastUtil.show(getContext(), "未查询到结果");
+            }
+        } else {
+            ToastUtil.show(getContext(), "未知错误");
+        }
+    }
+
+    @Override
+    public void onDriveRouteSearched(DriveRouteResult result, int errorCode) {
+        aMap.clear();// 清理地图上的所有覆盖物
+        if (errorCode == AMapException.CODE_AMAP_SUCCESS) {
+            if (result != null && result.getPaths() != null) {
+                if (result.getPaths().size() > 0) {
+                    mDriveRouteResult = result;
+                    final DrivePath drivePath = mDriveRouteResult.getPaths()
+                            .get(0);
+                    DrivingRouteOverLay drivingRouteOverlay = new DrivingRouteOverLay(
+                            getContext(), aMap, drivePath,
+                            mDriveRouteResult.getStartPos(),
+                            mDriveRouteResult.getTargetPos(), null);
+                    drivingRouteOverlay.setNodeIconVisibility(false);//设置节点marker是否显示
+                    drivingRouteOverlay.setIsColorfulline(true);//是否用颜色展示交通拥堵情况，默认true
+                    drivingRouteOverlay.removeFromMap();
+                    drivingRouteOverlay.addToMap();
+                    drivingRouteOverlay.zoomToSpan();
+                    mBottomLayout.setVisibility(View.VISIBLE);
+                    int dis = (int) drivePath.getDistance();
+                    int dur = (int) drivePath.getDuration();
+                    String des = AMapUtil.getFriendlyTime(dur) + "(" + AMapUtil.getFriendlyLength(dis) + ")";
+                    mRotueTimeDes.setText(des);
+                    mRouteDetailDes.setVisibility(View.VISIBLE);
+                    int taxiCost = (int) mDriveRouteResult.getTaxiCost();
+                    mRouteDetailDes.setText("打车约" + taxiCost + "元");
+                    mBottomLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getContext(),
+                                    DriveRouteDetailActivity.class);
+                            intent.putExtra("drive_path", drivePath);
+                            intent.putExtra("drive_result",
+                                    mDriveRouteResult);
+                            startActivity(intent);
+                        }
+                    });
+                } else if (result != null && result.getPaths() == null) {
+                    ToastUtil.show(getContext(), "对不起，没有搜索到相关数据！");
+                }
+
+            } else {
+                ToastUtil.show(getContext(), "对不起，没有搜索到相关数据！");
+            }
+        } else {
+            ToastUtil.show(getContext(), "对不起，没有搜索到相关数据！");
+        }
+    }
+
+    @Override
+    public void onWalkRouteSearched(WalkRouteResult result, int errorCode) {
+        aMap.clear();// 清理地图上的所有覆盖物
+        if (errorCode == AMapException.CODE_AMAP_SUCCESS) {
+            if (result != null && result.getPaths() != null) {
+                if (result.getPaths().size() > 0) {
+                    mWalkRouteResult = result;
+                    final WalkPath walkPath = mWalkRouteResult.getPaths()
+                            .get(0);
+                    WalkRouteOverlay walkRouteOverlay = new WalkRouteOverlay(
+                            getContext(), aMap, walkPath,
+                            mWalkRouteResult.getStartPos(),
+                            mWalkRouteResult.getTargetPos());
+                    walkRouteOverlay.removeFromMap();
+                    walkRouteOverlay.addToMap();
+                    walkRouteOverlay.zoomToSpan();
+                    mBottomLayout.setVisibility(View.VISIBLE);
+                    int dis = (int) walkPath.getDistance();
+                    int dur = (int) walkPath.getDuration();
+                    String des = AMapUtil.getFriendlyTime(dur) + "(" + AMapUtil.getFriendlyLength(dis) + ")";
+                    mRotueTimeDes.setText(des);
+                    mRouteDetailDes.setVisibility(View.GONE);
+                    mBottomLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getContext(),
+                                    WalkRouteDetailActivity.class);
+                            intent.putExtra("walk_path", walkPath);
+                            intent.putExtra("walk_result",
+                                    mWalkRouteResult);
+                            startActivity(intent);
+                        }
+                    });
+                } else if (result != null && result.getPaths() == null) {
+                    ToastUtil.show(getContext(), "对不起，没有搜索到相关数据！");
+                }
+
+            } else {
+                ToastUtil.show(getContext(), "对不起，没有搜索到相关数据！");
+            }
+        } else {
+            ToastUtil.show(getContext(), "对不起，没有搜索到相关数据！");
+        }
+    }
+
+    @Override
+    public void onRideRouteSearched(RideRouteResult rideRouteResult, int i) {
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        LogUtil.logI(v.getId() + "v");
+        switch (v.getId()) {
+            case R.id.route_bus:
+                searchRouteResult(ROUTE_TYPE_BUS, RouteSearch.BUS_DEFAULT);
+                mDrive.setImageResource(R.drawable.route_drive_normal);
+                mBus.setImageResource(R.drawable.route_bus_select);
+                mWalk.setImageResource(R.drawable.route_walk_normal);
+                mapView.setVisibility(View.GONE);
+                mBusResultLayout.setVisibility(View.VISIBLE);
+                break;
+            case R.id.route_drive:
+                searchRouteResult(ROUTE_TYPE_DRIVE, RouteSearch.DRIVING_SINGLE_DEFAULT);
+                mDrive.setImageResource(R.drawable.route_drive_select);
+                mBus.setImageResource(R.drawable.route_bus_normal);
+                mWalk.setImageResource(R.drawable.route_walk_normal);
+                mapView.setVisibility(View.VISIBLE);
+                mBusResultLayout.setVisibility(View.GONE);
+                break;
+            case R.id.route_walk:
+                searchRouteResult(ROUTE_TYPE_WALK, RouteSearch.BUS_DEFAULT);
+                mDrive.setImageResource(R.drawable.route_drive_normal);
+                mBus.setImageResource(R.drawable.route_bus_normal);
+                mWalk.setImageResource(R.drawable.route_walk_select);
+                mapView.setVisibility(View.VISIBLE);
+                mBusResultLayout.setVisibility(View.GONE);
+                break;
+            /*case R.id.route_CrosstownBus:
+                searchRouteResult(ROUTE_TYPE_CROSSTOWN, RouteSearch.BUS_DEFAULT);
+                mDrive.setImageResource(R.drawable.route_drive_normal);
+                mBus.setImageResource(R.drawable.route_bus_normal);
+                mWalk.setImageResource(R.drawable.route_walk_normal);
+                mapView.setVisibility(View.GONE);
+                mBusResultLayout.setVisibility(View.VISIBLE);
+                break;*/
+        }
+    }
+
     class NetWorkChangeReciver extends BroadcastReceiver {
 
         @Override
@@ -381,6 +563,7 @@ public class MapFragment extends MainFragment implements LocationSource, PoiSear
     //搜索框设置
     private View line_divider, toolbar_shadow;
     private RelativeLayout view_search, mPoiDetail;
+    private LinearLayout view_gohere;
     private CardView card_search;
     private ImageView image_search_back, clearSearch;
     private AutoCompleteTextView edit_text_search;
@@ -399,6 +582,23 @@ public class MapFragment extends MainFragment implements LocationSource, PoiSear
     private ListPopupWindow listPopupWindow;
     private TextView mPoiName, mPoiAddress;
     private Marker mlastMarker, detailMarker;
+    private RouteSearch mRouteSearch;
+    private DriveRouteResult mDriveRouteResult;
+    private BusRouteResult mBusRouteResult;
+    private final int ROUTE_TYPE_BUS = 1;
+    private final int ROUTE_TYPE_DRIVE = 2;
+    private final int ROUTE_TYPE_WALK = 3;
+    private final int ROUTE_TYPE_CROSSTOWN = 4;
+    private LinearLayout mBusResultLayout;
+    private RelativeLayout mBottomLayout, mRouteView;
+    private TextView mRotueTimeDes, mRouteDetailDes;
+    private ImageView mBus;
+    private ImageView mDrive;
+    private ImageView mWalk;
+    private ListView mBusResultList;
+    private WalkRouteResult mWalkRouteResult;
+    private LatLonPoint mStartPoint;
+    private LatLonPoint mEndPoint;
 
     private View initSearchView(View view) {
         view_search = (RelativeLayout) view.findViewById(R.id.view_search);
@@ -415,6 +615,18 @@ public class MapFragment extends MainFragment implements LocationSource, PoiSear
         mPoiDetail = (RelativeLayout) view.findViewById(R.id.poi_detail);
         mPoiName = (TextView) view.findViewById(R.id.poi_name);
         mPoiAddress = (TextView) view.findViewById(R.id.poi_address);
+        view_gohere = (LinearLayout) view.findViewById(R.id.poi_go);
+        mRouteSearch = new RouteSearch(getContext());
+        mRouteSearch.setRouteSearchListener(this);
+        mBottomLayout = (RelativeLayout) view.findViewById(R.id.bottom_layout);
+        mBusResultLayout = (LinearLayout) view.findViewById(R.id.bus_result);
+        mRotueTimeDes = (TextView) view.findViewById(R.id.firstline);
+        mRouteDetailDes = (TextView) view.findViewById(R.id.secondline);
+        mDrive = (ImageView) view.findViewById(R.id.route_drive);
+        mBus = (ImageView) view.findViewById(R.id.route_bus);
+        mWalk = (ImageView) view.findViewById(R.id.route_walk);
+        mBusResultList = (ListView) view.findViewById(R.id.bus_result_list);
+        mRouteView = (RelativeLayout) view.findViewById(R.id.routemap_header);
         marker_progress.getIndeterminateDrawable().setColorFilter(Color.parseColor("#FFFFFF"),//Pink color
                 android.graphics.PorterDuff.Mode.MULTIPLY);
         set = new HashSet<>();
@@ -467,7 +679,7 @@ public class MapFragment extends MainFragment implements LocationSource, PoiSear
                     listView.setAdapter(logQuickSearchAdapter);*/
                     clearSearch.setImageResource(com.eugene.fithealth.R.mipmap.ic_close);
                     IsAdapterEmpty();
-                    InputtipsQuery inputquery = new InputtipsQuery(newText, "上海");
+                    InputtipsQuery inputquery = new InputtipsQuery(newText, cityCode);
                     Inputtips inputTips = new Inputtips(getContext(), inputquery);
                     inputTips.setInputtipsListener(new Inputtips.InputtipsListener() {
                         @Override
@@ -532,6 +744,18 @@ public class MapFragment extends MainFragment implements LocationSource, PoiSear
                 listPopupWindow.dismiss();
             }
         });
+        view_gohere.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRouteView.setVisibility(View.VISIBLE);
+                location.setVisibility(View.GONE);
+                whetherToShowDetailInfo(false);
+                setfromandtoMarker();
+            }
+        });
+        mWalk.setOnClickListener(this);
+        mDrive.setOnClickListener(this);
+        mBus.setOnClickListener(this);
     }
 
     private void moveToTarget(int position) {
@@ -625,7 +849,7 @@ public class MapFragment extends MainFragment implements LocationSource, PoiSear
         marker_progress.setVisibility(View.VISIBLE);
         currentPage = 0;
         // 第一个参数表示搜索字符串，第二个参数表示poi搜索类型，第三个参数表示poi搜索区域（空字符串代表全国）
-        query = new PoiSearch.Query(item, "", "上海");
+        query = new PoiSearch.Query(item, "", cityCode);
         query.setPageSize(10);// 设置每页最多返回多少条poiitem
         query.setPageNum(currentPage);// 设置查第一页
         query.setCityLimit(true);
@@ -878,5 +1102,49 @@ public class MapFragment extends MainFragment implements LocationSource, PoiSear
         }
 
 
+    }
+
+    private void setfromandtoMarker() {
+        aMap.clear();
+        aMap.addMarker(new MarkerOptions()
+                .position(LocalTools.convertToLatLng(mStartPoint))
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.start)));
+        aMap.addMarker(new MarkerOptions()
+                .position(LocalTools.convertToLatLng(mEndPoint))
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.end)));
+    }
+
+    /**
+     * 开始搜索路径规划方案
+     */
+    public void searchRouteResult(int routeType, int mode) {
+        if (mStartPoint == null) {
+            ToastUtil.show(getContext(), "起点未设置");
+            return;
+        }
+        if (mEndPoint == null) {
+            ToastUtil.show(getContext(), "终点未设置");
+        }
+        final RouteSearch.FromAndTo fromAndTo = new RouteSearch.FromAndTo(
+                mStartPoint, mEndPoint);
+        if (routeType == ROUTE_TYPE_BUS) {// 公交路径规划
+            RouteSearch.BusRouteQuery query = new RouteSearch.BusRouteQuery(fromAndTo, mode,
+                    cityCode, 0);// 第一个参数表示路径规划的起点和终点，第二个参数表示公交查询模式，第三个参数表示公交查询城市区号，第四个参数表示是否计算夜班车，0表示不计算
+            mRouteSearch.calculateBusRouteAsyn(query);// 异步路径规划公交模式查询
+        } else if (routeType == ROUTE_TYPE_DRIVE) {// 驾车路径规划
+            RouteSearch.DriveRouteQuery query = new RouteSearch.DriveRouteQuery(fromAndTo, mode, null,
+                    null, "");// 第一个参数表示路径规划的起点和终点，第二个参数表示驾车模式，第三个参数表示途经点，第四个参数表示避让区域，第五个参数表示避让道路
+            mRouteSearch.calculateDriveRouteAsyn(query);// 异步路径规划驾车模式查询
+        } else if (routeType == ROUTE_TYPE_WALK) {// 步行路径规划
+            RouteSearch.WalkRouteQuery query = new RouteSearch.WalkRouteQuery(fromAndTo, mode);
+            mRouteSearch.calculateWalkRouteAsyn(query);// 异步路径规划步行模式查询
+        } else if (routeType == ROUTE_TYPE_CROSSTOWN) {
+            RouteSearch.FromAndTo fromAndTo_bus = new RouteSearch.FromAndTo(
+                    mStartPoint, mEndPoint);
+            RouteSearch.BusRouteQuery query = new RouteSearch.BusRouteQuery(fromAndTo_bus, mode,
+                    "呼和浩特市", 0);// 第一个参数表示路径规划的起点和终点，第二个参数表示公交查询模式，第三个参数表示公交查询城市区号，第四个参数表示是否计算夜班车，0表示不计算
+            query.setCityd("农安县");
+            mRouteSearch.calculateBusRouteAsyn(query);// 异步路径规划公交模式查询
+        }
     }
 }

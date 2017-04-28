@@ -11,6 +11,8 @@ import android.provider.MediaStore;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.services.core.LatLonPoint;
 import com.bokun.bkjcb.on_siteinspection.R;
 
 import java.io.File;
@@ -56,6 +58,10 @@ public class LocalTools {
             return null;
         }
         return builder.toString();
+    }
+
+    public static LatLng convertToLatLng(LatLonPoint latLonPoint) {
+        return new LatLng(latLonPoint.getLatitude(), latLonPoint.getLongitude());
     }
 
     public static ArrayList<String> changeToList(String string) {

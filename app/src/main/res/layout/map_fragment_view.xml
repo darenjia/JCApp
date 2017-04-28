@@ -38,8 +38,8 @@
             android:id="@+id/location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="address"
             android:background="#fff"
+            android:text="address"
             android:visibility="gone" />
 
         <ListView
@@ -130,6 +130,7 @@
         android:layout_height="4dp"
         android:layout_below="@+id/tabs"
         android:background="@drawable/toolbar_shadow" />
+
     <RelativeLayout
         android:id="@+id/poi_detail"
         android:layout_width="match_parent"
@@ -179,5 +180,147 @@
             android:gravity="center_vertical"
             android:textColor="#333333"
             android:textSize="12sp" />
+
+        <LinearLayout
+            android:id="@+id/poi_go"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/vector_drawable_gohere" />
+
+            <Button
+
+                android:layout_width="wrap_content"
+                android:layout_height="24sp"
+                android:background="@color/colorNone"
+                android:text="到这去"
+                android:textColor="#1296DB" />
+        </LinearLayout>
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/routemap_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/title_background"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/routemap_choose"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/title_background"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <ImageView
+                android:id="@+id/route_drive"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:src="@drawable/route_drive_normal" />
+
+
+            <ImageView
+                android:id="@+id/route_bus"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:src="@drawable/route_bus_normal" />
+
+
+            <ImageView
+                android:id="@+id/route_walk"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:src="@drawable/route_walk_normal" />
+
+            <!-- <TextView
+                 android:id="@+id/route_CrosstownBus"
+                 android:layout_width="wrap_content"
+                 android:layout_height="22dp"
+                 android:layout_gravity="center"
+                 android:layout_weight="1"
+                 android:text="跨城公交"
+                 android:textColor="#767676" />-->
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/bg_bottom_bar"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/firstline"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginStart="12dp"
+            android:maxLines="1"
+            android:textColor="#333333"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/secondline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/firstline"
+            android:layout_marginStart="12dp"
+            android:gravity="end"
+            android:maxLines="1"
+            android:textColor="#999999"
+            android:textSize="13sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:gravity="center_vertical"
+            android:text="详情"
+            android:layout_marginEnd="10dp"
+            android:textColor="#4d97d4"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/bus_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/routemap_header"
+        android:background="@color/colorNone"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ListView
+            android:id="@+id/bus_result_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:cacheColorHint="#00000000"
+            android:divider="@null"
+            android:fadingEdge="none"
+            android:fadingEdgeLength="0dp"
+            android:footerDividersEnabled="false"
+            android:headerDividersEnabled="false"
+            android:listSelector="#00000000" />
+    </LinearLayout>
+
+
 </RelativeLayout>
