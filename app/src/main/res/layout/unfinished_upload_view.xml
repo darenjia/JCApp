@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_margin="20dp"
         android:background="@drawable/check_item_content_comment_bg">
@@ -19,17 +19,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/colorNone"
-            android:text="全部开始" />
+            android:text="全部开始"
+            android:textColor="#797979" />
 
         <LinearLayout
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="#000000" />
+            android:background="#848484" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/colorNone"
-            android:text="全部暂停" />
+            android:text="全部暂停"
+            android:textColor="#797979" />
     </LinearLayout>
 </FrameLayout>

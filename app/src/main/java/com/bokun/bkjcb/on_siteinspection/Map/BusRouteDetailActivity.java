@@ -24,6 +24,7 @@ import com.amap.api.maps2d.overlay.BusRouteOverlay;
 import com.amap.api.services.route.BusPath;
 import com.amap.api.services.route.BusRouteResult;
 import com.bokun.bkjcb.on_siteinspection.R;
+import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 
 public class BusRouteDetailActivity extends AppCompatActivity implements OnMapLoadedListener,
         OnMapClickListener, InfoWindowAdapter, OnInfoWindowClickListener, OnMarkerClickListener {
@@ -85,6 +86,7 @@ public class BusRouteDetailActivity extends AppCompatActivity implements OnMapLo
                 finish();
             }
         });
+        Utils.initSystemBar(this, toolbar);
     }
 
     private void registerListener() {
@@ -114,6 +116,7 @@ public class BusRouteDetailActivity extends AppCompatActivity implements OnMapLo
         if (item.getItemId() == R.id.menu_route_map) {
             if (mapView.getVisibility() != View.GONE) {
                 mBuspathview.setVisibility(View.VISIBLE);
+                mapView.setVisibility(View.GONE);
                 return true;
             }
             onMapClick();

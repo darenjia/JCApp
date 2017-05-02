@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.amap.api.services.route.DrivePath;
 import com.amap.api.services.route.DriveRouteResult;
 import com.bokun.bkjcb.on_siteinspection.R;
+import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 
 
 public class DriveRouteDetailActivity extends AppCompatActivity {
@@ -69,5 +70,6 @@ public class DriveRouteDetailActivity extends AppCompatActivity {
 				finish();
 			}
 		});
+		Utils.initSystemBar(this, toolbar);
 	}
 }

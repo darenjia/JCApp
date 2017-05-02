@@ -51,7 +51,6 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void initView() {
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -60,7 +59,7 @@ public class MainActivity extends BaseActivity
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.setDrawerListener(toggle);
+        drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -117,7 +116,9 @@ public class MainActivity extends BaseActivity
             MapFragment.newInstance().refreshMap();
             return true;
         } else if (id == R.id.action_search_map) {
-            MapFragment.newInstance().startSearch();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("point", MapFragment.newInstance().mStartPoint);
+            MapActivity.ComeToMapActivity(this,bundle);
             return true;
         }
         return super.onOptionsItemSelected(item);

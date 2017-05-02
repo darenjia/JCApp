@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_mapAct"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="right"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"></android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <com.amap.api.maps2d.MapView
+        android:id="@+id/activity_mapview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar">
+
+        <RelativeLayout
+            android:id="@+id/view_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#50000000"
+            android:clickable="true"
+            android:visibility="invisible">
+
+            <ProgressBar
+                android:id="@+id/marker_progress"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:indeterminate="true"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            card_view:cardBackgroundColor="@color/white"
+            card_view:cardCornerRadius="2dp">
+
+            <Button
+                android:id="@+id/location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:text="address"
+                android:visibility="gone" />
+
+            <ListView
+                android:id="@+id/listContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#fff"
+                android:clipToPadding="false"
+                android:divider="#fff"
+                android:paddingTop="56dp"
+                android:visibility="gone" />
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:visibility="invisible"
+            card_view:cardBackgroundColor="@color/white"
+            card_view:cardCornerRadius="2dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/linearLayout_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp">
+
+                    <ImageView
+                        android:id="@+id/image_search_back"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:contentDescription="@string/imate_back"
+                        android:padding="12dp"
+                        android:src="@mipmap/ic_arrow_back" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/edit_text_search"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="#fff"
+                        android:completionThreshold="1"
+                        android:dropDownVerticalOffset="1dp"
+                        android:gravity="center_vertical"
+                        android:hint="@string/edit_text_search"
+                        android:imeOptions="actionSearch"
+                        android:inputType="textCapWords|textAutoComplete"
+                        android:maxLines="1"
+                        android:paddingEnd="8dp"
+                        android:paddingStart="12dp" />
+
+                    <ImageView
+                        android:id="@+id/clearSearch"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:contentDescription="@string/voice_cancel"
+                        android:padding="12dp"
+                        android:src="@mipmap/ic_keyboard_voice" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/line_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height=".5dp"
+                    android:layout_below="@+id/linearLayout_search"
+                    android:background="#eee" />
+
+                <ListView
+                    android:id="@+id/listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/line_divider"
+                    android:divider="@color/white" />
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        <View
+            android:id="@+id/toolbar_shadow"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_below="@+id/tabs"
+            android:background="@drawable/toolbar_shadow" />
+
+        <RelativeLayout
+            android:id="@+id/poi_detail"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/border_bg"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/poi_name"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:textColor="#5566b8"
+                android:textSize="15sp" />
+
+
+            <TextView
+                android:id="@+id/poi_address"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/poi_name"
+                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:textColor="#333333"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/poi_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/poi_address"
+                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
+                android:gravity="center_vertical"
+                android:textColor="#333333"
+                android:textSize="12sp" />
+
+            <LinearLayout
+                android:id="@+id/poi_go"
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:focusable="false"
+                    android:src="@drawable/vector_drawable_gohere" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@color/colorNone"
+                    android:focusable="false"
+                    android:text="到这去"
+                    android:textColor="#646a6c"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/routemap_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/title_background"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/routemap_choose"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:background="@drawable/title_background"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
+
+                <ImageView
+                    android:id="@+id/route_drive"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/route_drive_normal" />
+
+
+                <ImageView
+                    android:id="@+id/route_bus"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/route_bus_normal" />
+
+
+                <ImageView
+                    android:id="@+id/route_walk"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/route_walk_normal" />
+
+                <!-- <TextView
+                     android:id="@+id/route_CrosstownBus"
+                     android:layout_width="wrap_content"
+                     android:layout_height="22dp"
+                     android:layout_gravity="center"
+                     android:layout_weight="1"
+                     android:text="跨城公交"
+                     android:textColor="#767676" />-->
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/bottom_layout"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bg_bottom_bar"
+            android:gravity="center_vertical"
+            android:padding="5dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/firstline"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginStart="12dp"
+                android:maxLines="1"
+                android:textColor="#333333"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/secondline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/firstline"
+                android:layout_marginStart="12dp"
+                android:gravity="end"
+                android:maxLines="1"
+                android:textColor="#999999"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp"
+                android:gravity="center_vertical"
+                android:text="详情"
+                android:textColor="#4d97d4"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/bus_result"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/routemap_header"
+            android:background="@color/colorNone"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ListView
+                android:id="@+id/bus_result_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:cacheColorHint="#00000000"
+                android:divider="@null"
+                android:fadingEdge="none"
+                android:fadingEdgeLength="0dp"
+                android:footerDividersEnabled="false"
+                android:headerDividersEnabled="false"
+                android:listSelector="#00000000" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

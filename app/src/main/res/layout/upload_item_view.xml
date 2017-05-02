@@ -44,7 +44,8 @@
             android:background="@drawable/check_item_content_comment_bg"
             android:button="@null"
             android:gravity="center"
-            android:text="上传" />
+            android:text="上传"
+            android:textColor="797979" />
 
         <!--<com.bokun.bkjcb.on_siteinspection.View.ProgressButton
             android:layout_width="60dp"
