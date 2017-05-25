@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.R;
 
@@ -53,8 +54,17 @@ public class MainFragment extends Fragment {
                     Snackbar.make(contentView, "服务器错误，请稍后再试！", Snackbar.LENGTH_LONG).show();
                     break;
                 case RequestListener.EVENT_GET_DATA_SUCCESS:
+                    JsonResult result = (JsonResult) msg.obj;
+                    if (result.success) {
+                        getDataSucceed(result);
+                    } else {
+                        Snackbar.make(contentView, "服务器错误，请稍后再试！", Snackbar.LENGTH_LONG).show();
+                    }
                     break;
 
+            }
+            if (msg.obj == null){
+                getDataFailed();
             }
             refreshLayout.setRefreshing(false);
         }
@@ -75,5 +85,12 @@ public class MainFragment extends Fragment {
 
     protected View initView(LayoutInflater inflater) {
         return null;
+    }
+
+    protected void getDataSucceed(JsonResult object) {
+
+    }
+    protected void getDataFailed() {
+
     }
 }

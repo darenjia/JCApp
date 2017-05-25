@@ -1,8 +1,11 @@
 package com.bokun.bkjcb.on_siteinspection.Fragment;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -14,8 +17,10 @@ import android.widget.ExpandableListView;
 import com.bokun.bkjcb.on_siteinspection.Activity.SecurityCheckActivity;
 import com.bokun.bkjcb.on_siteinspection.Adapter.ExpandableListViewAdapter;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
-import com.bokun.bkjcb.on_siteinspection.Http.HttpManager;
+import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpRequestVo;
+import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
+import com.bokun.bkjcb.on_siteinspection.Http.OkHttpManager;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
@@ -45,20 +50,24 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        LogUtil.logI("加载fragment");
         View view = View.inflate(context, R.layout.content_plan, null);
         initPlanLayout(view);
-        setExpandableListView(view);
         return view;
     }
 
     private void initPlanLayout(View view) {
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperlayout);
+        listview = (ExpandableListView) view.findViewById(R.id.plan_list);
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorRecycler));
-        HttpRequestVo requestVo = new HttpRequestVo("", "");
-        HttpManager manager = new HttpManager(context, this, requestVo);
+        HttpRequestVo requestVo = new HttpRequestVo("http://192.168.100.211:1856/zgzxjkWebService.asmx?op=GetJianChaJiHua", "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                "<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\n" +
+                "  <soap12:Body>\n" +
+                "    <GetJianChaJiHua xmlns=\"http://zgzxjk/\" />\n" +
+                "  </soap12:Body>\n" +
+                "</soap12:Envelope>");
+        OkHttpManager manager = new OkHttpManager(context, this, requestVo);
         manager.postRequest();
-
+        refreshLayout.setRefreshing(true);
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -76,12 +85,22 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         });
     }
 
-    private void setExpandableListView(View view) {
-        listview = (ExpandableListView) view.findViewById(R.id.plan_list);
+    @Override
+    protected void getDataSucceed(JsonResult object) {
+        super.getDataSucceed(object);
+        new LodingAsyncTask().execute(object.resData);
+    }
+
+    @Override
+    protected void getDataFailed() {
+        super.getDataFailed();
+        setExpandableListView();
+    }
+
+    private void setExpandableListView() {
         int width = Utils.getWindowWidthOrHeight(context, "Width");
         int left = width - (width / 10);
         int right = width - (width / 10) + (width / 20);
-        LogUtil.logI("width:" + width + " left:" + left + " right:" + right);
         listview.setIndicatorBounds(left, right);
         checkPlans = DataUtil.queryCheckPlan(context);
         if (checkPlans.size() == 0) {
@@ -119,7 +138,14 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
     @Override
     public void action(int i, Object object) {
-        mHandler.sendEmptyMessage(i);
+        if (object != null) {
+            LogUtil.logI((String) object);
+        }
+        JsonResult result = JsonParser.parseJSON((String) object);
+        Message msg = new Message();
+        msg.what = i;
+        msg.obj = result;
+        mHandler.sendMessage(msg);
     }
 
     private void createDailog(final CheckPlan checkPlan, final int groupPosition, final int childPosition) {
@@ -177,5 +203,37 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         adapter.notifyDataSetChanged();
         listview.collapseGroup(groupPosition);
         listview.expandGroup(groupPosition);
+    }
+
+    class LodingAsyncTask extends AsyncTask<String, Integer, Boolean> {
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = new ProgressDialog(context);
+            dialog.setMessage("数据加载中");
+            dialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(String[] objects) {
+            checkPlans = JsonParser.getJSONData(objects[0]);
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (aBoolean) {
+                setExpandableListView();
+            }
+            dialog.dismiss();
+        }
     }
 }

@@ -152,7 +152,7 @@ public class OkHttpManager implements Runnable {
     private void sendPostRequest() {
         try {
             URL url = new URL(requestVo.requestUrl);
-            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            MediaType JSON = MediaType.parse("application/soap+xml; charset=utf-8");
             client = new OkHttpClient();
             RequestBody body = RequestBody.create(JSON, requestVo.requestJson);
             Request request = new Request.Builder()

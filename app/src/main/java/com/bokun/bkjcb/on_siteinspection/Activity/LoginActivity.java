@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
@@ -23,9 +22,10 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bokun.bkjcb.on_siteinspection.Http.HttpManager;
+import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpRequestVo;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
+import com.bokun.bkjcb.on_siteinspection.Http.OkHttpManager;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
@@ -67,15 +67,19 @@ public class LoginActivity extends BaseActivity implements RequestListener {
                     Snackbar.make(mCardView, "服务器错误，请稍后再试！", Snackbar.LENGTH_LONG).show();
                     break;
                 case RequestListener.EVENT_GET_DATA_SUCCESS:
+                    JsonResult result = (JsonResult) msg.obj;
+                    if (result.success){
+                        MainActivity.ComeToMainActivity(LoginActivity.this);
+                    }else {
+                        Snackbar.make(mCardView, result.message, Snackbar.LENGTH_LONG).show();
+                    }
                     break;
 
             }
-            MainActivity.ComeToMainActivity(LoginActivity.this);
-            LogUtil.logI("登录！" + msg.what);
             noLogining();
         }
     };
-    private HttpManager httpManager;
+    private OkHttpManager httpManager;
     private CheckBox mRembPass;
     private CardView mCardView;
 
@@ -152,7 +156,7 @@ public class LoginActivity extends BaseActivity implements RequestListener {
     /*
     * 判断密码长度是否符合要求*/
     private boolean isPasswordValid(String password) {
-        return password.length() > 4;
+        return password.length() > 0;
     }
 
     private void attemptLogin() {
@@ -196,8 +200,16 @@ public class LoginActivity extends BaseActivity implements RequestListener {
             // perform the user login attempt.
 //
 
-            HttpRequestVo request = new HttpRequestVo("", "", new JsonParser());
-            httpManager = new HttpManager(this, this, request, 2);
+            HttpRequestVo request = new HttpRequestVo("http://192.168.100.211:1856/zgzxjkWebService.asmx?op=GetUser","<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                    "<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\n" +
+                    "  <soap12:Body>\n" +
+                    "    <GetUser xmlns=\"http://zgzxjk/\">\n" +
+                    "      <user>" + userName + "</user>\n" +
+                    "      <password>" + password + "</password>\n" +
+                    "    </GetUser>\n" +
+                    "  </soap12:Body>\n" +
+                    "</soap12:Envelope>");
+            httpManager = new OkHttpManager(this, this, request, 2);
             httpManager.postRequest();
             mLoginView.setVisibility(View.VISIBLE);
             mCardView.setVisibility(View.GONE);
@@ -219,12 +231,14 @@ public class LoginActivity extends BaseActivity implements RequestListener {
 
     @Override
     public void action(int i, Object object) {
+        if (object != null) {
+            LogUtil.logI((String)object);
+        }
+        JsonResult result = JsonParser.parseJSON((String)object);
         Message msg = new Message();
-        Bundle bundle = new Bundle();
-        bundle.putString("", " ");
         msg.what = i;
-        msg.setData(bundle);
-        mHandler.sendEmptyMessage(i);
+        msg.obj = result;
+        mHandler.sendMessage(msg);
     }
 
     @Override
