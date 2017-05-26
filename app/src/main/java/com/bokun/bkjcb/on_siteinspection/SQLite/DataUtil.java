@@ -50,9 +50,18 @@ public class DataUtil {
         return results;
     }
 
+    public static void insertCheckPlans(Context context, ArrayList<CheckPlan> plans) {
+        CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);
+        for (CheckPlan plan : plans) {
+            if (!daolmpl.queryCheckPlanIsNull(plan.getIdentifier())) {
+                daolmpl.insertCheckPlan(plan);
+            }
+        }
+    }
+
     public static void insertCheckPlan(Context context, CheckPlan plan) {
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);
-        if (daolmpl.queryCheckPlan(plan.getIdentifier()) == null) {
+        if (!daolmpl.queryCheckPlanIsNull(plan.getIdentifier())) {
             daolmpl.insertCheckPlan(plan);
             LogUtil.logI("加入一条检查计划" + plan.getIdentifier());
         }
@@ -80,6 +89,7 @@ public class DataUtil {
         LogUtil.logI("查询未完成检查计划" + plans.size());
         return plans;
     }
+
     public static ArrayList<CheckPlan> queryCheckPlanCanUpLoad(Context context) {
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);
         ArrayList<CheckPlan> plans = daolmpl.queryCanUpLoadCheckPlan();

@@ -6,8 +6,12 @@ import android.text.TextUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
 
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
+import org.ksoap2.transport.HttpTransportSE;
+
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -24,7 +28,7 @@ import java.util.Map;
  * 网络请求管理
  */
 
-public class HttpManager implements Runnable{
+public class HttpManager implements Runnable {
     private Context context;
     private RequestListener listener;
     private Thread currentRequest = null;
@@ -151,59 +155,41 @@ public class HttpManager implements Runnable{
     private void sendPostRequest() {
         try {
 
-            String requestStr = requestVo.requestJson.toString();
-            LogUtil.logI("request", requestStr);
-            byte[] data = requestStr.getBytes();
-            URL url = new URL(requestVo.requestUrl);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setConnectTimeout(TIME);
-            conn.setReadTimeout(TIME);
-            conn.setDoInput(true);// 允许输入
-            conn.setDoOutput(true);// 允许输出
-            conn.setUseCaches(false);// 不使用Cache
-            conn.setRequestProperty("Charset", ENCODING);
-            conn.setRequestProperty("Content-Length",
-                    String.valueOf(data.length));
-            conn.setRequestProperty("Content-Type", "text/json;charset=utf-8");
-            conn.setRequestMethod("POST");
-
-            DataOutputStream outStream = new DataOutputStream(
-                    conn.getOutputStream());
-            outStream.write(data);
-            outStream.flush();
-            outStream.close();
-            if(conn==null){
-                return;
+            String NAMESPACE = "http://zgzxjk/";
+            String METHOD_NAME = requestVo.methodName;
+            String URL = "http://192.168.100.211:1856/zgzxjkWebService.asmx";
+            // 新建 SoapObject 对象
+            SoapObject rpc = new SoapObject(NAMESPACE, METHOD_NAME);
+            HashMap<String, String> map = requestVo.requestDataMap;
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                rpc.addProperty(entry.getKey(), entry.getValue());
             }
-            int responseCode = conn.getResponseCode();
-            if (responseCode == 200) {
-                input = conn.getInputStream();
-                if (input != null) {
-                    listener.action(RequestListener.EVENT_GET_DATA_SUCCESS,
-                            readStream(input));
-                }
-            } else if (responseCode == 404) {
-                input = conn.getErrorStream();
-                if (input != null) {
-                    listener.action(RequestListener.EVENT_GET_DATA_SUCCESS,
-                            readStream(input));
-                } else {
-                    listener.action(RequestListener.EVENT_NETWORD_EEEOR,
-                            null);
-                }
+            // 创建 HttpTransportSE 对象,并指定 WebService 的 WSDL 文档的 URL
+            HttpTransportSE ht = new HttpTransportSE(URL);
+            // 设置 debug 模式
+            ht.debug = true;
+            // 获得序列化的 envelope
+            SoapSerializationEnvelope envelope =
+                    new SoapSerializationEnvelope(SoapEnvelope.VER12);
+            // 设置 bodyOut 属性的值为 SoapObject 对象 rpc
+            envelope.bodyOut = rpc;
+            // 指定 webservice 的类型为 dotNet
+            envelope.dotNet = true;
+            envelope.setOutputSoapObject(rpc);
+            // 使用 call 方法调用 WebService 方法
+            ht.call(null, envelope);
+            // 获取返回结果
+            SoapObject result = (SoapObject) envelope.bodyIn;
+           /* // 使用 getResponse 方法获得 WebService 方法的返回结果
+            SoapObject detail = (SoapObject) result.getProperty("GetUserResult");
+            // 解析返回的数据信息为 SoapObject 对象,对其进行解析
+            String date = detail.getProperty("success").toString();
+            String date1 = detail.getProperty("message").toString();*/
+            if (result != null) {
+                listener.action(RequestListener.EVENT_GET_DATA_SUCCESS, result);
             } else {
-                listener.action(RequestListener.EVENT_NETWORD_EEEOR, null);
+                listener.action(RequestListener.EVENT_GET_DATA_EEEOR, null);
             }
-        } catch (SocketException e) {
-            e.printStackTrace();
-            listener.action(RequestListener.EVENT_CLOSE_SOCKET, null);
-        } catch (SocketTimeoutException e) {
-            e.printStackTrace();
-            LogUtil.logI("404");
-            listener.action(RequestListener.EVENT_NETWORD_EEEOR, null);
-        } catch (IOException e) {
-            e.printStackTrace();
-            listener.action(RequestListener.EVENT_GET_DATA_EEEOR, null);
         } catch (Exception e) {
             e.printStackTrace();
             listener.action(RequestListener.EVENT_NETWORD_EEEOR, null);
@@ -220,8 +206,7 @@ public class HttpManager implements Runnable{
     /**
      * 读取数据
      *
-     * @param inStream
-     *            输入流
+     * @param inStream 输入流
      * @return
      * @throws Exception
      */
@@ -237,7 +222,7 @@ public class HttpManager implements Runnable{
         LogUtil.logI("response", result);
         outStream.close();
         inStream.close();
-        if(requestVo.parser == null) {
+        if (requestVo.parser == null) {
             return new HashMap<String, Object>();
         }
         return requestVo.parser.parseJSON(result);
@@ -274,7 +259,11 @@ public class HttpManager implements Runnable{
         // 0：无网络 1：WIFI 2：CMWAP 3：CMNET
         boolean isEnable = NetworkUtils.isEnable(context);
         if (isEnable) {
+            if (requestStatus == 1) {
+                sendGetRequest();
+            } else {
                 sendPostRequest();
+            }
         } else {
             listener.action(RequestListener.EVENT_NOT_NETWORD, null);
         }

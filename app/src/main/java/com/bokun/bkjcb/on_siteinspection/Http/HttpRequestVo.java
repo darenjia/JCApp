@@ -12,6 +12,7 @@ public class HttpRequestVo {
     public HashMap<String, String> requestDataMap;
     public String requestJson;
     public JsonParser parser;
+    public String methodName;
 
     public HttpRequestVo(String requestUrl, String requestJson) {
         this.requestUrl = requestUrl;
@@ -28,5 +29,10 @@ public class HttpRequestVo {
         this.requestUrl = requestUrl;
         this.requestDataMap = requestDataMap;
         this.parser = parser;
+    }
+
+    public HttpRequestVo(HashMap<String, String> requestDataMap, String methodName) {
+        this.requestDataMap = requestDataMap;
+        this.methodName = methodName;
     }
 }

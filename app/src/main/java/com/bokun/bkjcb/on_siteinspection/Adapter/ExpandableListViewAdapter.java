@@ -41,7 +41,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getGroupCount() {
-        return plan_list.size();
+        return plan_info.size();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getGroup(int groupPosition) {
-        return plan_list.get(groupPosition);
+        return plan_info.get(groupPosition);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     private String getState(int state) {
         if (state == 0) {
-            return "（未开始检查）";
+            return "（检查未开始）";
         } else if (state == 1) {
             return "（检查未完成）";
         } else if (state == 2) {

@@ -98,8 +98,8 @@
                     android:imeOptions="actionSearch"
                     android:inputType="textCapWords|textAutoComplete"
                     android:maxLines="1"
-                    android:paddingEnd="8dp"
-                    android:paddingStart="12dp" />
+                    android:paddingRight="8dp"
+                    android:paddingLeft="12dp" />
 
                 <ImageView
                     android:id="@+id/clearSearch"

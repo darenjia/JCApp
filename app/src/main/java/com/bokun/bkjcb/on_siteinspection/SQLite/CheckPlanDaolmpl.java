@@ -26,9 +26,11 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
     public void insertCheckPlan(CheckPlan plan) {
         ContentValues values = new ContentValues();
         values.put("identifier", plan.getIdentifier());
+        values.put("sysId", plan.getSysId());
         values.put("name", plan.getName());
         values.put("state", plan.getState());
         values.put("address", plan.getAddress());
+        values.put("quxian", plan.getQuxian());
         values.put("area", plan.getArea());
         values.put("manager", plan.getManager());
         values.put("user", plan.getUser());
@@ -62,8 +64,17 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
             plan.setName(cursor.getString(cursor.getColumnIndex("name")));
             plan.setState(cursor.getInt(cursor.getColumnIndex("state")));
         }
+        cursor.close();
         LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
         return plan;
+    }
+
+    @Override
+    public boolean queryCheckPlanIsNull(int identifier) {
+        Cursor cursor = db.query("checkplan", null, "identifier=?", new String[]{String.valueOf(identifier)}, null, null, null);
+        boolean isNull = cursor.moveToNext();
+        cursor.close();
+        return isNull;
     }
 
     @Override
@@ -94,6 +105,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
             plan.setState(cursor.getInt(cursor.getColumnIndex("state")));
             list.add(plan);
         }
+        cursor.close();
         LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
         return list;
     }
@@ -110,6 +122,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
             plan.setState(cursor.getInt(cursor.getColumnIndex("state")));
             list.add(plan);
         }
+        cursor.close();
         LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
         return list;
     }
@@ -123,6 +136,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
             LogUtil.logI("查询计划状态");
             i = cursor.getInt(cursor.getColumnIndex("state"));
         }
+        cursor.close();
         return i;
     }
 

@@ -39,9 +39,11 @@ public class Constants {
 
     public final static String CREATE_CHECK_PLAN_TABLE = "create table checkplan(" +
             "identifier Integer primary key," +
+            "sysId int(12)," +
             "name char(30)," +
             "state int(1)," +
             "address varchar(50)," +
+            "quxian varchar(10)," +
             "area varchar(20)," +
             "type varchar(20)," +
             "tel varchar(20)," +
@@ -58,5 +60,24 @@ public class Constants {
             "image char(100)," +
             "video char(100)" +
             ")";
+    public final static String GetXxclSc = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+            "<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\n" +
+            "  <soap12:Body>\n" +
+            "    <GetXxclSc xmlns=\"http://zgzxjk/\">\n" +
+            "      <quxian>quxian</quxian>\n" +
+            "    </GetXxclSc>\n" +
+            "  </soap12:Body>\n" +
+            "</soap12:Envelope>";
+    public final static String GetUser ="<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+            "<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\n" +
+            "  <soap12:Body>\n" +
+            "    <GetUser xmlns=\"http://zgzxjk/\">\n" +
+            "      <user>UserName</user>\n" +
+            "      <password>UserPwd</password>\n" +
+            "    </GetUser>\n" +
+            "  </soap12:Body>\n" +
+            "</soap12:Envelope>";
+    public final static String GetUserURL = "http://192.168.100.211:1856/zgzxjkWebService.asmx?op=GetUser";
 
+    public final static String GetXxclScURL ="http://192.168.100.211:1856/zgzxjkWebService.asmx?op=GetXxclSc";
 }

@@ -15,6 +15,7 @@ import java.io.Serializable;
  */
 
 public class CheckPlan implements Serializable {
+    private int sysId;//系统id
     private int identifier;//计划编号
     private String name;//检查计划名称
     private int state;//四种状态，0：未检查,1:已检查，但为检查完，2：检查完，未上传，3：上传完成
@@ -24,9 +25,27 @@ public class CheckPlan implements Serializable {
     private String tel;
     private String manager;
     private String user;
+    private String quxian;
+
+    public String getQuxian() {
+        return quxian;
+    }
+
+    public void setQuxian(String quxian) {
+        this.quxian = quxian;
+    }
+
     private int state_upload;//上传状态，0未开始，1等待开始,2,正在进行,3暂停,4已完成
 
     public CheckPlan() {
+    }
+
+    public int getSysId() {
+        return sysId;
+    }
+
+    public void setSysId(int sysId) {
+        this.sysId = sysId;
     }
 
     public int getIdentifier() {

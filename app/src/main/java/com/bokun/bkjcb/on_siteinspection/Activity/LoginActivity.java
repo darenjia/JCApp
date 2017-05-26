@@ -23,12 +23,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
+import com.bokun.bkjcb.on_siteinspection.Http.HttpManager;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpRequestVo;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
-import com.bokun.bkjcb.on_siteinspection.Http.OkHttpManager;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
+
+import org.ksoap2.serialization.SoapObject;
+
+import java.util.HashMap;
 
 /**
  * Created by BKJCB on 2017/3/17.
@@ -68,9 +72,9 @@ public class LoginActivity extends BaseActivity implements RequestListener {
                     break;
                 case RequestListener.EVENT_GET_DATA_SUCCESS:
                     JsonResult result = (JsonResult) msg.obj;
-                    if (result.success){
-                        MainActivity.ComeToMainActivity(LoginActivity.this);
-                    }else {
+                    if (result.success) {
+                        MainActivity.ComeToMainActivity(LoginActivity.this, result.resData);
+                    } else {
                         Snackbar.make(mCardView, result.message, Snackbar.LENGTH_LONG).show();
                     }
                     break;
@@ -79,7 +83,7 @@ public class LoginActivity extends BaseActivity implements RequestListener {
             noLogining();
         }
     };
-    private OkHttpManager httpManager;
+    private HttpManager httpManager;
     private CheckBox mRembPass;
     private CardView mCardView;
 
@@ -199,17 +203,13 @@ public class LoginActivity extends BaseActivity implements RequestListener {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
 //
-
-            HttpRequestVo request = new HttpRequestVo("http://192.168.100.211:1856/zgzxjkWebService.asmx?op=GetUser","<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-                    "<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\n" +
-                    "  <soap12:Body>\n" +
-                    "    <GetUser xmlns=\"http://zgzxjk/\">\n" +
-                    "      <user>" + userName + "</user>\n" +
-                    "      <password>" + password + "</password>\n" +
-                    "    </GetUser>\n" +
-                    "  </soap12:Body>\n" +
-                    "</soap12:Envelope>");
-            httpManager = new OkHttpManager(this, this, request, 2);
+            // String requestJson = Constants.GetUser.replace("UserName", userName).replace("UserPwd", password);
+            // HttpRequestVo request = new HttpRequestVo(Constants.GetUserURL, requestJson);
+            HashMap<String, String> map = new HashMap<>();
+            map.put("user", userName);
+            map.put("password", password);
+            HttpRequestVo request = new HttpRequestVo(map, "GetUser");
+            httpManager = new HttpManager(this, this, request, 2);
             httpManager.postRequest();
             mLoginView.setVisibility(View.VISIBLE);
             mCardView.setVisibility(View.GONE);
@@ -232,9 +232,9 @@ public class LoginActivity extends BaseActivity implements RequestListener {
     @Override
     public void action(int i, Object object) {
         if (object != null) {
-            LogUtil.logI((String)object);
+            LogUtil.logI(object.toString());
         }
-        JsonResult result = JsonParser.parseJSON((String)object);
+        JsonResult result = JsonParser.parseSoap((SoapObject) object);
         Message msg = new Message();
         msg.what = i;
         msg.obj = result;

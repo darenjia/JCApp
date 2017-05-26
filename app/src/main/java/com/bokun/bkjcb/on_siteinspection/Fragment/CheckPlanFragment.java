@@ -14,13 +14,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
+import com.bokun.bkjcb.on_siteinspection.Activity.MainActivity;
 import com.bokun.bkjcb.on_siteinspection.Activity.SecurityCheckActivity;
 import com.bokun.bkjcb.on_siteinspection.Adapter.ExpandableListViewAdapter;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
+import com.bokun.bkjcb.on_siteinspection.Domain.CheckSc;
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
+import com.bokun.bkjcb.on_siteinspection.Http.HttpManager;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpRequestVo;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
-import com.bokun.bkjcb.on_siteinspection.Http.OkHttpManager;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
@@ -28,7 +30,10 @@ import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 import com.bokun.bkjcb.on_siteinspection.View.ConstructionDetailView;
 
+import org.ksoap2.serialization.SoapObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by DengShuai on 2017/4/7.
@@ -38,6 +43,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
 
     private ArrayList<CheckPlan> checkPlans;
+    private ArrayList<CheckSc> CheckScs;
     private ArrayList<ArrayList<CheckPlan>> constuctions;
     private ExpandableListView listview;
     private ExpandableListViewAdapter adapter;
@@ -59,13 +65,12 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperlayout);
         listview = (ExpandableListView) view.findViewById(R.id.plan_list);
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorRecycler));
-        HttpRequestVo requestVo = new HttpRequestVo("http://192.168.100.211:1856/zgzxjkWebService.asmx?op=GetJianChaJiHua", "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-                "<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\n" +
-                "  <soap12:Body>\n" +
-                "    <GetJianChaJiHua xmlns=\"http://zgzxjk/\" />\n" +
-                "  </soap12:Body>\n" +
-                "</soap12:Envelope>");
-        OkHttpManager manager = new OkHttpManager(context, this, requestVo);
+        //HttpRequestVo requestVo = new HttpRequestVo(Constants.GetXxclScURL, Constants.GetXxclSc.replace("quxian", MainActivity.quxian));
+        //OkHttpManager manager = new OkHttpManager(context, this, requestVo);
+        HashMap<String, String> map = new HashMap<>();
+        map.put("quxian", MainActivity.quxian);
+        HttpRequestVo requestVo = new HttpRequestVo(map, "GetXxclSc");
+        HttpManager manager = new HttpManager(context, this, requestVo);
         manager.postRequest();
         refreshLayout.setRefreshing(true);
 
@@ -87,13 +92,13 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
     @Override
     protected void getDataSucceed(JsonResult object) {
-        super.getDataSucceed(object);
         new LodingAsyncTask().execute(object.resData);
     }
 
     @Override
     protected void getDataFailed() {
         super.getDataFailed();
+        LogUtil.logI(MainActivity.quxian);
         setExpandableListView();
     }
 
@@ -102,20 +107,10 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         int left = width - (width / 10);
         int right = width - (width / 10) + (width / 20);
         listview.setIndicatorBounds(left, right);
-        checkPlans = DataUtil.queryCheckPlan(context);
         if (checkPlans.size() == 0) {
-            for (int i = 0; i < 3; i++) {
-                CheckPlan checkPlan = new CheckPlan();
-                checkPlan.setIdentifier(21545150 + i);
-                checkPlan.setName("检查计划" + i);
-                checkPlan.setState(i);
-                DataUtil.insertCheckPlan(context, checkPlan);
-                checkPlans.add(checkPlan);
-            }
+            checkPlans = DataUtil.queryCheckPlan(context);
         }
         constuctions = new ArrayList<>();
-        constuctions.add(checkPlans);
-        constuctions.add(checkPlans);
         constuctions.add(checkPlans);
         adapter = new ExpandableListViewAdapter(context, checkPlans, constuctions);
         listview.setAdapter(adapter);
@@ -138,10 +133,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
     @Override
     public void action(int i, Object object) {
-        if (object != null) {
-            LogUtil.logI((String) object);
-        }
-        JsonResult result = JsonParser.parseJSON((String) object);
+        JsonResult result = JsonParser.parseSoap((SoapObject) object);
         Message msg = new Message();
         msg.what = i;
         msg.obj = result;
@@ -149,10 +141,10 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     }
 
     private void createDailog(final CheckPlan checkPlan, final int groupPosition, final int childPosition) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-        ConstructionDetailView constructionDetailView = new ConstructionDetailView(context, checkPlan);
-        View view = constructionDetailView.getConstructionDetailView(new View.OnClickListener() {
+        ConstructionDetailView constructionDetailView = ConstructionDetailView.getConstructionView(context);
+        View view = constructionDetailView.setData(checkPlan, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.btn_check) {
@@ -212,18 +204,14 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         protected void onPreExecute() {
             super.onPreExecute();
             dialog = new ProgressDialog(context);
-            dialog.setMessage("数据加载中");
+            dialog.setMessage("数据加载中...");
             dialog.show();
         }
 
         @Override
         protected Boolean doInBackground(String[] objects) {
             checkPlans = JsonParser.getJSONData(objects[0]);
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            DataUtil.insertCheckPlans(context, checkPlans);
             return true;
         }
 

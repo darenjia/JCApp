@@ -15,10 +15,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.bokun.bkjcb.on_siteinspection.Domain.ManagerInfo;
 import com.bokun.bkjcb.on_siteinspection.Fragment.CheckPlanFragment;
 import com.bokun.bkjcb.on_siteinspection.Fragment.MapFragment;
 import com.bokun.bkjcb.on_siteinspection.Fragment.TestFragment;
 import com.bokun.bkjcb.on_siteinspection.Fragment.UpLoadFragment;
+import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.Utils.AppManager;
 
@@ -43,6 +45,7 @@ public class MainActivity extends BaseActivity
     private CheckPlanFragment checkPlanFragment;
     private MapFragment mapFragment;
     private UpLoadFragment upLoadFragment;
+    public static String quxian;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +84,12 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void loadData() {
-        checkPlanFragment = new CheckPlanFragment();
-        mapFragment = MapFragment.newInstance();
-        upLoadFragment = new UpLoadFragment();
-        testFragment = new TestFragment();
+//        checkPlanFragment = new CheckPlanFragment();
+//        mapFragment = MapFragment.newInstance();
+//        upLoadFragment = new UpLoadFragment();
+//        testFragment = new TestFragment();
+        ManagerInfo managerInfo = JsonParser.getUserInfo(getIntent().getStringExtra("quxian"));
+        quxian = managerInfo.quxian;
         loadView("检查计划", "first");
     }
 
@@ -118,7 +123,7 @@ public class MainActivity extends BaseActivity
         } else if (id == R.id.action_search_map) {
             Bundle bundle = new Bundle();
             bundle.putParcelable("point", MapFragment.newInstance().mStartPoint);
-            MapActivity.ComeToMapActivity(this,bundle);
+            MapActivity.ComeToMapActivity(this, bundle);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -208,8 +213,9 @@ public class MainActivity extends BaseActivity
         }
     }
 
-    public static void ComeToMainActivity(Activity activity) {
+    public static void ComeToMainActivity(Activity activity, String string) {
         Intent intent = new Intent(activity, MainActivity.class);
+        intent.putExtra("quxian", string);
         activity.startActivity(intent);
         activity.finish();
     }

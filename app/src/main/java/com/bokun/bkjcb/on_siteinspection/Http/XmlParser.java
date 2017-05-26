@@ -1,5 +1,8 @@
 package com.bokun.bkjcb.on_siteinspection.Http;
 
+import com.bokun.bkjcb.on_siteinspection.Utils.SoapManager;
+
+import org.ksoap2.serialization.SoapObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -28,7 +31,9 @@ public class XmlParser {
                     String nodeName = xpp.getName().trim();
                     if ("GetUserResult".equals(nodeName)) { // employee节点
                         res = xpp.nextText();
-                    }else if ("GetJianChaJiHuaResult".equals(nodeName)) { // employee节点
+                    } else if ("GetJianChaJiHuaResult".equals(nodeName)) { // employee节点
+                        res = xpp.nextText();
+                    } else if ("GetXxclScResult".equals(nodeName)) { // employee节点
                         res = xpp.nextText();
                     }
                 } else if (eventType == XmlPullParser.END_TAG) {
@@ -46,4 +51,8 @@ public class XmlParser {
         return res;
     }
 
+    public static String parseSoapObject(SoapObject object) {
+        SoapManager manager = SoapManager.getInstance();
+        return manager.soapToJson(object);
+    }
 }

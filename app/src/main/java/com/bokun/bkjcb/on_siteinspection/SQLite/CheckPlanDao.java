@@ -15,6 +15,8 @@ public abstract class CheckPlanDao {
 
     public abstract CheckPlan queryCheckPlan(int identifier);
 
+    public abstract boolean queryCheckPlanIsNull(int identifier);
+
     public abstract ArrayList<CheckPlan> queryCheckPlan();
 
     public abstract ArrayList<CheckPlan> queryFinishedCheckPlan();

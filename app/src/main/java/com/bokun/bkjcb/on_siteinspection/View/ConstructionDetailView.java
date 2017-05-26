@@ -17,34 +17,58 @@ public class ConstructionDetailView {
 
     private Context context;
     private CheckPlan checkPlan;
+    private static ConstructionDetailView view;
+    private TextView mViewName;
+    private TextView mViewId;
+    private TextView mViewAddress;
+    private TextView mViewArea;
+    private TextView mViewType;
+    private TextView mViewManager;
+    private TextView mViewUser;
+    private Button mButtonCheck;
+    private View resView;
 
-    public ConstructionDetailView(Context context, CheckPlan checkPlan) {
+    private ConstructionDetailView(Context context) {
         this.context = context;
-        this.checkPlan = checkPlan;
     }
 
-    public View getConstructionDetailView(View.OnClickListener listener) {
-        View view = View.inflate(context, R.layout.constn_detail_view, null);
-        TextView mViewName = (TextView) view.findViewById(R.id.construction_name);
-        TextView mViewId = (TextView) view.findViewById(R.id.construction_id);
-        TextView mViewAddress = (TextView) view.findViewById(R.id.construction_address);
-        TextView mViewArea = (TextView) view.findViewById(R.id.construction_area);
-        TextView mViewType = (TextView) view.findViewById(R.id.construction_type);
-//        TextView mViewTel = (TextView) view.findViewById(R.id.construction_tel);
-        TextView mViewManager = (TextView) view.findViewById(R.id.construction_manager);
-        TextView mViewUser = (TextView) view.findViewById(R.id.construction_user);
-        Button mButtonCheck = (Button) view.findViewById(R.id.btn_check);
+    public static ConstructionDetailView getConstructionView(Context context) {
+        if (view == null) {
+            view = new ConstructionDetailView(context);
+        }
+        return view;
+    }
 
+    public View setData(CheckPlan checkPlan, View.OnClickListener listener) {
+        this.checkPlan = checkPlan;
+        return getConstructionDetailView(listener);
+    }
+
+    private View getConstructionDetailView(View.OnClickListener listener) {
+        initViews();
         mViewName.setText(checkPlan.getName());
         mViewId.setText(checkPlan.getIdentifier() + "");
-        mViewAddress.setText("");
+        mViewAddress.setText(checkPlan.getAddress());
 //        mViewTel.setText("");
-        mViewArea.setText("");
-        mViewType.setText("");
+        mViewArea.setText(checkPlan.getArea() + "m²");
+        mViewType.setText(checkPlan.getType());
         mViewManager.setText("");
         mViewUser.setText("");
         mButtonCheck.setOnClickListener(listener);
-        return view;
+        return resView;
+    }
+
+    private void initViews() {
+        resView = View.inflate(context, R.layout.constn_detail_view, null);
+        mViewName = (TextView) resView.findViewById(R.id.construction_name);
+        mViewId = (TextView) resView.findViewById(R.id.construction_id);
+        mViewAddress = (TextView) resView.findViewById(R.id.construction_address);
+        mViewArea = (TextView) resView.findViewById(R.id.construction_area);
+        mViewType = (TextView) resView.findViewById(R.id.construction_type);
+//        TextView mViewTel = (TextView) view.findViewById(R.id.construction_tel);
+        mViewManager = (TextView) resView.findViewById(R.id.construction_manager);
+        mViewUser = (TextView) resView.findViewById(R.id.construction_user);
+        mButtonCheck = (Button) resView.findViewById(R.id.btn_check);
     }
 
 }
