@@ -11,7 +11,7 @@ import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
  * Created by BKJCB on 2017/3/20.
  */
 
-public class SQLiteOpenUtil extends SQLiteOpenHelper{
+public class SQLiteOpenUtil extends SQLiteOpenHelper {
 
     public SQLiteOpenUtil(Context context) {
         super(context, "User.db", null, 1);
@@ -25,6 +25,7 @@ public class SQLiteOpenUtil extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(Constants.CREATE_CHECK_RESULT);
         db.execSQL(Constants.CREATE_CHECK_PLAN_TABLE);
+        db.execSQL(Constants.CREATE_SEARCH_HISTORY);
     }
 
     @Override

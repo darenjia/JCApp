@@ -38,16 +38,6 @@ public class CheckResultDaolmpl extends CheckResultDao {
         return isSuccess != -1;
     }
 
-    /*
-    *  "id Integer primary key,"
-       "identifier int(10),"
-       "num int(10)," +
-       "checkresult int(1),"
-       "comment text," +
-       "audio char(100),"
-       "image char(100),"
-       "video char(100)"
-     */
     @Override
     public ArrayList<CheckResult> queryCheckResult(int Identifier) {
         ArrayList<CheckResult> list = new ArrayList<>();

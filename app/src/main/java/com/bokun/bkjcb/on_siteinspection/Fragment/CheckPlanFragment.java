@@ -33,7 +33,6 @@ import com.bokun.bkjcb.on_siteinspection.View.ConstructionDetailView;
 import org.ksoap2.serialization.SoapObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by DengShuai on 2017/4/7.
@@ -67,9 +66,9 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorRecycler));
         //HttpRequestVo requestVo = new HttpRequestVo(Constants.GetXxclScURL, Constants.GetXxclSc.replace("quxian", MainActivity.quxian));
         //OkHttpManager manager = new OkHttpManager(context, this, requestVo);
-        HashMap<String, String> map = new HashMap<>();
-        map.put("quxian", MainActivity.quxian);
-        HttpRequestVo requestVo = new HttpRequestVo(map, "GetXxclSc");
+        HttpRequestVo requestVo = new HttpRequestVo();
+        requestVo.getRequestDataMap().put("quxian", MainActivity.quxian);
+        requestVo.setMethodName("GetXxclSc");
         HttpManager manager = new HttpManager(context, this, requestVo);
         manager.postRequest();
         refreshLayout.setRefreshing(true);
@@ -92,7 +91,10 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
     @Override
     protected void getDataSucceed(JsonResult object) {
-        new LodingAsyncTask().execute(object.resData);
+        //new LodingAsyncTask().execute(object.resData);
+        checkPlans = JsonParser.getJSONData(object.resData);
+        DataUtil.insertCheckPlans(context, checkPlans);
+        setExpandableListView();
     }
 
     @Override
@@ -117,14 +119,12 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         listview.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                LogUtil.logI("click:" + groupPosition);
                 return false;
             }
         });
         listview.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                LogUtil.logI("click" + childPosition + ":" + groupPosition);
                 createDailog(constuctions.get(groupPosition).get(childPosition), groupPosition, childPosition);
                 return true;
             }

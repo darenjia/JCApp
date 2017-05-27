@@ -32,8 +32,6 @@ import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 
 import org.ksoap2.serialization.SoapObject;
 
-import java.util.HashMap;
-
 /**
  * Created by BKJCB on 2017/3/17.
  */
@@ -205,10 +203,10 @@ public class LoginActivity extends BaseActivity implements RequestListener {
 //
             // String requestJson = Constants.GetUser.replace("UserName", userName).replace("UserPwd", password);
             // HttpRequestVo request = new HttpRequestVo(Constants.GetUserURL, requestJson);
-            HashMap<String, String> map = new HashMap<>();
-            map.put("user", userName);
-            map.put("password", password);
-            HttpRequestVo request = new HttpRequestVo(map, "GetUser");
+            HttpRequestVo request = new HttpRequestVo();
+            request.getRequestDataMap().put("user", userName);
+            request.getRequestDataMap().put("password", password);
+            request.setMethodName("GetUser");
             httpManager = new HttpManager(this, this, request, 2);
             httpManager.postRequest();
             mLoginView.setVisibility(View.VISIBLE);

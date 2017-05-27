@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,13 +19,11 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -69,10 +66,13 @@ import com.amap.api.services.route.RideRouteResult;
 import com.amap.api.services.route.RouteSearch;
 import com.amap.api.services.route.WalkPath;
 import com.amap.api.services.route.WalkRouteResult;
+import com.bokun.bkjcb.on_siteinspection.Adapter.StringAdapter;
+import com.bokun.bkjcb.on_siteinspection.Domain.LogQuickSearch;
 import com.bokun.bkjcb.on_siteinspection.Map.AMapUtil;
 import com.bokun.bkjcb.on_siteinspection.Map.BusResultListAdapter;
 import com.bokun.bkjcb.on_siteinspection.Map.DriveRouteDetailActivity;
 import com.bokun.bkjcb.on_siteinspection.Map.DrivingRouteOverLay;
+import com.bokun.bkjcb.on_siteinspection.Map.InitiateSearch;
 import com.bokun.bkjcb.on_siteinspection.Map.WalkRouteDetailActivity;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.Utils.LocalTools;
@@ -80,12 +80,8 @@ import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.ToastUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
-import com.eugene.fithealth.LogQuickSearchData.LogQuickSearch;
-import com.eugene.fithealth.LogQuickSearchData.LogQuickSearchAdapter;
-import com.eugene.fithealth.Utilities.InitiateSearch;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -117,18 +113,16 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
     private AutoCompleteTextView edit_text_search;
     private ListView listView;
     //    private ListView listContainer;//搜索结果列表
-    private LogQuickSearchAdapter logQuickSearchAdapter;//搜索历史适配器
+    private StringAdapter logQuickSearchAdapter;//搜索历史适配器
     private Set<String> set;//判断有没有重复的搜索历史，重复的话不再保存
     private ArrayList<String> mItem;
     private ArrayList<PoiItem> poiItems;
     private ProgressBar marker_progress;
-    private PoiResult poiResult; // poi返回的结果
     private int currentPage = 0;// 当前页面，从0开始计数
     private PoiSearch.Query query;// Poi查询条件类
-    private PoiSearch poiSearch;// POI搜索
     //    private StringAdapter resultAdapter;
     private Button location;
-    private ListPopupWindow listPopupWindow;
+    //    private ListPopupWindow listPopupWindow;
     private TextView mPoiName, mPoiAddress;
     private Marker mlastMarker, detailMarker;
     private RouteSearch mRouteSearch;
@@ -669,17 +663,17 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
                 android.graphics.PorterDuff.Mode.MULTIPLY);
         set = new HashSet<>();
         SetTypeFace();
-        logQuickSearchAdapter = new LogQuickSearchAdapter(this, 0, LogQuickSearch.all());
+        logQuickSearchAdapter = new StringAdapter(this, LogQuickSearch.all(this, 0));
         mItem = new ArrayList<>();
         listView.setAdapter(logQuickSearchAdapter);
 //        resultAdapter = new StringAdapter(mItem);
 //        listContainer.setAdapter(resultAdapter);
-        listPopupWindow = new ListPopupWindow(this);
+//       listPopupWindow = new ListPopupWindow(this);
 //        listPopupWindow.setAdapter(resultAdapter);
-        listPopupWindow.setAnchorView(location);
-        listPopupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
-        listPopupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        listPopupWindow.setModal(true);
+//        listPopupWindow.setAnchorView(location);
+//        listPopupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+//        listPopupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+//        listPopupWindow.setModal(true);
         InitiateSearch();
         HandleSearch();
         IsAdapterEmpty();
@@ -689,12 +683,12 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                LogQuickSearch logQuickSearch = logQuickSearchAdapter.getItem(position);
-                edit_text_search.setText(logQuickSearch.getName());
+                String name = logQuickSearchAdapter.getItem(position);
+                edit_text_search.setText(name);
                 listView.setVisibility(View.GONE);
                 ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(edit_text_search.getWindowToken(), 0);
                 toolbar_shadow.setVisibility(View.GONE);
-                search(logQuickSearch.getName(), 0);
+                search(name, 0);
             }
         });
         edit_text_search.addTextChangedListener(new TextWatcher() {
@@ -705,16 +699,17 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String newText = edit_text_search.getText().toString();
+                String newText = s.toString();
                 if (newText.length() == 0) {
-                    logQuickSearchAdapter = new LogQuickSearchAdapter(MapActivity.this, 0, LogQuickSearch.all());
+                    logQuickSearchAdapter.initData();
                     listView.setAdapter(logQuickSearchAdapter);
-                    clearSearch.setImageResource(com.eugene.fithealth.R.mipmap.ic_keyboard_voice);
+                    clearSearch.setImageResource(R.mipmap.ic_search);
                     IsAdapterEmpty();
                 } else {
                     /*logQuickSearchAdapter = new LogQuickSearchAdapter(context, 0, LogQuickSearch.FilterByName(edit_text_search.getText().toString()));
                     listView.setAdapter(logQuickSearchAdapter);*/
-                    clearSearch.setImageResource(com.eugene.fithealth.R.mipmap.ic_close);
+                    listView.setVisibility(View.GONE);
+                    clearSearch.setImageResource(R.mipmap.ic_close);
                     IsAdapterEmpty();
                     InputtipsQuery inputquery = new InputtipsQuery(newText, cityCode);
                     Inputtips inputTips = new Inputtips(MapActivity.this, inputquery);
@@ -806,16 +801,12 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
 
     private void UpdateQuickSearch(String item) {
         for (int i = 0; i < logQuickSearchAdapter.getCount(); i++) {
-            LogQuickSearch ls = logQuickSearchAdapter.getItem(i);
-            String name = ls.getName();
-            set.add(name.toUpperCase());
+            String name = logQuickSearchAdapter.getItem(i);
+            set.add(name);
         }
-        if (set.add(item.toUpperCase())) {
-            LogQuickSearch recentLog = new LogQuickSearch();
-            recentLog.setName(item);
-            recentLog.setDate(new Date());
-            recentLog.save();
-            logQuickSearchAdapter.addLog(recentLog);
+        if (set.add(item)) {
+            LogQuickSearch.save(this, item, 0);
+            logQuickSearchAdapter.add(item);
             logQuickSearchAdapter.notifyDataSetChanged();
         }
     }
@@ -833,7 +824,6 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
         edit_text_search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                LogUtil.logI("action:" + actionId);
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     if (edit_text_search.getText().toString().trim().length() > 0) {
                         clearItems();
@@ -844,8 +834,6 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
                         toolbar_shadow.setVisibility(View.GONE);
                     }
                     return true;
-                } else if (actionId == EditorInfo.IME_ACTION_NONE) {
-
                 }
                 return false;
             }
@@ -892,7 +880,7 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
         query.setCityLimit(true);
         keywordView.setText(item);
 
-        poiSearch = new PoiSearch(this, query);
+        PoiSearch poiSearch = new PoiSearch(this, query);
         poiSearch.setOnPoiSearchListener(this);
         poiSearch.searchPOIAsyn();
     }
@@ -905,7 +893,7 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
         if (rCode == AMapException.CODE_AMAP_SUCCESS) {
             if (result != null && result.getQuery() != null) {// 搜索poi的结果
                 if (result.getQuery().equals(query)) {// 是否是同一条
-                    poiResult = result;
+                    PoiResult poiResult = result;
                     // 取得搜索到的poiitems有多少页
                     poiItems = poiResult.getPois();// 取得第一页的poiitem数据，页数从数字0开始
                     List<SuggestionCity> suggestionCities = poiResult
@@ -984,39 +972,6 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
     private void setPoiItemDisplayContent(final PoiItem mCurrentPoi) {
         mPoiName.setText(mCurrentPoi.getTitle());
         mPoiAddress.setText(mCurrentPoi.getSnippet());
-    }
-
-    /**
-     * listpopWindow适配器
-     */
-    class StringAdapter extends BaseAdapter {
-        List<String> list;
-
-        public StringAdapter(List<String> list) {
-            this.list = list;
-        }
-
-        @Override
-        public int getCount() {
-            return list.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return list.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            TextView textView = (TextView) View.inflate(MapActivity.this, R.layout.expandable_child_item_view, null);
-            textView.setText(list.get(position));
-            return textView;
-        }
     }
 
     /**

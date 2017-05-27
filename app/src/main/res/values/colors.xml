@@ -29,4 +29,8 @@
 
     <color name="gay_progress">#9e9e9e</color>
     <color name="blue">#0099ff</color>
+    <color name="accent">#BDBDBD</color>
+    <color name="text_color">#6D6D6D</color>
+    <color name="white">#FEFEFE</color>
+    <color name="white_off">#BDBDBD</color>
 </resources>

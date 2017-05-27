@@ -51,6 +51,5 @@ dependencies {
     compile 'com.amap.api:search:latest.integration'
     //定位
     compile 'com.amap.api:location:latest.integration'
-    compile project(':searchview')
     compile files('libs/ksoap2-android-assembly-3.0.0-jar-with-dependencies .jar')
 }

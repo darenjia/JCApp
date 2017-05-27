@@ -18,7 +18,7 @@ import android.view.MenuItem;
 import com.bokun.bkjcb.on_siteinspection.Domain.ManagerInfo;
 import com.bokun.bkjcb.on_siteinspection.Fragment.CheckPlanFragment;
 import com.bokun.bkjcb.on_siteinspection.Fragment.MapFragment;
-import com.bokun.bkjcb.on_siteinspection.Fragment.TestFragment;
+import com.bokun.bkjcb.on_siteinspection.Fragment.SearchFragment;
 import com.bokun.bkjcb.on_siteinspection.Fragment.UpLoadFragment;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.R;
@@ -149,6 +149,8 @@ public class MainActivity extends BaseActivity
         } else if (id == R.id.nav_exit) {
             AppManager.getAppManager().finishAllActivity();
 //            AppManager.getAppManager().AppExit(this);
+        } else if (id == R.id.nav_logout) {
+            LoginActivity.comeToLoginActivity(this);
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
@@ -171,8 +173,8 @@ public class MainActivity extends BaseActivity
                 menu.setGroupVisible(R.id.menu_map, true);
             } else if (key.equals("forth")) {
                 currentFragment = new UpLoadFragment();
-            } else {
-                currentFragment = new TestFragment();
+            } else if (key.equals("second")) {
+                currentFragment = new SearchFragment();
             }
             transaction.add(contentView.getId(), currentFragment);
             viewMap.put(key, currentFragment);
