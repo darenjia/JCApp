@@ -14,6 +14,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.ManagerInfo;
 import com.bokun.bkjcb.on_siteinspection.Fragment.CheckPlanFragment;
@@ -40,12 +43,14 @@ public class MainActivity extends BaseActivity
     private FragmentManager manager;
     private Toolbar toolbar;
     private Menu menu;
+    private ImageView userImg;
+    private TextView userName, userMessage;
     private Fragment testFragment;
     private Fragment lastFragment;
     private CheckPlanFragment checkPlanFragment;
     private MapFragment mapFragment;
     private UpLoadFragment upLoadFragment;
-    public static String quxian;
+    public static ManagerInfo user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +61,6 @@ public class MainActivity extends BaseActivity
     protected void initView() {
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-
         setSupportActionBar(toolbar);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -68,6 +72,10 @@ public class MainActivity extends BaseActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        View headerLayout = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        userImg = (ImageView) headerLayout.findViewById(R.id.user_img);
+        userMessage = (TextView) headerLayout.findViewById(R.id.user_message);
+        userName = (TextView) headerLayout.findViewById(R.id.user_name);
         viewMap = new HashMap<>();
         manager = getSupportFragmentManager();
     }
@@ -88,8 +96,8 @@ public class MainActivity extends BaseActivity
 //        mapFragment = MapFragment.newInstance();
 //        upLoadFragment = new UpLoadFragment();
 //        testFragment = new TestFragment();
-        ManagerInfo managerInfo = JsonParser.getUserInfo(getIntent().getStringExtra("quxian"));
-        quxian = managerInfo.quxian;
+        user = JsonParser.getUserInfo(getIntent().getStringExtra("quxian"));
+        userMessage.setText("区县：" + user.quxian + " 权限：" + user.roles);
         loadView("检查计划", "first");
     }
 

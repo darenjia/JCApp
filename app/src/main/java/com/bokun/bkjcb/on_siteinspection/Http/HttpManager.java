@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -190,6 +191,10 @@ public class HttpManager implements Runnable {
             } else {
                 listener.action(RequestListener.EVENT_GET_DATA_EEEOR, null);
             }
+        } catch (ProtocolException e) {
+            listener.action(RequestListener.EVENT_GET_DATA_EEEOR, null);
+        } catch (SocketTimeoutException e) {
+            listener.action(RequestListener.EVENT_GET_DATA_EEEOR, null);
         } catch (Exception e) {
             e.printStackTrace();
             listener.action(RequestListener.EVENT_NETWORD_EEEOR, null);

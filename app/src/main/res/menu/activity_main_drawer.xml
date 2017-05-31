@@ -21,7 +21,7 @@
              android:title="进度详情" />-->
         <item
             android:id="@+id/nav_update_result"
-            android:icon="@drawable/vector_drawable_upload"
+            android:icon="@drawable/vector_drawable_upload1"
             android:title="上传结果" />
     </group>
 

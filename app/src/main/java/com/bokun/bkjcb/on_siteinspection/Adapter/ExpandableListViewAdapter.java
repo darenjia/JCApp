@@ -76,21 +76,28 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        View view = View.inflate(context, R.layout.expandable_group_item_view, null);
-        TextView txtview = (TextView) view.findViewById(R.id.group_title);
-        txtview.setText(plan_list.get(groupPosition).getName());
+        View view;
+        if (convertView == null) {
+            view = View.inflate(context, R.layout.expandable_group_item_view, null);
+        } else {
+            view = convertView;
+        }
+        TextView txtView = (TextView) view.findViewById(R.id.group_title);
+        txtView.setText(plan_list.get(groupPosition).getName());
         return view;
     }
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        View view = View.inflate(context, R.layout.checkitemlist, null);
-        TextView title = (TextView) view.findViewById(R.id.check_item_title);
-        TextView state = (TextView) view.findViewById(R.id.check_item_state);
+        if (convertView == null) {
+            convertView = View.inflate(context, R.layout.checkitemlist, null);
+        }
+        TextView title = (TextView) convertView.findViewById(R.id.check_item_title);
+        TextView state = (TextView) convertView.findViewById(R.id.check_item_state);
         CheckPlan plan = plan_info.get(groupPosition).get(childPosition);
         title.setText(plan.getName());
         state.setText(getState(plan.getState()));
-        return view;
+        return convertView;
     }
 
     @Override

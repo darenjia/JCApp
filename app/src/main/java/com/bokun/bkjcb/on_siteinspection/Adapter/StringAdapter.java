@@ -48,7 +48,12 @@ public class StringAdapter extends BaseAdapter implements Filterable {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        TextView textView = (TextView) View.inflate(context, R.layout.search_tips_view, null);
+        TextView textView;
+        if (convertView == null) {
+            textView = (TextView) View.inflate(context, R.layout.search_tips_view, null);
+        } else {
+            textView = (TextView) convertView;
+        }
         textView.setText(strings.get(position));
         return textView;
     }

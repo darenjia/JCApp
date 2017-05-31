@@ -83,7 +83,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             time = System.currentTimeMillis();
             Toast.makeText(this, "再按一次退出", Toast.LENGTH_SHORT).show();
         } else {
-            AppManager.getAppManager().finishActivity();
+            AppManager.getAppManager().AppExit(this);
         }
     }
 

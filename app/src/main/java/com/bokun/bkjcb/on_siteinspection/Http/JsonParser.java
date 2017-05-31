@@ -37,6 +37,9 @@ public class JsonParser {
     }
 
     public static JsonResult parseSoap(SoapObject object) {
+        if (object == null) {
+            return null;
+        }
         SoapObject detail = (SoapObject) object.getProperty(0);
         JsonResult result = new JsonResult();
         String content = XmlParser.parseSoapObject(detail);

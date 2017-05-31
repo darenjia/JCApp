@@ -67,7 +67,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         //HttpRequestVo requestVo = new HttpRequestVo(Constants.GetXxclScURL, Constants.GetXxclSc.replace("quxian", MainActivity.quxian));
         //OkHttpManager manager = new OkHttpManager(context, this, requestVo);
         HttpRequestVo requestVo = new HttpRequestVo();
-        requestVo.getRequestDataMap().put("quxian", MainActivity.quxian);
+        requestVo.getRequestDataMap().put("quxian", MainActivity.user.quxian);
         requestVo.setMethodName("GetXxclSc");
         HttpManager manager = new HttpManager(context, this, requestVo);
         manager.postRequest();
@@ -100,7 +100,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     @Override
     protected void getDataFailed() {
         super.getDataFailed();
-        LogUtil.logI(MainActivity.quxian);
+        LogUtil.logI(MainActivity.user.quxian);
         setExpandableListView();
     }
 

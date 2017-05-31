@@ -10,6 +10,7 @@ import android.os.Message;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -29,6 +30,7 @@ import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
+import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 
 import org.ksoap2.serialization.SoapObject;
 
@@ -99,6 +101,10 @@ public class LoginActivity extends BaseActivity implements RequestListener {
         mLoginView = (LinearLayout) findViewById(R.id.logining_view);
         mRembPass = (CheckBox) findViewById(R.id.login_pass_remb);
         mCardView = (CardView) findViewById(R.id.login_cardview);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("登录");
+        setSupportActionBar(toolbar);
+        Utils.initSystemBar(this, toolbar);
     }
 
     @Override

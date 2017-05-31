@@ -69,6 +69,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected void lazyLoad() {
+        //当Activity准备好并且用户可见并且是第一次加载才加载数据
         if (!isPrepared || !isVisible || !isFirst) {
             return;
         }
@@ -85,6 +86,7 @@ public abstract class BaseFragment extends Fragment {
 
     public abstract View initView();
 
+    //做数据处理
     public abstract void initData();
 
 

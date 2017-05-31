@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/swiperlayout">
+    android:background="#F8F8FF"
+    android:orientation="vertical"
+    android:padding="5dp">
 
-    <ExpandableListView
-        android:id="@+id/plan_list"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swiperlayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@color/colorAccent"
-        android:dividerHeight="1dp"
-        android:childDivider="@color/bgColor_divier"
-        android:groupIndicator="@drawable/expandable_listview_indicator"/>
+        android:layout_height="match_parent">
 
-</android.support.v4.widget.SwipeRefreshLayout>
+        <ExpandableListView
+            android:id="@+id/plan_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:childDivider="@color/bgColor_divier"
+            android:divider="@color/colorAccent"
+            android:dividerHeight="1dp"
+            android:groupIndicator="@drawable/expandable_listview_indicator" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>
