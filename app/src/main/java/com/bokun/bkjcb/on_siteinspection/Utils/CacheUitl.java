@@ -18,19 +18,20 @@ import java.io.IOException;
 public class CacheUitl {
     private Context context;
     private DiskLruCache cache;
-    private final int valueCount = 0;
+    private final int valueCount = 1;
     private final long max_size = 50 * 1024 * 1024;
+    private final String fileName = "jianchajihua";
 
-    public CacheUitl(String fileName) {
+    public CacheUitl() {
         this.context = JCApplication.getContext();
         try {
-            cache = DiskLruCache.open(getDiskCacheDir(fileName), getAppVersion(), valueCount,max_size );
+            cache = DiskLruCache.open(getDiskCacheDir(), getAppVersion(), valueCount, max_size);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public File getDiskCacheDir(String uniqueName) {
+    public File getDiskCacheDir() {
         String cachePath;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
                 || !Environment.isExternalStorageRemovable()) {
@@ -38,7 +39,7 @@ public class CacheUitl {
         } else {
             cachePath = context.getCacheDir().getPath();
         }
-        return new File(cachePath + File.separator + uniqueName);
+        return new File(cachePath + File.separator + fileName);
     }
 
     public int getAppVersion() {
@@ -51,4 +52,50 @@ public class CacheUitl {
         return 1;
     }
 
+    public boolean saveData(String key, String str) {
+        try {
+            DiskLruCache.Editor editor = cache.edit(key);
+            editor.set(0, str);
+            editor.commit();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public String getData(String key) {
+        String str = null;
+        try {
+            DiskLruCache.Snapshot snapshot = cache.get(key);
+            if (snapshot !=null){
+                str = snapshot.getString(0);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
+
+    public Long getSize() {
+        return cache.size();
+    }
+
+    public boolean clean() {
+        try {
+            cache.delete();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public void close() {
+        try {
+            cache.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

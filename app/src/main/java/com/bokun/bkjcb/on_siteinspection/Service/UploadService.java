@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
+import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
 import com.bokun.bkjcb.on_siteinspection.UpLoad.UIProgressListener;
 import com.bokun.bkjcb.on_siteinspection.UpLoad.UploadHelper;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
@@ -43,20 +44,24 @@ public class UploadService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         LogUtil.logI("开始上传服务");
         helper = new UploadHelper(this);
-        CheckPlan checkPlan = (CheckPlan) intent.getExtras().getSerializable("checkplan");
+        ProjectPlan projectPlan = (ProjectPlan) intent.getExtras().getSerializable("plan");
         UIProgressListener listener = new UIProgressListener() {
             @Override
             public void onUIProgress(long currentBytes, long contentLength, boolean done) {
-                LogUtil.logI("contentLength" + contentLength + "===currentBytes" + currentBytes);
-                double precent = (double) currentBytes / (double) contentLength;
-                LogUtil.logI(precent + "百分比");
                 Intent broadcast = new Intent("com.bokun.jcapp.UPDATE_PROGRESS");
-                broadcast.putExtra("precent", (int) (precent * 100));
+                if (done) {
+                    LogUtil.logI("contentLength" + contentLength + "===currentBytes" + currentBytes);
+                    double precent = (double) currentBytes / (double) contentLength;
+                    LogUtil.logI(precent + "百分比");
+                    broadcast.putExtra("precent", (int) (precent * 100));
+                } else {
+                    broadcast.putExtra("precent", -1);
+                }
                 LocalBroadcastManager.getInstance(UploadService.this).sendBroadcast(broadcast);
             }
         };
 //        checkPlans = (ArrayList<CheckPlan>) intent.getSerializableExtra("checkplan");
-        helper.startTask(checkPlan, listener);
+        helper.startTask(projectPlan, listener);
         return super.onStartCommand(intent, flags, startId);
     }
 

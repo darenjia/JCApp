@@ -32,7 +32,7 @@ public class UpLoadChirldFragment extends BaseFragment {
     private ListView listView;
     private LinearLayout layout;
     private ListAdapter adapter;
-    private ArrayList<CheckPlan> checkPlans;
+    private ArrayList<CheckPlan> checkans;
     private ArrayList<ProjectPlan> projectPlans;
     private boolean finished;
     private CheckBox progress;
@@ -60,12 +60,12 @@ public class UpLoadChirldFragment extends BaseFragment {
 
         @Override
         public int getCount() {
-            return checkPlans.size();
+            return projectPlans.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return checkPlans.get(position);
+            return projectPlans.get(position);
         }
 
         @Override
@@ -75,8 +75,8 @@ public class UpLoadChirldFragment extends BaseFragment {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            final CheckPlan checkPlan = checkPlans.get(position);
-            //ProjectPlan projectPlan = projectPlans.get(position);
+            //final CheckPlan checkPlan = checkPlans.get(position);
+            final ProjectPlan projectPlan = projectPlans.get(position);
             if (convertView == null) {
                 convertView = View.inflate(getContext(), R.layout.upload_item_view, null);
                 viewHolder = new ViewHolder();
@@ -87,29 +87,28 @@ public class UpLoadChirldFragment extends BaseFragment {
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
-            viewHolder.title.setText(checkPlan.getName());
+            viewHolder.title.setText(projectPlan.getAq_lh_jcmc());
+            viewHolder.state.setText("等待上传");
             if (!finished) {
-                viewHolder.button.setText(getState(checkPlan.getState_upload()));
+                viewHolder.button.setText(getState(projectPlan.getState_upload()));
                 viewHolder.button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         int flag = position;
                         if (isChecked) {
-                            checkPlan.setState_upload(2);
-                            while (flag != 0 && checkPlans.get(flag - 1).getState_upload() == 0) {
-                                checkPlans.remove(flag);
-                                LogUtil.logI("改变计划状态" + checkPlan.getName());
-                                checkPlans.add(flag - 1, checkPlan);
-                                flag--;
-                            }
-                            notifyDataSetChanged();
+                            projectPlan.setState_upload(2);
                             if (position == 0) {
-                                startUpload(checkPlan);
-                                progress = viewHolder.button;
+                                startUpload(projectPlan);
                                 viewHolder.state.setText("正在上传");
                             } else {
                                 buttonView.setText("等待");
                             }
+                            while (flag != 0 && projectPlans.get(flag - 1).getState_upload() == 0) {
+                                projectPlans.remove(flag);
+                                projectPlans.add(flag - 1, projectPlan);
+                                flag--;
+                            }
+                            notifyDataSetChanged();
                         } else {
                             if (!buttonView.getText().equals("上传")) {
                                 buttonView.setText("继续");
@@ -117,8 +116,8 @@ public class UpLoadChirldFragment extends BaseFragment {
                         }
                     }
                 });
-                if (checkPlan.getState_upload() == 2) {
-                    LogUtil.logI("设置计划状态" + checkPlan.getName());
+                if (projectPlan.getState_upload() == 2) {
+                    //LogUtil.logI("设置计划状态" + checkPlan.getName());
                     viewHolder.button.setChecked(true);
                 } else {
                     viewHolder.button.setChecked(false);
@@ -137,11 +136,11 @@ public class UpLoadChirldFragment extends BaseFragment {
         }
     }
 
-    private void startUpload(CheckPlan checkPlan) {
+    private void startUpload(ProjectPlan plan) {
         Intent intent = new Intent();
         intent.setAction("android.intent.action.STARTUPLOAD");//你定义的service的action
         intent.setPackage(getContext().getPackageName());
-        intent.putExtra("checkplan", checkPlan);
+        intent.putExtra("plan", plan);
         getContext().startService(intent);
         openBroadCast();
     }
@@ -151,11 +150,11 @@ public class UpLoadChirldFragment extends BaseFragment {
         @Override
         protected Object doInBackground(Object[] objects) {
             if (!finished) {
-                checkPlans = DataUtil.queryCheckPlanCanUpLoad(getContext());
-                // projectPlans = DataUtil.getProjectByState("等待上传");
+                //checkPlans = DataUtil.queryCheckPlanCanUpLoad(getContext());
+                projectPlans = DataUtil.getProjectByState("等待上传");
             } else {
-                //projectPlans = DataUtil.getProjectByState("上传完成");
-                checkPlans = DataUtil.queryCheckPlanFinished(getContext());
+                projectPlans = DataUtil.getProjectByState("上传完成");
+                //checkPlans = DataUtil.queryCheckPlanFinished(getContext());
             }
             return null;
         }
@@ -178,7 +177,7 @@ public class UpLoadChirldFragment extends BaseFragment {
     @Override
     public void onStart() {
         LogUtil.logI("onStart");
-        if (checkPlans == null) {
+        if (projectPlans == null) {
             loadTask = new LoadData();
             loadTask.execute();
         }
@@ -198,13 +197,19 @@ public class UpLoadChirldFragment extends BaseFragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 int flag = intent.getExtras().getInt("precent");
+                if (flag == -1) {
+                    ProjectPlan projectPlan = projectPlans.get(0);
+                    projectPlan.setState_upload(0);
+                    adapter.notifyDataSetChanged();
+                    return;
+                }
                 progress.setText(flag + "%");
                 if (flag == 100) {
-                    CheckPlan checkPlan = checkPlans.get(0);
-                    checkPlan.setState(3);
-                    DataUtil.updateCheckPlanState(getContext(), checkPlan);
-                    checkPlans.remove(0);
-                    LogUtil.logI(checkPlans.size() + "");
+                    ProjectPlan projectPlan = projectPlans.get(0);
+                    projectPlan.setAq_jctz_zt("上传完成");
+                    DataUtil.changeProjectState(projectPlan);
+                    projectPlans.remove(0);
+                    LogUtil.logI(projectPlans.size() + "");
                     adapter.notifyDataSetChanged();
                     if (finished) {
                         loadTask.execute();
@@ -227,7 +232,12 @@ public class UpLoadChirldFragment extends BaseFragment {
     }
 
     public void refresh() {
-        loadTask.execute();
+        LogUtil.logI("refresh");
+        if (loadTask.getStatus() == AsyncTask.Status.FINISHED) {
+            //checkPlans = DataUtil.queryCheckPlanFinished(getContext());
+            projectPlans = DataUtil.getProjectByState("上传完成");
+            adapter.notifyDataSetChanged();
+        }
     }
 
     private String getState(int state) {

@@ -25,6 +25,7 @@ import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
+import com.bokun.bkjcb.on_siteinspection.Utils.CacheUitl;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 import com.bokun.bkjcb.on_siteinspection.View.ConstructionDetailView;
@@ -49,6 +50,8 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     public static int DATA_CHANGED = 1;
     public static int DATA_UNCHANGED = 0;
     private Intent intent;
+    private CacheUitl cacheUitl;
+    private final String key = "sad1ee213124c1";
 
     @Nullable
     @Override
@@ -136,12 +139,21 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         if (projectPlans == null || projectPlans.size() == 0) {
             projectPlans = JsonParser.getProjectData(result.resData);
             DataUtil.saveProjectPlan(projectPlans);
-            //getCheckPlanFromNet();
-            // return;
+            getCheckPlanFromNet();
+            return;
         }
-        //checkPlans = JsonParser.getJSONData(result.resData);
-        // LogUtil.logI(checkPlans.size() + "");
-        //DataUtil.insertCheckPlans(context, checkPlans);
+        cacheUitl = new CacheUitl();
+        String cacheStr = cacheUitl.getData(key);
+        if (cacheStr == null) {
+            cacheUitl.saveData(key, result.resData);
+        } else {
+            if (!cacheStr.equals(result.resData)) {
+                checkPlans = JsonParser.getJSONData(result.resData);
+                LogUtil.logI(checkPlans.size() + "");
+                DataUtil.insertCheckPlans(context, checkPlans);
+            }
+        }
+
         constuctions = new ArrayList<>();
         for (ProjectPlan plan : projectPlans) {
             String sysIDs = plan.getAq_sysid();
@@ -190,6 +202,14 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
             }
         }
         super.onStart();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (cacheUitl != null) {
+            cacheUitl.close();
+        }
     }
 
     @Override

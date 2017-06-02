@@ -45,8 +45,8 @@ public class CheckResultDaolmpl extends CheckResultDao {
         Cursor cursor = database.query("checkresult", null, "identifier = ?", new String[]{String.valueOf(Identifier)}, null, null, "num ASC");
         while (cursor.moveToNext()) {
             result = new CheckResult();
-            result.setId(cursor.getInt(cursor.getColumnIndex("id")));
-            result.setIdentifier(cursor.getInt(cursor.getColumnIndex("identifier")));
+            //result.setId(cursor.getInt(cursor.getColumnIndex("id")));
+            //result.setIdentifier(cursor.getInt(cursor.getColumnIndex("identifier")));
             result.setNum(cursor.getInt(cursor.getColumnIndex("num")));
             result.setComment(cursor.getString(cursor.getColumnIndex("comment")));
             result.setResult(cursor.getInt(cursor.getColumnIndex("checkresult")));

@@ -2,11 +2,13 @@ package com.bokun.bkjcb.on_siteinspection.Domain;
 
 import com.google.gson.JsonElement;
 
+import java.io.Serializable;
+
 /**
  * Created by DengShuai on 2017/6/2.
  */
 
-public class ProjectPlan {
+public class ProjectPlan implements Serializable{
     private int aq_lh_yyh;
     private int aq_lh_seqid;
     private String aq_lh_id;

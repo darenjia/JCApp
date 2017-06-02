@@ -10,6 +10,7 @@ import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckResult;
 import com.bokun.bkjcb.on_siteinspection.Domain.FinishedPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
+import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpManager;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpRequestVo;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
@@ -44,6 +45,8 @@ public class UploadHelper {
                 ToastUtil.show(context, result.message);
                 if (result.success) {
                     listener.onUpdate(100, 100, true);
+                }else {
+                    listener.onUpdate(100, 100, false);
                 }
             } else {
                 Toast.makeText(context, "上传失败，请稍后再试", Toast.LENGTH_SHORT).show();
@@ -58,21 +61,38 @@ public class UploadHelper {
     private long fileSize;
     private long uploadSize;
     private ProgressListener listener;
+    private ArrayList<FinishedPlan> finishedPlans;
+    private ArrayList<CheckPlan> checkPlans;
+    private ArrayList<String> jsons;
+    private String reqStr;
 
     public UploadHelper(Context context) {
         this.context = context;
     }
 
-    public void startTask(CheckPlan checkPlan, ProgressListener listener) {
+    public void startTask(ProjectPlan projectPlan, ProgressListener listener) {
         this.listener = listener;
-        LogUtil.logI(checkPlan.getName() + " 任务开始");
-        FinishedPlan plan = DataUtil.getFinishedPlan(String.valueOf(checkPlan.getSysId()));
-        results = DataUtil.readData(context, checkPlan.getIdentifier());
-        Gson gson = new Gson();
-        JsonElement element = gson.toJsonTree(results);
-        plan.setResult(element);
-        String str = gson.toJson(plan);
-        LogUtil.logI(str);
+        finishedPlans = new ArrayList<>();
+        checkPlans = new ArrayList<>();
+        jsons = new ArrayList<>();
+        LogUtil.logI(projectPlan.getAq_lh_jcmc() + " 任务开始");
+        String s = projectPlan.getAq_sysid();
+        String[] strings = s.split(",");
+        for (String str : strings) {
+            FinishedPlan plan = DataUtil.getFinishedPlan(str);
+            CheckPlan checkPlan = DataUtil.queryCheckPlan(context, plan.getSysGcxxdjh());
+            results = DataUtil.readData(context, checkPlan.getIdentifier());
+            Gson gson = new Gson();
+            JsonElement element = gson.toJsonTree(results);
+            plan.setResult(element);
+            String json = gson.toJson(plan);
+            jsons.add(json);
+            finishedPlans.add(plan);
+            checkPlans.add(checkPlan);
+        }
+
+
+
       /*  OkHttpManager okHttpManager = new OkHttpManager(context, new RequestListener() {
             @Override
             public void action(int i, Object object) {
@@ -82,13 +102,24 @@ public class UploadHelper {
             }
         }, new HttpRequestVo("", str), 2);
         okHttpManager.postRequest();*/
+        sendData(jsons.get(0));
+    }
+
+    private void sendData(final String json) {
+        LogUtil.logI(json);
         HttpRequestVo request = new HttpRequestVo();
-        request.getRequestDataMap().put("jcnr", str);
+        request.getRequestDataMap().put("jcnr", json);
         request.setMethodName("GetJianChaShuJu");
         HttpManager manager = new HttpManager(context, new RequestListener() {
             @Override
             public void action(int i, Object object) {
                 JsonResult result = JsonParser.parseSoap((SoapObject) object);
+                if (result.success && jsons.size() > 1) {
+                    jsons.remove(0);
+                    listener.onUpdate(jsons.size(), finishedPlans.size(), true);
+                    sendData(jsons.get(0));
+                    return;
+                }
                 Message message = new Message();
                 message.what = i;
                 message.obj = result;

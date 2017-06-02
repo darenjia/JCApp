@@ -161,7 +161,7 @@ public class DataUtil {
     public static boolean saveProjectPlan(ArrayList<ProjectPlan> plans) {
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
         for (ProjectPlan p : plans) {
-            if (dao.issaved(p.getAq_lh_id())) {
+            if (!dao.issaved(p.getAq_lh_id())) {
                 dao.save(p);
             }
         }
