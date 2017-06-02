@@ -20,7 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.8"
         android:gravity="center_horizontal"
-        android:text="@string/action_sign_in_short" />
+        android:text="@string/action_sign_in_short"
+        android:textSize="@dimen/mid_font" />
 
     <TextView
         android:id="@+id/group_time"
@@ -29,5 +30,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center_horizontal"
-        android:text="@string/action_sign_in_short" />
+        android:text="@string/action_sign_in_short"
+        android:textSize="@dimen/mid_font" />
 </LinearLayout>

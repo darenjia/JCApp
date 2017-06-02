@@ -52,4 +52,5 @@ dependencies {
     //定位
     compile 'com.amap.api:location:latest.integration'
     compile files('libs/ksoap2-android-assembly-3.0.0-jar-with-dependencies .jar')
+    compile files('libs/disklrucache-2.0.2.jar')
 }

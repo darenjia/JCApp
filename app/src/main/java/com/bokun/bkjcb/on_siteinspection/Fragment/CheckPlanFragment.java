@@ -135,13 +135,12 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         JsonResult result = JsonParser.parseSoap((SoapObject) object);
         if (projectPlans == null || projectPlans.size() == 0) {
             projectPlans = JsonParser.getProjectData(result.resData);
-        } else {
-            getCheckPlanFromNet();
-            return;
+            //getCheckPlanFromNet();
+            // return;
         }
-        checkPlans = JsonParser.getJSONData(result.resData);
-        LogUtil.logI(checkPlans.size() + "");
-        DataUtil.insertCheckPlans(context, checkPlans);
+        //checkPlans = JsonParser.getJSONData(result.resData);
+        // LogUtil.logI(checkPlans.size() + "");
+        //DataUtil.insertCheckPlans(context, checkPlans);
         constuctions = new ArrayList<>();
         for (ProjectPlan plan : projectPlans) {
             String sysIDs = plan.getAq_sysid();

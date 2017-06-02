@@ -28,13 +28,21 @@ public class Constants {
             "state Bit" +
             ")";
     //工程信息表
-    public final static String CREATE_CONSTRUCTION_TABLE = "create table ConstructionInfo(" +
+    public final static String CREATE_CONSTRUCTION_TABLE = "create table constructioninfo(" +
             "id Integer primary key," +
-            "name varchar(30)" +
-            "username char(30)" +
-            "lastupdatetime long" +
-            "describtion text" +
-            "state Bit" +
+            "aq_lh_seqid int(20)," +
+            "aq_lh_yyh int(20)," +
+            "aq_lh_id char(30)," +
+            "aq_lh_jcrq char(30)," +
+            "aq_lh_allbj char(30)," +
+            "aq_lh_jcrq char(30)," +
+            "aq_lh_jcmc char(30)," +
+            "aq_lh_szqx char(100)," +
+            "aq_lh_qxjd char(30)," +
+            "aq_lh_jchy char(30)," +
+            "aq_jctype char(30)," +
+            "aq_sysid char(100)," +
+            "aq_jctz_zt char(30)," +
             ")";
 
     public final static String CREATE_CHECK_PLAN_TABLE = "create table checkplan(" +

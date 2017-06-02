@@ -14,7 +14,7 @@ import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 public class SQLiteOpenUtil extends SQLiteOpenHelper {
 
     public SQLiteOpenUtil(Context context) {
-        super(context, "User.db", null, 1);
+        super(context, "User.db", null, 2);
     }
 
     public SQLiteOpenUtil(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler) {
@@ -31,6 +31,6 @@ public class SQLiteOpenUtil extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        db.execSQL(Constants.CREATE_CONSTRUCTION_TABLE);
     }
 }

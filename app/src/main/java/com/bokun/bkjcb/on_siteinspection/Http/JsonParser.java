@@ -53,7 +53,11 @@ public class JsonParser {
                 JSONObject jsonObject = new JSONObject(content);
                 result.success = jsonObject.getBoolean("success");
                 result.message = jsonObject.getString("message");
-                result.resData = jsonObject.getString("data");
+                try {
+                    result.resData = jsonObject.getString("data");
+                } catch (JSONException e) {
+                    result.resData = "";
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }

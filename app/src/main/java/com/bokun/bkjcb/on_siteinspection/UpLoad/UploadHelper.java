@@ -41,8 +41,9 @@ public class UploadHelper {
 //                prePareFile();
 //                uploadFile();
                 JsonResult result = (JsonResult) msg.obj;
-                if (result.success){
-                    ToastUtil.show(context,"发送成功！");
+                ToastUtil.show(context, result.message);
+                if (result.success) {
+                    listener.onUpdate(100, 100, true);
                 }
             } else {
                 Toast.makeText(context, "上传失败，请稍后再试", Toast.LENGTH_SHORT).show();
