@@ -26,7 +26,7 @@ public class LastFragment extends BaseFragment {
     private TextView user;
 
     public interface OnClick {
-        void onClick();
+        void onClick(String time);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class LastFragment extends BaseFragment {
         final EditText idea = (EditText) view.findViewById(R.id.lastFragment_idea);
         user = (TextView) view.findViewById(R.id.lastFragment_user);
         TextView date = (TextView) view.findViewById(R.id.lastFragment_date);
-        String str_date = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINESE).format(System.currentTimeMillis());
+        final String str_date = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINESE).format(System.currentTimeMillis());
         date.setText(str_date);
         String str = result.getComment();
         if (str != null) {
@@ -48,7 +48,7 @@ public class LastFragment extends BaseFragment {
             public void onClick(View v) {
                 result.setComment(idea.getText().toString());
                 LogUtil.logI("正在提交");
-                clickListener.onClick();
+                clickListener.onClick(str_date);
             }
         });
         return view;

@@ -198,7 +198,7 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
                         + ".jpg";
                 image = new File(path, picName);
                 creatFile(image);
-                startAction(intent, image, REQUESR_CODE_TAKEPHOTO);
+                startAction(intent, image, REQUESR_CODE_CROPPHOTO);
                 break;
             case R.id.check_content_btn_audio:
                 intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);

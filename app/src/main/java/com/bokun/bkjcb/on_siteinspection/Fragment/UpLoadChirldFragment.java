@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 public class UpLoadChirldFragment extends BaseFragment {
 
     private ListView listView;
+    private LinearLayout layout;
     private ListAdapter adapter;
     private ArrayList<CheckPlan> checkPlans;
     private boolean finished;
@@ -40,12 +42,15 @@ public class UpLoadChirldFragment extends BaseFragment {
     public View initView() {
         View view = View.inflate(getContext(), R.layout.unfinished_upload_view, null);
         listView = (ListView) view.findViewById(R.id.upload_listview);
+        layout = (LinearLayout) view.findViewById(R.id.upload_btn);
         return view;
     }
 
     @Override
     public void initData() {
-
+        if (finished) {
+            layout.setVisibility(View.GONE);
+        }
     }
 
     class ListAdapter extends BaseAdapter {

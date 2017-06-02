@@ -9,11 +9,13 @@
         android:layout_height="match_parent" />
 
     <LinearLayout
+        android:id="@+id/upload_btn"
         android:layout_width="wrap_content"
         android:layout_height="45dp"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_margin="20dp"
-        android:background="@drawable/check_item_content_comment_bg">
+        android:background="@drawable/check_item_content_comment_bg"
+        android:visibility="gone">
 
         <Button
             android:layout_width="wrap_content"

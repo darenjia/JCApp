@@ -21,6 +21,7 @@ import com.bigkoo.alertview.OnItemClickListener;
 import com.bokun.bkjcb.on_siteinspection.Adapter.PagerAdapter;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckResult;
+import com.bokun.bkjcb.on_siteinspection.Domain.FinishedPlan;
 import com.bokun.bkjcb.on_siteinspection.Fragment.CheckItemFragment;
 import com.bokun.bkjcb.on_siteinspection.Fragment.CheckPlanFragment;
 import com.bokun.bkjcb.on_siteinspection.Fragment.LastFragment;
@@ -249,7 +250,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                 .setNegativeButton("保存退出", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        saveData(1);
+                        saveData(1, null);
                         setResultData(1);
                         finish();
                     }
@@ -280,8 +281,17 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
         setResult(CheckPlanFragment.DATA_CHANGED, intent);
     }
 
-    private boolean saveData(int state) {
+    private boolean saveData(int state, String time) {
         plan.setState(state);
+        if (time != null) {
+            FinishedPlan finishedPlan = new FinishedPlan();
+            finishedPlan.setFinishedTime(time);
+            finishedPlan.setUsername(Utils.getUserName());
+            finishedPlan.setSysID(plan.getSysId());
+            finishedPlan.setSysGcxxdjh(plan.getIdentifier());
+            finishedPlan.setAQ_LH_ID(getIntent().getStringExtra("aq_lh_id"));
+            DataUtil.saveFinishedPlan(finishedPlan);
+        }
         DataUtil.updateCheckPlanState(this, plan);
         return DataUtil.saveData(this, results);
     }
@@ -304,8 +314,8 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                     LastFragment lastFragment = new LastFragment();
                     lastFragment.setClickListener(new LastFragment.OnClick() {
                         @Override
-                        public void onClick() {
-                            boolean is = saveData(2);
+                        public void onClick(String time) {
+                            boolean is = saveData(2, time);
                             Toast.makeText(SecurityCheckActivity.this, "正在保存" + is, Toast.LENGTH_SHORT).show();
                             setResultData(2);
                             finish();

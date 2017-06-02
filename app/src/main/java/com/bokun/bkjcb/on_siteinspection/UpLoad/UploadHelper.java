@@ -9,13 +9,18 @@ import android.widget.Toast;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckResult;
 import com.bokun.bkjcb.on_siteinspection.Domain.FinishedPlan;
+import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
+import com.bokun.bkjcb.on_siteinspection.Http.HttpManager;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpRequestVo;
-import com.bokun.bkjcb.on_siteinspection.Http.OkHttpManager;
+import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
+import com.bokun.bkjcb.on_siteinspection.Utils.ToastUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+
+import org.ksoap2.serialization.SoapObject;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -33,8 +38,12 @@ public class UploadHelper {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == RequestListener.EVENT_GET_DATA_SUCCESS) {
-                prePareFile();
-                uploadFile();
+//                prePareFile();
+//                uploadFile();
+                JsonResult result = (JsonResult) msg.obj;
+                if (result.success){
+                    ToastUtil.show(context,"发送成功！");
+                }
             } else {
                 Toast.makeText(context, "上传失败，请稍后再试", Toast.LENGTH_SHORT).show();
             }
@@ -63,7 +72,7 @@ public class UploadHelper {
         plan.setResult(element);
         String str = gson.toJson(plan);
         LogUtil.logI(str);
-        OkHttpManager okHttpManager = new OkHttpManager(context, new RequestListener() {
+      /*  OkHttpManager okHttpManager = new OkHttpManager(context, new RequestListener() {
             @Override
             public void action(int i, Object object) {
                 LogUtil.logI("请求上传，请求结果：" + i);
@@ -71,7 +80,21 @@ public class UploadHelper {
 //                mHandler.sendEmptyMessage(i);
             }
         }, new HttpRequestVo("", str), 2);
-        okHttpManager.postRequest();
+        okHttpManager.postRequest();*/
+        HttpRequestVo request = new HttpRequestVo();
+        request.getRequestDataMap().put("jcnr", str);
+        request.setMethodName("GetJianChaShuJu");
+        HttpManager manager = new HttpManager(context, new RequestListener() {
+            @Override
+            public void action(int i, Object object) {
+                JsonResult result = JsonParser.parseSoap((SoapObject) object);
+                Message message = new Message();
+                message.what = i;
+                message.obj = result;
+                mHandler.sendMessage(message);
+            }
+        }, request);
+        manager.postRequest();
     }
 
     private void prePareFile() {

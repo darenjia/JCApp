@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,14 +72,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
             @Override
             public void onRefresh() {
                 refreshLayout.setRefreshing(true);
-                refreshLayout.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        checkPlans = DataUtil.queryCheckPlan(context);
-                        Snackbar.make(refreshLayout, "刷新完成", Snackbar.LENGTH_LONG).show();
-                        refreshLayout.setRefreshing(false);
-                    }
-                }, 1000);
+                getDateFromNet();
             }
         });
     }
@@ -104,25 +96,9 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
     @Override
     protected void getDataSucceed(JsonResult object) {
-        //new LodingAsyncTask().execute(object.resData);
-        checkPlans = JsonParser.getJSONData(object.resData);
-        if (checkPlans.size() == 0) {
-            projectPlans = JsonParser.getProjectData(object.resData);
-            getCheckPlanFromNet();
-            return;
-        } else {
-            DataUtil.insertCheckPlans(context, checkPlans);
-        }
-        if (checkPlans != null && projectPlans != null) {
-            constuctions = new ArrayList<>();
-            for (ProjectPlan plan : projectPlans) {
-                String sysIDs = plan.getAq_sysid();
-                String[] ids = sysIDs.split(",");
-                constuctions.add(DataUtil.getCheckPlan(ids));
-            }
-            setExpandableListView();
-        }
 
+        //new LodingAsyncTask().execute();
+        setExpandableListView();
     }
 
     @Override
@@ -157,6 +133,21 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     @Override
     public void action(int i, Object object) {
         JsonResult result = JsonParser.parseSoap((SoapObject) object);
+        if (projectPlans == null || projectPlans.size() == 0) {
+            projectPlans = JsonParser.getProjectData(result.resData);
+        } else {
+            getCheckPlanFromNet();
+            return;
+        }
+        checkPlans = JsonParser.getJSONData(result.resData);
+        LogUtil.logI(checkPlans.size() + "");
+        DataUtil.insertCheckPlans(context, checkPlans);
+        constuctions = new ArrayList<>();
+        for (ProjectPlan plan : projectPlans) {
+            String sysIDs = plan.getAq_sysid();
+            String[] ids = sysIDs.split(",");
+            constuctions.add(DataUtil.getCheckPlan(ids));
+        }
         Message msg = new Message();
         msg.what = i;
         msg.obj = result;
@@ -176,6 +167,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                     bundle.putInt("groupPosition", groupPosition);
                     bundle.putInt("childPosition", childPosition);
                     bundle.putInt("state", checkPlan.getState());
+                    bundle.putString("aq_lh_id", projectPlans.get(groupPosition).getAq_lh_id());
 //                    SecurityCheckActivity.ComeToSecurityCheckActivity(context, bundle);
                     Intent intent = new Intent(context, SecurityCheckActivity.class);
                     intent.putExtras(bundle);
@@ -220,7 +212,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         listview.expandGroup(groupPosition);
     }
 
-    class LodingAsyncTask extends AsyncTask<String, Integer, Boolean> {
+    class LodingAsyncTask extends AsyncTask<Void, Integer, Boolean> {
         ProgressDialog dialog;
 
         @Override
@@ -232,9 +224,8 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         }
 
         @Override
-        protected Boolean doInBackground(String[] objects) {
-            checkPlans = JsonParser.getJSONData(objects[0]);
-            DataUtil.insertCheckPlans(context, checkPlans);
+        protected Boolean doInBackground(Void[] objects) {
+
             return true;
         }
 
@@ -242,7 +233,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
             if (aBoolean) {
-                setExpandableListView();
+
             }
             dialog.dismiss();
         }

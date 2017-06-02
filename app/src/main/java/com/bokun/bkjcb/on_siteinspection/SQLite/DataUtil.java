@@ -142,4 +142,11 @@ public class DataUtil {
         dao.close();
         return plan;
     }
+
+    public static boolean saveFinishedPlan(FinishedPlan plan) {
+        FinishedPlanDao dao = new FinishedPlanDao(JCApplication.getContext());
+        boolean flag = dao.save(plan);
+        dao.close();
+        return flag;
+    }
 }

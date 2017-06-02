@@ -1,6 +1,5 @@
 package com.bokun.bkjcb.on_siteinspection.Activity;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -34,6 +33,8 @@ import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 
 import org.ksoap2.serialization.SoapObject;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Created by BKJCB on 2017/3/17.
  */
@@ -46,43 +47,52 @@ public class LoginActivity extends BaseActivity implements RequestListener {
     private LinearLayout mLoginView;
     private boolean isRemberPass;
 
-    @SuppressLint("HandlerLeak")
-    private Handler mHandler = new Handler() {
+    private static class MyHandler extends Handler {
+        private final WeakReference<LoginActivity> mActivity;
+
+        public MyHandler(LoginActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
         @Override
         public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case RequestListener.EVENT_NOT_NETWORD:
-                    Snackbar.make(mCardView, "", Snackbar.LENGTH_LONG).setAction("设置", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
-                            startActivity(intent);
+            final LoginActivity activity = mActivity.get();
+            if (activity != null) {
+                switch (msg.what) {
+                    case RequestListener.EVENT_NOT_NETWORD:
+                        Snackbar.make(activity.mCardView, "", Snackbar.LENGTH_LONG).setAction("设置", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                                activity.startActivity(intent);
+                            }
+                        }).show();
+                        break;
+                    case RequestListener.EVENT_CLOSE_SOCKET:
+                        Snackbar.make(activity.mCardView, "网络错误！", Snackbar.LENGTH_LONG).show();
+                        break;
+                    case RequestListener.EVENT_NETWORD_EEEOR:
+                        Snackbar.make(activity.mCardView, "请确认网络是否可用！", Snackbar.LENGTH_LONG).show();
+                        break;
+                    case RequestListener.EVENT_GET_DATA_EEEOR:
+                        Snackbar.make(activity.mCardView, "服务器错误，请稍后再试！", Snackbar.LENGTH_LONG).show();
+                        break;
+                    case RequestListener.EVENT_GET_DATA_SUCCESS:
+                        JsonResult result = (JsonResult) msg.obj;
+                        if (result.success) {
+                            MainActivity.ComeToMainActivity(activity, result.resData);
+                        } else {
+                            Snackbar.make(activity.mCardView, result.message, Snackbar.LENGTH_LONG).show();
                         }
-                    }).show();
-                    break;
-                case RequestListener.EVENT_CLOSE_SOCKET:
-                    Snackbar.make(mCardView, "网络错误！", Snackbar.LENGTH_LONG).show();
-                    break;
-                case RequestListener.EVENT_NETWORD_EEEOR:
-                    Snackbar.make(mCardView, "请确认网络是否可用！", Snackbar.LENGTH_LONG).show();
-                    break;
-                case RequestListener.EVENT_GET_DATA_EEEOR:
-                    Snackbar.make(mCardView, "服务器错误，请稍后再试！", Snackbar.LENGTH_LONG).show();
-                    break;
-                case RequestListener.EVENT_GET_DATA_SUCCESS:
-                    JsonResult result = (JsonResult) msg.obj;
-                    if (result.success) {
-                        MainActivity.ComeToMainActivity(LoginActivity.this, result.resData);
-                    } else {
-                        Snackbar.make(mCardView, result.message, Snackbar.LENGTH_LONG).show();
-                    }
-                    break;
+                        break;
 
+                }
+                activity.noLogining();
             }
-            noLogining();
         }
-    };
+    }
+
+    private MyHandler mHandler = new MyHandler(this);
     private HttpManager httpManager;
     private CheckBox mRembPass;
     private CardView mCardView;

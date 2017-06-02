@@ -86,6 +86,8 @@ public class SearchFragment extends MainFragment implements RequestListener {
     @Override
     protected void getDataFailed() {
         super.getDataFailed();
+        view_search.setVisibility(View.GONE);
+        error_tip.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -213,18 +215,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
         HttpManager manager = new HttpManager(context, this, requestVo);
         //manager.postRequest();
         ToastUtil.show(context, "开始搜索");
-        marker_progress.post(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                view_search.setVisibility(View.GONE);
-                error_tip.setVisibility(View.VISIBLE);
-            }
-        });
+        mHandler.sendEmptyMessageDelayed(9, 2000);
     }
 
     @Override

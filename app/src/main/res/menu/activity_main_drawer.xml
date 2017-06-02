@@ -29,11 +29,11 @@
         <menu>
             <item
                 android:id="@+id/nav_app_introduce"
-                android:icon="@drawable/vector_drawable_introduce"
+                android:icon="@drawable/vector_drawable_shuming"
                 android:title="使用说明" />
             <item
                 android:id="@+id/nav_logout"
-                android:icon="@drawable/vector_drawable_logout"
+                android:icon="@drawable/vector_drawable_zhuxiao"
                 android:title="注销" />
             <item
                 android:id="@+id/nav_exit"

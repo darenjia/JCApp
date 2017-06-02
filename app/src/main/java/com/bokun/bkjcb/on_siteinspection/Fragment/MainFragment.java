@@ -30,10 +30,9 @@ public class MainFragment extends Fragment {
     public SwipeRefreshLayout refreshLayout;
     public Context context;
     @SuppressLint("HandlerLeak")
-    public Handler mHandler = new Handler() {
+    public Handler mHandler = new Handler(new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case RequestListener.EVENT_NOT_NETWORD:
                     Snackbar.make(contentView, "", Snackbar.LENGTH_LONG).setAction("设置", new View.OnClickListener() {
@@ -61,14 +60,16 @@ public class MainFragment extends Fragment {
                         Snackbar.make(contentView, "服务器错误，请稍后再试！", Snackbar.LENGTH_LONG).show();
                     }
                     break;
-
             }
-            if (msg.obj == null){
+            if (msg.obj == null) {
                 getDataFailed();
             }
-            refreshLayout.setRefreshing(false);
+            if (refreshLayout != null) {
+                refreshLayout.setRefreshing(false);
+            }
+            return true;
         }
-    };
+    });
 
     @Nullable
     @Override
@@ -90,6 +91,7 @@ public class MainFragment extends Fragment {
     protected void getDataSucceed(JsonResult object) {
 
     }
+
     protected void getDataFailed() {
 
     }

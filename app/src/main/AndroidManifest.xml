@@ -86,6 +86,7 @@
         </service>
         <service android:name="com.amap.api.location.APSService" />
 
+        <activity android:name=".Activity.AboutActivity"></activity>
     </application>
 
 </manifest>

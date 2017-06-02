@@ -1,6 +1,7 @@
 package com.bokun.bkjcb.on_siteinspection.Activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -15,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,6 +28,7 @@ import com.bokun.bkjcb.on_siteinspection.Fragment.UpLoadFragment;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.Utils.AppManager;
+import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,11 +48,6 @@ public class MainActivity extends BaseActivity
     private Menu menu;
     private ImageView userImg;
     private TextView userName, userMessage;
-    private Fragment testFragment;
-    private Fragment lastFragment;
-    private CheckPlanFragment checkPlanFragment;
-    private MapFragment mapFragment;
-    private UpLoadFragment upLoadFragment;
     public static ManagerInfo user;
 
     @Override
@@ -87,17 +85,39 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void setListener() {
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
 
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                InputMethodManager manager = ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE));
+                boolean isOpen = manager.isActive();
+                if (isOpen) {//因为是在fragment下，所以用了getView()获取view，也可以用findViewById（）来获取父控件
+                    toolbar.requestFocus();//使其它view获取焦点.这里因为是在fragment下,所以便用了getView(),可以指定任意其它view
+                    manager.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                }
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
     }
 
     @Override
     protected void loadData() {
-//        checkPlanFragment = new CheckPlanFragment();
-//        mapFragment = MapFragment.newInstance();
-//        upLoadFragment = new UpLoadFragment();
-//        testFragment = new TestFragment();
         user = JsonParser.getUserInfo(getIntent().getStringExtra("quxian"));
-        userMessage.setText("区县：" + user.quxian + " 权限：" + user.roles);
+        userMessage.setText("区县:" + user.quxian + " 权限:" + user.roles);
+        userName.setText(Utils.getUserName());
         loadView("检查计划", "first");
     }
 
