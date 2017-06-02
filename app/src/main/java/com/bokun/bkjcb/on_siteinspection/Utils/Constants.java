@@ -33,7 +33,6 @@ public class Constants {
             "aq_lh_seqid int(20)," +
             "aq_lh_yyh int(20)," +
             "aq_lh_id char(30)," +
-            "aq_lh_jcrq char(30)," +
             "aq_lh_allbj char(30)," +
             "aq_lh_jcrq char(30)," +
             "aq_lh_jcmc char(30)," +
@@ -42,7 +41,7 @@ public class Constants {
             "aq_lh_jchy char(30)," +
             "aq_jctype char(30)," +
             "aq_sysid char(100)," +
-            "aq_jctz_zt char(30)," +
+            "aq_jctz_zt char(30)" +
             ")";
 
     public final static String CREATE_CHECK_PLAN_TABLE = "create table checkplan(" +

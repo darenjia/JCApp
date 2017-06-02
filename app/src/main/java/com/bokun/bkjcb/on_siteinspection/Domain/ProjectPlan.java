@@ -19,6 +19,7 @@ public class ProjectPlan {
     private String aq_jctype;
     private String aq_sysid;
     private String aq_jctz_zt;
+    private int state_upload = 0;//上传状态，0未开始，1等待开始,2,正在进行,3暂停,4已完成
 
     public int getAq_lh_yyh() {
         return aq_lh_yyh;
@@ -114,5 +115,13 @@ public class ProjectPlan {
 
     public void setAq_jctz_zt(String aq_jctz_zt) {
         this.aq_jctz_zt = aq_jctz_zt;
+    }
+
+    public int getState_upload() {
+        return state_upload;
+    }
+
+    public void setState_upload(int state_upload) {
+        this.state_upload = state_upload;
     }
 }

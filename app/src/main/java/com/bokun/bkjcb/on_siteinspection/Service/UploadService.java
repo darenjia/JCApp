@@ -41,7 +41,7 @@ public class UploadService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        LogUtil.logI("开始下载服务");
+        LogUtil.logI("开始上传服务");
         helper = new UploadHelper(this);
         CheckPlan checkPlan = (CheckPlan) intent.getExtras().getSerializable("checkplan");
         UIProgressListener listener = new UIProgressListener() {

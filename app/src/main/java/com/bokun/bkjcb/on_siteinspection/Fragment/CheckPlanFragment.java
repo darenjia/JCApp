@@ -135,6 +135,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         JsonResult result = JsonParser.parseSoap((SoapObject) object);
         if (projectPlans == null || projectPlans.size() == 0) {
             projectPlans = JsonParser.getProjectData(result.resData);
+            DataUtil.saveProjectPlan(projectPlans);
             //getCheckPlanFromNet();
             // return;
         }
@@ -204,11 +205,27 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         int groupPosition = data.getExtras().getInt("groupPosition");
         int childPosition = data.getExtras().getInt("childPosition");
         int state = data.getExtras().getInt("state");
+        if (state == 2) {
+            checkSate(groupPosition);
+        }
         LogUtil.logI("计划状态题改变，刷新列表数据" + state);
         constuctions.get(groupPosition).get(childPosition).setState(state);
         adapter.notifyDataSetChanged();
         listview.collapseGroup(groupPosition);
         listview.expandGroup(groupPosition);
+    }
+
+    private void checkSate(int groupPosition) {
+        for (CheckPlan plan : constuctions.get(groupPosition)) {
+            if (plan.getState() == 2) {
+                continue;
+            } else {
+                return;
+            }
+        }
+        ProjectPlan projectPlan = projectPlans.get(groupPosition);
+        projectPlan.setAq_jctz_zt("等待上传");
+        DataUtil.changeProjectState(projectPlan);
     }
 
     class LodingAsyncTask extends AsyncTask<Void, Integer, Boolean> {

@@ -5,9 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.bokun.bkjcb.on_siteinspection.Domain.FinishedPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
-import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 
 import java.util.ArrayList;
 
@@ -41,24 +39,8 @@ public class ProjectPlanDao {
         return isSuccess != -1;
     }
 
-    public ArrayList<FinishedPlan> queryAll() {
-        ArrayList<FinishedPlan> list = new ArrayList<>();
-        FinishedPlan result;
-        Cursor cursor = database.query("finishedplan", null, null, null, null, null, null);
-        while (cursor.moveToNext()) {
-            result = new FinishedPlan();
-            result.setSysID(cursor.getInt(cursor.getColumnIndex("SysID")));
-            result.setSysGcxxdjh(cursor.getInt(cursor.getColumnIndex("aq_lh_jcmc")));
-            result.setAQ_LH_ID(cursor.getString(cursor.getColumnIndex("AQ_LH_ID")));
-            result.setFinishedTime(cursor.getString(cursor.getColumnIndex("FinishedTime")));
-            result.setUsername(cursor.getString(cursor.getColumnIndex("aq_sysid")));
-            list.add(result);
-        }
-        LogUtil.logI("已经检查" + list.size() + "条");
-        return list;
-    }
-
-    public ProjectPlan query(String state) {
+    public ArrayList<ProjectPlan> query(String state) {
+        ArrayList<ProjectPlan> list = new ArrayList<>();
         ProjectPlan result = null;
         Cursor cursor = database.query("constructioninfo", null, "aq_jctz_zt=?", new String[]{state}, null, null, null);
         while (cursor.moveToNext()) {
@@ -67,8 +49,9 @@ public class ProjectPlanDao {
             result.setAq_lh_jcmc(cursor.getString(cursor.getColumnIndex("aq_lh_jcmc")));
             result.setAq_jctz_zt(cursor.getString(cursor.getColumnIndex("aq_jctz_zt")));
             result.setAq_sysid(cursor.getString(cursor.getColumnIndex("aq_sysid")));
+            list.add(result);
         }
-        return result;
+        return list;
     }
 
     public boolean update(String id, String state) {

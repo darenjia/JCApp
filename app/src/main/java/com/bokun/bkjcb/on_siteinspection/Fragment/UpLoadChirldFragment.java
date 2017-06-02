@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
+import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
@@ -32,6 +33,7 @@ public class UpLoadChirldFragment extends BaseFragment {
     private LinearLayout layout;
     private ListAdapter adapter;
     private ArrayList<CheckPlan> checkPlans;
+    private ArrayList<ProjectPlan> projectPlans;
     private boolean finished;
     private CheckBox progress;
     private BroadcastReceiver receiver;
@@ -74,6 +76,7 @@ public class UpLoadChirldFragment extends BaseFragment {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             final CheckPlan checkPlan = checkPlans.get(position);
+            //ProjectPlan projectPlan = projectPlans.get(position);
             if (convertView == null) {
                 convertView = View.inflate(getContext(), R.layout.upload_item_view, null);
                 viewHolder = new ViewHolder();
@@ -149,7 +152,9 @@ public class UpLoadChirldFragment extends BaseFragment {
         protected Object doInBackground(Object[] objects) {
             if (!finished) {
                 checkPlans = DataUtil.queryCheckPlanCanUpLoad(getContext());
+                // projectPlans = DataUtil.getProjectByState("等待上传");
             } else {
+                //projectPlans = DataUtil.getProjectByState("上传完成");
                 checkPlans = DataUtil.queryCheckPlanFinished(getContext());
             }
             return null;

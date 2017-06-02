@@ -5,6 +5,7 @@ import android.content.Context;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckResult;
 import com.bokun.bkjcb.on_siteinspection.Domain.FinishedPlan;
+import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 
@@ -148,5 +149,29 @@ public class DataUtil {
         boolean flag = dao.save(plan);
         dao.close();
         return flag;
+    }
+
+    public static ArrayList<ProjectPlan> getProjectByState(String state) {
+        ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
+        ArrayList<ProjectPlan> list = dao.query(state);
+        dao.close();
+        return list;
+    }
+
+    public static boolean saveProjectPlan(ArrayList<ProjectPlan> plans) {
+        ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
+        for (ProjectPlan p : plans) {
+            if (dao.issaved(p.getAq_lh_id())) {
+                dao.save(p);
+            }
+        }
+        dao.close();
+        return true;
+    }
+
+    public static void changeProjectState(ProjectPlan plan) {
+        ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
+        dao.update(plan.getAq_lh_id(), plan.getAq_jctz_zt());
+        dao.close();
     }
 }
