@@ -50,6 +50,14 @@ public class Constants {
             "manager varchar(50)," +
             "user varchar(30)" +
             ")";
+    public final static String CREATE_FINISHED_PALN = "create table finishedplan(" +
+            "id Integer primary key," +
+            "SysId int(20)," +
+            "SysGcxxdjh int(20)," +
+            "FinishedTime char(20)," +
+            "Username char(10)," +
+            "AQ_LH_ID char(20)" +
+            ")";
     public final static String CREATE_CHECK_RESULT = "create table checkresult(" +
             "id Integer primary key," +
             "identifier int(10)," +

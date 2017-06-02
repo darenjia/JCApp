@@ -18,8 +18,8 @@ import com.bokun.bkjcb.on_siteinspection.Activity.MainActivity;
 import com.bokun.bkjcb.on_siteinspection.Activity.SecurityCheckActivity;
 import com.bokun.bkjcb.on_siteinspection.Adapter.ExpandableListViewAdapter;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
-import com.bokun.bkjcb.on_siteinspection.Domain.CheckSc;
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
+import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpManager;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpRequestVo;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
@@ -42,7 +42,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
 
     private ArrayList<CheckPlan> checkPlans;
-    private ArrayList<CheckSc> CheckScs;
+    private ArrayList<ProjectPlan> projectPlans;
     private ArrayList<ArrayList<CheckPlan>> constuctions;
     private ExpandableListView listview;
     private ExpandableListViewAdapter adapter;
@@ -66,11 +66,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorRecycler));
         //HttpRequestVo requestVo = new HttpRequestVo(Constants.GetXxclScURL, Constants.GetXxclSc.replace("quxian", MainActivity.quxian));
         //OkHttpManager manager = new OkHttpManager(context, this, requestVo);
-        HttpRequestVo requestVo = new HttpRequestVo();
-        requestVo.getRequestDataMap().put("quxian", MainActivity.user.quxian);
-        requestVo.setMethodName("GetXxclSc");
-        HttpManager manager = new HttpManager(context, this, requestVo);
-        manager.postRequest();
+        getDateFromNet();
         refreshLayout.setRefreshing(true);
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -89,12 +85,44 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         });
     }
 
+    private void getDateFromNet() {
+        HttpRequestVo requestVo = new HttpRequestVo();
+        requestVo.getRequestDataMap().put("quxian", MainActivity.user.quxian);
+        requestVo.getRequestDataMap().put("user", Utils.getUserName());
+        requestVo.setMethodName("GetJianChaJiHua");
+        HttpManager manager = new HttpManager(context, this, requestVo);
+        manager.postRequest();
+    }
+
+    private void getCheckPlanFromNet() {
+        HttpRequestVo requestVo = new HttpRequestVo();
+        requestVo.getRequestDataMap().put("quxian", MainActivity.user.quxian);
+        requestVo.setMethodName("GetXxclSc");
+        HttpManager manager = new HttpManager(context, this, requestVo);
+        manager.postRequest();
+    }
+
     @Override
     protected void getDataSucceed(JsonResult object) {
         //new LodingAsyncTask().execute(object.resData);
         checkPlans = JsonParser.getJSONData(object.resData);
-        DataUtil.insertCheckPlans(context, checkPlans);
-        setExpandableListView();
+        if (checkPlans.size() == 0) {
+            projectPlans = JsonParser.getProjectData(object.resData);
+            getCheckPlanFromNet();
+            return;
+        } else {
+            DataUtil.insertCheckPlans(context, checkPlans);
+        }
+        if (checkPlans != null && projectPlans != null) {
+            constuctions = new ArrayList<>();
+            for (ProjectPlan plan : projectPlans) {
+                String sysIDs = plan.getAq_sysid();
+                String[] ids = sysIDs.split(",");
+                constuctions.add(DataUtil.getCheckPlan(ids));
+            }
+            setExpandableListView();
+        }
+
     }
 
     @Override
@@ -109,12 +137,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         int left = width - (width / 10);
         int right = width - (width / 10) + (width / 20);
         listview.setIndicatorBounds(left, right);
-        if (checkPlans.size() == 0) {
-            checkPlans = DataUtil.queryCheckPlan(context);
-        }
-        constuctions = new ArrayList<>();
-        constuctions.add(checkPlans);
-        adapter = new ExpandableListViewAdapter(context, checkPlans, constuctions);
+        adapter = new ExpandableListViewAdapter(context, projectPlans, constuctions);
         listview.setAdapter(adapter);
         listview.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override

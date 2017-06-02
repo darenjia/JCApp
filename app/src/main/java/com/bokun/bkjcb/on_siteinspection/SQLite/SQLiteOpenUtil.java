@@ -26,6 +26,7 @@ public class SQLiteOpenUtil extends SQLiteOpenHelper {
         db.execSQL(Constants.CREATE_CHECK_RESULT);
         db.execSQL(Constants.CREATE_CHECK_PLAN_TABLE);
         db.execSQL(Constants.CREATE_SEARCH_HISTORY);
+        db.execSQL(Constants.CREATE_FINISHED_PALN);
     }
 
     @Override

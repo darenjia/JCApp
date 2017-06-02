@@ -3,6 +3,10 @@ package com.bokun.bkjcb.on_siteinspection.Http;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
 import com.bokun.bkjcb.on_siteinspection.Domain.ManagerInfo;
+import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,7 +68,7 @@ public class JsonParser {
         try {
             //将JSON的String 转成一个JsonArray对象
             JSONArray jsonArray = new JSONArray(json);
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 CheckPlan checkPlan = new CheckPlan();
                 JSONObject con = jsonArray.optJSONObject(i);
                 checkPlan.setIdentifier(con.getInt("SysGcxxdjh"));
@@ -80,6 +84,19 @@ public class JsonParser {
             e.printStackTrace();
         }
 
+        return results;
+    }
+
+    public static ArrayList<ProjectPlan> getProjectData(String json) {
+        ArrayList<ProjectPlan> results = new ArrayList<>();
+        //将JSON的String 转成一个JsonArray对象
+        com.google.gson.JsonParser parser = new com.google.gson.JsonParser();
+        JsonArray array = parser.parse(json).getAsJsonArray();
+        Gson gson = new Gson();
+        for (JsonElement element : array) {
+            ProjectPlan projectPlan = gson.fromJson(element, ProjectPlan.class);
+            results.add(projectPlan);
+        }
         return results;
     }
 

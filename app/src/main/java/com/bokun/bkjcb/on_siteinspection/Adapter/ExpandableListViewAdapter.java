@@ -8,6 +8,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
+import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
 import com.bokun.bkjcb.on_siteinspection.R;
 
 import java.util.ArrayList;
@@ -20,10 +21,10 @@ import java.util.List;
 public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     private Context context;
-    private List<CheckPlan> plan_list;
+    private List<ProjectPlan> plan_list;
     private List<ArrayList<CheckPlan>> plan_info;
 
-    public ExpandableListViewAdapter(Context context, ArrayList<CheckPlan> plan_list, ArrayList<ArrayList<CheckPlan>> plan_info) {
+    public ExpandableListViewAdapter(Context context, ArrayList<ProjectPlan> plan_list, ArrayList<ArrayList<CheckPlan>> plan_info) {
         this.context = context;
         this.plan_list = plan_list;
         this.plan_info = plan_info;
@@ -41,7 +42,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getGroupCount() {
-        return plan_info.size();
+        return plan_list.size();
     }
 
     @Override
@@ -51,7 +52,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getGroup(int groupPosition) {
-        return plan_info.get(groupPosition);
+        return plan_list.get(groupPosition);
     }
 
     @Override
@@ -82,8 +83,12 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         } else {
             view = convertView;
         }
-        TextView txtView = (TextView) view.findViewById(R.id.group_title);
-        txtView.setText(plan_list.get(groupPosition).getName());
+        TextView title = (TextView) view.findViewById(R.id.group_title);
+        TextView quxian = (TextView) view.findViewById(R.id.group_quxian);
+        TextView time = (TextView) view.findViewById(R.id.group_time);
+        title.setText(plan_list.get(groupPosition).getAq_lh_jcmc());
+        quxian.setText(plan_list.get(groupPosition).getAq_lh_qxjd());
+        time.setText(plan_list.get(groupPosition).getAq_lh_jcrq());
         return view;
     }
 

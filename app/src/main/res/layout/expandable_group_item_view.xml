@@ -2,13 +2,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:paddingRight="50dp">
 
     <TextView
         android:id="@+id/group_title"
         style="@style/expandablelistview_group"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:foreground="?attr/selectableItemBackground"
+        android:text="@string/action_sign_in_short" />
+
+    <TextView
+        android:id="@+id/group_quxian"
+        style="@style/expandablelistview_group"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:foreground="?attr/selectableItemBackground"
+        android:gravity="center_horizontal"
+        android:text="@string/action_sign_in_short" />
+
+    <TextView
+        android:id="@+id/group_time"
+        style="@style/expandablelistview_group"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:foreground="?attr/selectableItemBackground"
+        android:gravity="end"
         android:text="@string/action_sign_in_short" />
 </LinearLayout>

@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckResult;
+import com.bokun.bkjcb.on_siteinspection.Domain.FinishedPlan;
+import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 
 import java.util.ArrayList;
@@ -120,5 +122,24 @@ public class DataUtil {
         daolmpl.colseDateBase();
         LogUtil.logI("更新一条检查计划状态" + plan.getIdentifier() + " state:" + plan.getState());
         return is;
+    }
+
+    public static ArrayList<CheckPlan> getCheckPlan(String[] ids) {
+        CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(JCApplication.getContext());
+        ArrayList<CheckPlan> plans = new ArrayList<>();
+        CheckPlan plan;
+        for (String id : ids) {
+            plan = daolmpl.queryCheckPlan(id);
+            plans.add(plan);
+        }
+        daolmpl.colseDateBase();
+        return plans;
+    }
+
+    public static FinishedPlan getFinishedPlan(String SysId) {
+        FinishedPlanDao dao = new FinishedPlanDao(JCApplication.getContext());
+        FinishedPlan plan = dao.query(SysId);
+        dao.close();
+        return plan;
     }
 }

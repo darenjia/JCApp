@@ -3,6 +3,7 @@ package com.bokun.bkjcb.on_siteinspection.Utils;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,6 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.bokun.bkjcb.on_siteinspection.JCApplication;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -247,5 +250,10 @@ public class Utils {
         return false;
     }
 
+    public static String getUserName() {
+        SharedPreferences preferences = JCApplication.getContext().getSharedPreferences("default", Context.MODE_PRIVATE);
+        String username = preferences.getString("UserName", "");
+        return username;
+    }
 }
 

@@ -158,7 +158,7 @@ public class LoginActivity extends BaseActivity implements RequestListener {
     /*
     * 判断用户名是否可用*/
     private boolean isUserNameValid(String name) {
-        return name.length() > 4;
+        return name.length() > 0;
     }
 
     /*

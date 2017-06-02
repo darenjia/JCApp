@@ -1,7 +1,5 @@
 package com.bokun.bkjcb.on_siteinspection.Fragment;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +9,7 @@ import android.widget.TextView;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckResult;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
+import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -57,8 +56,7 @@ public class LastFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        SharedPreferences preferences = getContext().getSharedPreferences("default", Context.MODE_PRIVATE);
-        String username = preferences.getString("UserName", "");
+        String username = Utils.getUserName();
         user.setText(username);
 
     }

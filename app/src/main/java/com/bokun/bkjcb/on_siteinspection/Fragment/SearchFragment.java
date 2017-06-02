@@ -21,12 +21,12 @@ import android.widget.TextView;
 
 import com.bokun.bkjcb.on_siteinspection.Adapter.StringAdapter;
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
-import com.bokun.bkjcb.on_siteinspection.Domain.LogQuickSearch;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpManager;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpRequestVo;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.R;
+import com.bokun.bkjcb.on_siteinspection.SQLite.SearchedWordDao;
 import com.bokun.bkjcb.on_siteinspection.Utils.ToastUtil;
 
 import org.ksoap2.serialization.SoapObject;
@@ -46,7 +46,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
     private ImageView image_search_back, clearSearch;
     private EditText edit_text_search;
     private ListView listView, listContainer;//搜索结果列表
-    private StringAdapter logQuickSearchAdapter;//搜索历史适配器
+    private StringAdapter stringAdapter;//搜索历史适配器
     private Set<String> set;//判断有没有重复的搜索历史，重复的话不再保存
     private ArrayList<String> mItem;
     private ProgressBar marker_progress;
@@ -68,10 +68,10 @@ public class SearchFragment extends MainFragment implements RequestListener {
         marker_progress = (ProgressBar) view.findViewById(R.id.marker_progress);
         set = new HashSet<>();
         SetTypeFace();
-        logQuickSearchAdapter = new StringAdapter(context, LogQuickSearch.all(context, 1));
+        stringAdapter = new StringAdapter(context, SearchedWordDao.all(context, 1));
         mItem = new ArrayList<>();
         listView.setTextFilterEnabled(false);
-        listView.setAdapter(logQuickSearchAdapter);
+        listView.setAdapter(stringAdapter);
         InitiateSearch();
         HandleSearch();
         IsAdapterEmpty();
@@ -97,7 +97,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String name = logQuickSearchAdapter.getItem(position);
+                String name = stringAdapter.getItem(position);
                 edit_text_search.setText(name);
                 listView.setVisibility(View.GONE);
                 ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(edit_text_search.getWindowToken(), 0);
@@ -121,7 +121,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
                     clearSearch.setImageResource(R.mipmap.ic_close);
                     listView.setFilterText(txt);
                 } else {
-                    logQuickSearchAdapter.initData();
+                    stringAdapter.initData();
                     clearSearch.setImageResource(R.mipmap.ic_keyboard_voice);
                     IsAdapterEmpty();
                 }
@@ -133,7 +133,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
                 if (edit_text_search.getText().toString().length() != 0) {
                     edit_text_search.setText("");
                     listView.setVisibility(View.VISIBLE);
-                    logQuickSearchAdapter.initData();
+                    stringAdapter.initData();
                     ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
                     IsAdapterEmpty();
                 }
@@ -143,14 +143,14 @@ public class SearchFragment extends MainFragment implements RequestListener {
     }
 
     private void UpdateQuickSearch(String item) {
-        for (int i = 0; i < logQuickSearchAdapter.getCount(); i++) {
-            String name = logQuickSearchAdapter.getItem(i);
+        for (int i = 0; i < stringAdapter.getCount(); i++) {
+            String name = stringAdapter.getItem(i);
             set.add(name);
         }
         if (set.add(item)) {
-            LogQuickSearch.save(context, item, 1);
-            logQuickSearchAdapter.add(item);
-            logQuickSearchAdapter.notifyDataSetChanged();
+            SearchedWordDao.save(context, item, 1);
+            stringAdapter.add(item);
+            stringAdapter.notifyDataSetChanged();
         }
     }
 
@@ -187,7 +187,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
     }
 
     private void IsAdapterEmpty() {
-        if (logQuickSearchAdapter.getCount() == 0) {
+        if (stringAdapter.getCount() == 0) {
             line_divider.setVisibility(View.GONE);
         } else {
             line_divider.setVisibility(View.VISIBLE);

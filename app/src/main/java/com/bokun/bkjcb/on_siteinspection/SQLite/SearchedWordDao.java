@@ -1,25 +1,23 @@
-package com.bokun.bkjcb.on_siteinspection.Domain;
+package com.bokun.bkjcb.on_siteinspection.SQLite;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.bokun.bkjcb.on_siteinspection.SQLite.SQLiteOpenUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class LogQuickSearch {
+public class SearchedWordDao {
     private SQLiteDatabase database;
-    private static LogQuickSearch search;
+    private static SearchedWordDao search;
 
-    public LogQuickSearch(Context context) {
+    public SearchedWordDao(Context context) {
         SQLiteOpenUtil util = new SQLiteOpenUtil(context);
         database = util.getWritableDatabase();
     }
 
     public static List<String> all(Context context, int type) {
-        search = new LogQuickSearch(context);
+        search = new SearchedWordDao(context);
         List<String> list = new ArrayList<>();
         Cursor cursor = search.database.rawQuery("select name from searchhistory where type=" + type + " ORDER BY id DESC", null);
         while (cursor.moveToNext()) {
@@ -30,7 +28,7 @@ public class LogQuickSearch {
     }
 
     public static void save(Context context, String string, int type) {
-        search = new LogQuickSearch(context);
+        search = new SearchedWordDao(context);
         search.database.execSQL("insert into searchhistory (name,type) values('" + string + "'," + type + ")");
         search.database.close();
     }

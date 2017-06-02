@@ -8,12 +8,14 @@ import android.widget.Toast;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckResult;
+import com.bokun.bkjcb.on_siteinspection.Domain.FinishedPlan;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpRequestVo;
 import com.bokun.bkjcb.on_siteinspection.Http.OkHttpManager;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -54,9 +56,13 @@ public class UploadHelper {
     public void startTask(CheckPlan checkPlan, ProgressListener listener) {
         this.listener = listener;
         LogUtil.logI(checkPlan.getName() + " 任务开始");
+        FinishedPlan plan = DataUtil.getFinishedPlan(String.valueOf(checkPlan.getSysId()));
         results = DataUtil.readData(context, checkPlan.getIdentifier());
         Gson gson = new Gson();
-        String str = gson.toJson(results);
+        JsonElement element = gson.toJsonTree(results);
+        plan.setResult(element);
+        String str = gson.toJson(plan);
+        LogUtil.logI(str);
         OkHttpManager okHttpManager = new OkHttpManager(context, new RequestListener() {
             @Override
             public void action(int i, Object object) {

@@ -70,6 +70,38 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
     }
 
     @Override
+    public CheckPlan queryCheckPlan(String sysID) {
+        CheckPlan plan = null;
+        Cursor cursor = db.query("checkplan", null, "sysId=?", new String[]{String.valueOf(sysID)}, null, null, null);
+        while (cursor.moveToNext()) {
+            plan = new CheckPlan();
+            plan.setIdentifier(cursor.getInt(cursor.getColumnIndex("identifier")));
+            plan.setName(cursor.getString(cursor.getColumnIndex("name")));
+            plan.setState(cursor.getInt(cursor.getColumnIndex("state")));
+           /* values.put("sysId", plan.getSysId());
+            values.put("name", plan.getName());
+            values.put("state", plan.getState());
+            values.put("address", plan.getAddress());
+            values.put("quxian", plan.getQuxian());
+            values.put("area", plan.getArea());
+            values.put("manager", plan.getManager());
+            values.put("user", plan.getUser());
+            values.put("type", plan.getType());
+            values.put("tel", plan.getTel());*/
+            plan.setArea(cursor.getString(cursor.getColumnIndex("area")));
+            plan.setAddress(cursor.getString(cursor.getColumnIndex("address")));
+            plan.setSysId(cursor.getInt(cursor.getColumnIndex("sysId")));
+            plan.setType(cursor.getString(cursor.getColumnIndex("type")));
+            plan.setQuxian(cursor.getString(cursor.getColumnIndex("quxian")));
+            plan.setManager(cursor.getString(cursor.getColumnIndex("manager")));
+            plan.setUser(cursor.getString(cursor.getColumnIndex("user")));
+        }
+        cursor.close();
+        LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
+        return plan;
+    }
+
+    @Override
     public boolean queryCheckPlanIsNull(int identifier) {
         Cursor cursor = db.query("checkplan", null, "identifier=?", new String[]{String.valueOf(identifier)}, null, null, null);
         boolean isNull = cursor.moveToNext();

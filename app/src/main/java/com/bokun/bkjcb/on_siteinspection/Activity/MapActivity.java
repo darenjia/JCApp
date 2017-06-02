@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -67,7 +68,6 @@ import com.amap.api.services.route.RouteSearch;
 import com.amap.api.services.route.WalkPath;
 import com.amap.api.services.route.WalkRouteResult;
 import com.bokun.bkjcb.on_siteinspection.Adapter.StringAdapter;
-import com.bokun.bkjcb.on_siteinspection.Domain.LogQuickSearch;
 import com.bokun.bkjcb.on_siteinspection.Map.AMapUtil;
 import com.bokun.bkjcb.on_siteinspection.Map.BusResultListAdapter;
 import com.bokun.bkjcb.on_siteinspection.Map.DriveRouteDetailActivity;
@@ -75,6 +75,7 @@ import com.bokun.bkjcb.on_siteinspection.Map.DrivingRouteOverLay;
 import com.bokun.bkjcb.on_siteinspection.Map.InitiateSearch;
 import com.bokun.bkjcb.on_siteinspection.Map.WalkRouteDetailActivity;
 import com.bokun.bkjcb.on_siteinspection.R;
+import com.bokun.bkjcb.on_siteinspection.SQLite.SearchedWordDao;
 import com.bokun.bkjcb.on_siteinspection.Utils.LocalTools;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
@@ -113,7 +114,7 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
     private AutoCompleteTextView edit_text_search;
     private ListView listView;
     //    private ListView listContainer;//搜索结果列表
-    private StringAdapter logQuickSearchAdapter;//搜索历史适配器
+    private StringAdapter SearchAdapter;//搜索历史适配器
     private Set<String> set;//判断有没有重复的搜索历史，重复的话不再保存
     private ArrayList<String> mItem;
     private ArrayList<PoiItem> poiItems;
@@ -660,12 +661,12 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
         mBusResultList = (ListView) findViewById(R.id.bus_result_list);
         mRouteView = (RelativeLayout) findViewById(R.id.routemap_header);
         marker_progress.getIndeterminateDrawable().setColorFilter(Color.parseColor("#FFFFFF"),//Pink color
-                android.graphics.PorterDuff.Mode.MULTIPLY);
+                PorterDuff.Mode.MULTIPLY);
         set = new HashSet<>();
         SetTypeFace();
-        logQuickSearchAdapter = new StringAdapter(this, LogQuickSearch.all(this, 0));
+        SearchAdapter = new StringAdapter(this, SearchedWordDao.all(this, 0));
         mItem = new ArrayList<>();
-        listView.setAdapter(logQuickSearchAdapter);
+        listView.setAdapter(SearchAdapter);
 //        resultAdapter = new StringAdapter(mItem);
 //        listContainer.setAdapter(resultAdapter);
 //       listPopupWindow = new ListPopupWindow(this);
@@ -683,7 +684,7 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String name = logQuickSearchAdapter.getItem(position);
+                String name = SearchAdapter.getItem(position);
                 edit_text_search.setText(name);
                 listView.setVisibility(View.GONE);
                 ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(edit_text_search.getWindowToken(), 0);
@@ -701,8 +702,8 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String newText = s.toString();
                 if (newText.length() == 0) {
-                    logQuickSearchAdapter.initData();
-                    listView.setAdapter(logQuickSearchAdapter);
+                    SearchAdapter.initData();
+                    listView.setAdapter(SearchAdapter);
                     clearSearch.setImageResource(R.mipmap.ic_search);
                     IsAdapterEmpty();
                 } else {
@@ -800,14 +801,14 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
 
 
     private void UpdateQuickSearch(String item) {
-        for (int i = 0; i < logQuickSearchAdapter.getCount(); i++) {
-            String name = logQuickSearchAdapter.getItem(i);
+        for (int i = 0; i < SearchAdapter.getCount(); i++) {
+            String name = SearchAdapter.getItem(i);
             set.add(name);
         }
         if (set.add(item)) {
-            LogQuickSearch.save(this, item, 0);
-            logQuickSearchAdapter.add(item);
-            logQuickSearchAdapter.notifyDataSetChanged();
+            SearchedWordDao.save(this, item, 0);
+            SearchAdapter.add(item);
+            SearchAdapter.notifyDataSetChanged();
         }
     }
 
@@ -842,7 +843,7 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
     }
 
     private void IsAdapterEmpty() {
-        if (logQuickSearchAdapter.getCount() == 0) {
+        if (SearchAdapter.getCount() == 0) {
             line_divider.setVisibility(View.GONE);
         } else {
             line_divider.setVisibility(View.VISIBLE);
