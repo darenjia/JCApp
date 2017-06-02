@@ -191,6 +191,9 @@ public class UpLoadChirldFragment extends BaseFragment {
     }
 
     private void openBroadCast() {
+        if (receiver != null) {
+            return;
+        }
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -221,6 +224,10 @@ public class UpLoadChirldFragment extends BaseFragment {
         if (manager != null && receiver != null) {
             manager.unregisterReceiver(receiver);
         }
+    }
+
+    public void refresh() {
+        loadTask.execute();
     }
 
     private String getState(int state) {

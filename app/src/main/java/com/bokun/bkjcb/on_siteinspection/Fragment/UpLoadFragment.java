@@ -39,9 +39,28 @@ public class UpLoadFragment extends MainFragment {
         UpLoadChirldFragment finished = new UpLoadChirldFragment();
         finished.setFinished(true);
         fragments.add(finished);
-        PagerAdapter adapter = new PagerAdapter(getActivity().getSupportFragmentManager());
+        final PagerAdapter adapter = new PagerAdapter(getActivity().getSupportFragmentManager());
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 1) {
+                    ((UpLoadChirldFragment) fragments.get(position)).refresh();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     class PagerAdapter extends FragmentPagerAdapter {
