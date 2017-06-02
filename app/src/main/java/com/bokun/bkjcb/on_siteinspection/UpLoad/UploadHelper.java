@@ -42,10 +42,11 @@ public class UploadHelper {
 //                prePareFile();
 //                uploadFile();
                 JsonResult result = (JsonResult) msg.obj;
+                LogUtil.logI(result.message);
                 ToastUtil.show(context, result.message);
                 if (result.success) {
                     listener.onUpdate(100, 100, true);
-                }else {
+                } else {
                     listener.onUpdate(100, 100, false);
                 }
             } else {

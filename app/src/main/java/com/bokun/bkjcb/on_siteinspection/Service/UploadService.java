@@ -51,7 +51,7 @@ public class UploadService extends Service {
                 Intent broadcast = new Intent("com.bokun.jcapp.UPDATE_PROGRESS");
                 if (done) {
                     LogUtil.logI("contentLength" + contentLength + "===currentBytes" + currentBytes);
-                    double precent = (double) currentBytes / (double) contentLength;
+                    double precent = 1 - (double) currentBytes / (double) contentLength;
                     LogUtil.logI(precent + "百分比");
                     broadcast.putExtra("precent", (int) (precent * 100));
                 } else {

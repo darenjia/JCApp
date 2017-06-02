@@ -99,6 +99,7 @@ public class UpLoadChirldFragment extends BaseFragment {
                             projectPlan.setState_upload(2);
                             if (position == 0) {
                                 startUpload(projectPlan);
+                                progress = viewHolder.button;
                                 viewHolder.state.setText("正在上传");
                             } else {
                                 buttonView.setText("等待");
@@ -204,7 +205,7 @@ public class UpLoadChirldFragment extends BaseFragment {
                     return;
                 }
                 progress.setText(flag + "%");
-                if (flag == 100) {
+                if (flag == 0) {
                     ProjectPlan projectPlan = projectPlans.get(0);
                     projectPlan.setAq_jctz_zt("上传完成");
                     DataUtil.changeProjectState(projectPlan);

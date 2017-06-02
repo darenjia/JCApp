@@ -45,7 +45,7 @@ public class ProjectPlanDao {
         Cursor cursor = database.query("constructioninfo", null, "aq_jctz_zt=?", new String[]{state}, null, null, null);
         while (cursor.moveToNext()) {
             result = new ProjectPlan();
-            result.setAq_lh_seqid(cursor.getInt(cursor.getColumnIndex("aq_lh_id")));
+            result.setAq_lh_id(cursor.getString(cursor.getColumnIndex("aq_lh_id")));
             result.setAq_lh_jcmc(cursor.getString(cursor.getColumnIndex("aq_lh_jcmc")));
             result.setAq_jctz_zt(cursor.getString(cursor.getColumnIndex("aq_jctz_zt")));
             result.setAq_sysid(cursor.getString(cursor.getColumnIndex("aq_sysid")));
