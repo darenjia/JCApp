@@ -176,9 +176,9 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     public void onBackPressed() {
-        overridePendingTransition(R.anim.in, R.anim.out_right);
         setResult(resultCode);
         finish();
+        overridePendingTransition(R.anim.in, R.anim.out_right);
     }
 
     public static void toAboutActiivty(Activity activity) {
