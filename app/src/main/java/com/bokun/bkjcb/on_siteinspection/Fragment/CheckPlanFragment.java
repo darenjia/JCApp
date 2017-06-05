@@ -135,30 +135,41 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
     @Override
     public void action(int i, Object object) {
-        JsonResult result = JsonParser.parseSoap((SoapObject) object);
-        if (projectPlans == null || projectPlans.size() == 0) {
-            projectPlans = JsonParser.getProjectData(result.resData);
-            DataUtil.saveProjectPlan(projectPlans);
-            getCheckPlanFromNet();
-            return;
-        }
-        cacheUitl = new CacheUitl();
-        String cacheStr = cacheUitl.getData(key);
-        if (cacheStr == null) {
-            cacheUitl.saveData(key, result.resData);
-        } else {
-            if (!cacheStr.equals(result.resData)) {
+        JsonResult result = null;
+        if (object != null) {
+            result = JsonParser.parseSoap((SoapObject) object);
+            if (projectPlans == null || projectPlans.size() == 0) {
+                projectPlans = JsonParser.getProjectData(result.resData);
+                DataUtil.saveProjectPlan(projectPlans);
+                getCheckPlanFromNet();
+                return;
+            }
+            cacheUitl = new CacheUitl();
+            String cacheStr = cacheUitl.getData(key);
+            if (cacheStr == null) {
+                cacheUitl.saveData(key, result.resData);
                 checkPlans = JsonParser.getJSONData(result.resData);
                 LogUtil.logI(checkPlans.size() + "");
                 DataUtil.insertCheckPlans(context, checkPlans);
+            } else {
+                if (!cacheStr.equals(result.resData)) {
+                    checkPlans = JsonParser.getJSONData(result.resData);
+                    LogUtil.logI(checkPlans.size() + "");
+                    DataUtil.insertCheckPlans(context, checkPlans);
+                }
             }
-        }
 
-        constuctions = new ArrayList<>();
-        for (ProjectPlan plan : projectPlans) {
-            String sysIDs = plan.getAq_sysid();
-            String[] ids = sysIDs.split(",");
-            constuctions.add(DataUtil.getCheckPlan(ids));
+            constuctions = new ArrayList<>();
+            for (ProjectPlan plan : projectPlans) {
+                String sysIDs = plan.getAq_sysid();
+                String[] ids = {};
+                if (sysIDs != null) {
+                    ids = sysIDs.split(",");
+                }
+                constuctions.add(DataUtil.getCheckPlan(ids));
+            }
+        } else {
+            i = RequestListener.EVENT_GET_DATA_EEEOR;
         }
         Message msg = new Message();
         msg.what = i;

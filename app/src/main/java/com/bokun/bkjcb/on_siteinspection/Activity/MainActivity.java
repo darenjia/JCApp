@@ -96,7 +96,7 @@ public class MainActivity extends BaseActivity
                 InputMethodManager manager = ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE));
                 boolean isOpen = manager.isActive();
                 if (isOpen) {//因为是在fragment下，所以用了getView()获取view，也可以用findViewById（）来获取父控件
-                    toolbar.requestFocus();//使其它view获取焦点.这里因为是在fragment下,所以便用了getView(),可以指定任意其它view
+                    drawerLayout.requestFocus();//使其它view获取焦点.这里因为是在fragment下,所以便用了getView(),可以指定任意其它view
                     manager.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 }
             }
@@ -172,8 +172,8 @@ public class MainActivity extends BaseActivity
             loadView("工程信息详情", "forth");
         } */ else if (id == R.id.nav_update_result) {
             loadView("上传进度", "forth");
-        } else if (id == R.id.nav_update_result) {
-            LoginActivity.comeToLoginActivity(this);
+        } else if (id == R.id.nav_app_introduce) {
+            AboutActivity.toAboutActiivty(this);
         } else if (id == R.id.nav_exit) {
             AppManager.getAppManager().finishAllActivity();
 //            AppManager.getAppManager().AppExit(this);
@@ -258,5 +258,15 @@ public class MainActivity extends BaseActivity
 
     public void showMenu(boolean is) {
         menu.setGroupVisible(R.id.menu_map, is);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1 && resultCode == 1) {
+            SearchFragment fragment = (SearchFragment) viewMap.get("second");
+            if (fragment != null) {
+                fragment.cleanHistory();
+            }
+        }
     }
 }

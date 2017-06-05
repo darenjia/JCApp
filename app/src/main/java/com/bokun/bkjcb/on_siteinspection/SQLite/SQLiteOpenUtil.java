@@ -27,10 +27,11 @@ public class SQLiteOpenUtil extends SQLiteOpenHelper {
         db.execSQL(Constants.CREATE_CHECK_PLAN_TABLE);
         db.execSQL(Constants.CREATE_SEARCH_HISTORY);
         db.execSQL(Constants.CREATE_FINISHED_PALN);
+        db.execSQL(Constants.CREATE_CONSTRUCTION_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(Constants.CREATE_CONSTRUCTION_TABLE);
+
     }
 }

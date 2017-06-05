@@ -114,10 +114,14 @@ public class AlertView {
         int margin_alert_left_right = 0;
         switch (style) {
             case ActionSheet:
-                params.gravity = Gravity.BOTTOM;
+                FrameLayout.LayoutParams param = new FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+                );
+                int height = getStatusBarHeight(context);
+                param.gravity = Gravity.BOTTOM;
                 margin_alert_left_right = context.getResources().getDimensionPixelSize(R.dimen.margin_actionsheet_left_right);
-                params.setMargins(margin_alert_left_right, margin_alert_left_right, margin_alert_left_right, margin_alert_left_right);
-                contentContainer.setLayoutParams(params);
+                param.setMargins(margin_alert_left_right, height, margin_alert_left_right, margin_alert_left_right);
+                contentContainer.setLayoutParams(param);
                 gravity = Gravity.BOTTOM;
                 initActionSheetViews(layoutInflater);
                 break;
@@ -280,6 +284,18 @@ public class AlertView {
             return;
         }
         onAttached(rootView);
+    }
+
+    /*
+    * 获取状态栏高度
+    * */
+    public static int getStatusBarHeight(Context context) {
+        int result = 0;
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = context.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 
     /**

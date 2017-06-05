@@ -1,9 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.bokun.bkjcb.on_siteinspection.Activity.AboutActivity">
+    android:orientation="vertical">
 
-</android.support.constraint.ConstraintLayout>
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <TextView
+        android:id="@+id/about_version"
+        style="@style/about_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/mid_size"
+        android:drawableTop="@mipmap/check_app"
+        android:gravity="center"
+        android:text="V1.00 地下空间检查" />
+
+    <TextView style="@style/splitLine" />
+
+    <TextView
+        android:id="@+id/about_intr"
+        style="@style/about_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="使用介绍" />
+
+    <TextView style="@style/splitLine" />
+
+    <Switch
+        android:id="@+id/about_auto_upload"
+        style="@style/about_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="@dimen/small_size"
+        android:text="wifi下自动上传" />
+
+    <TextView style="@style/splitLine" />
+
+    <TextView
+        android:id="@+id/about_clean_search"
+        style="@style/about_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="清空搜索记录" />
+
+    <TextView style="@style/splitLine" />
+
+    <LinearLayout
+        android:id="@+id/about_clean_cache"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/about_list"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="清除应用缓存" />
+
+        <TextView
+            android:id="@+id/about_cache_size"
+            style="@style/about_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="@dimen/small_size"
+            android:textColor="@color/accent"
+            android:text="3.5M" />
+    </LinearLayout>
+
+    <TextView style="@style/splitLine" />
+
+    <TextView
+        android:id="@+id/about_comment"
+        style="@style/about_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="反馈及意见" />
+
+    <TextView style="@style/splitLine" />
+
+    <TextView
+        android:id="@+id/about_update"
+        style="@style/about_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="检查更新" />
+
+    <TextView style="@style/splitLine" />
+</LinearLayout>

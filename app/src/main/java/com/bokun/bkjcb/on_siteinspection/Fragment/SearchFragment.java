@@ -27,7 +27,6 @@ import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.SearchedWordDao;
-import com.bokun.bkjcb.on_siteinspection.Utils.ToastUtil;
 
 import org.ksoap2.serialization.SoapObject;
 
@@ -136,7 +135,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
                     edit_text_search.setText("");
                     listView.setVisibility(View.VISIBLE);
                     stringAdapter.initData();
-                    ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                    ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(edit_text_search,InputMethodManager.SHOW_IMPLICIT);
                     IsAdapterEmpty();
                 }
             }
@@ -206,6 +205,11 @@ public class SearchFragment extends MainFragment implements RequestListener {
         mItem.clear();
     }
 
+    public void cleanHistory() {
+        stringAdapter = null;
+        stringAdapter = new StringAdapter(context, SearchedWordDao.all(context, 1));
+        listView.setAdapter(stringAdapter);
+    }
 
     private void search(String item, int page_num) {
         view_search.setVisibility(View.VISIBLE);
@@ -214,7 +218,6 @@ public class SearchFragment extends MainFragment implements RequestListener {
         requestVo.setMethodName("GetXxclSc");
         HttpManager manager = new HttpManager(context, this, requestVo);
         //manager.postRequest();
-        ToastUtil.show(context, "开始搜索");
         mHandler.sendEmptyMessageDelayed(9, 2000);
     }
 

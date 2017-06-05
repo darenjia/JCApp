@@ -154,6 +154,8 @@ public class HttpManager implements Runnable {
      * @return
      */
     private void sendPostRequest() {
+        HttpTransportSE ht;
+        boolean again = true;
         try {
 
             String NAMESPACE = "http://zgzxjk/";
@@ -166,7 +168,7 @@ public class HttpManager implements Runnable {
                 rpc.addProperty(entry.getKey(), entry.getValue());
             }
             // 创建 HttpTransportSE 对象,并指定 WebService 的 WSDL 文档的 URL
-            HttpTransportSE ht = new HttpTransportSE(URL);
+            ht = new HttpTransportSE(URL);
             // 设置 debug 模式
             ht.debug = true;
             // 获得序列化的 envelope
@@ -189,7 +191,9 @@ public class HttpManager implements Runnable {
             if (result != null) {
                 listener.action(RequestListener.EVENT_GET_DATA_SUCCESS, result);
             } else {
-                listener.action(RequestListener.EVENT_GET_DATA_EEEOR, null);
+                ht.call(null, envelope);
+                result = (SoapObject) envelope.bodyIn;
+                listener.action(RequestListener.EVENT_GET_DATA_SUCCESS, result);
             }
         } catch (ProtocolException e) {
             listener.action(RequestListener.EVENT_GET_DATA_EEEOR, null);

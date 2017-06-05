@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.bokun.bkjcb.on_siteinspection.JCApplication;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +32,12 @@ public class SearchedWordDao {
     public static void save(Context context, String string, int type) {
         search = new SearchedWordDao(context);
         search.database.execSQL("insert into searchhistory (name,type) values('" + string + "'," + type + ")");
+        search.database.close();
+    }
+
+    public static void clean() {
+        search = new SearchedWordDao(JCApplication.getContext());
+        search.database.execSQL("delete from searchhistory");
         search.database.close();
     }
 

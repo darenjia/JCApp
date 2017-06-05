@@ -66,14 +66,14 @@ public class DataUtil {
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);
         if (!daolmpl.queryCheckPlanIsNull(plan.getIdentifier())) {
             daolmpl.insertCheckPlan(plan);
-            LogUtil.logI("加入一条检查计划" + plan.getIdentifier());
+           // LogUtil.logI("加入一条检查计划" + plan.getIdentifier());
         }
     }
 
     public static CheckPlan queryCheckPlan(Context context, int indentifier) {
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);
         CheckPlan plan = daolmpl.queryCheckPlan(indentifier);
-        LogUtil.logI("查询一条检查计划" + plan.getIdentifier() + " state:" + plan.getState());
+        //LogUtil.logI("查询一条检查计划" + plan.getIdentifier() + " state:" + plan.getState());
         return plan;
     }
 
