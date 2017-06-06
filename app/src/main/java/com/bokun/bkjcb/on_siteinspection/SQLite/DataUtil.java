@@ -66,7 +66,7 @@ public class DataUtil {
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);
         if (!daolmpl.queryCheckPlanIsNull(plan.getIdentifier())) {
             daolmpl.insertCheckPlan(plan);
-           // LogUtil.logI("加入一条检查计划" + plan.getIdentifier());
+            // LogUtil.logI("加入一条检查计划" + plan.getIdentifier());
         }
     }
 
@@ -171,7 +171,13 @@ public class DataUtil {
 
     public static void changeProjectState(ProjectPlan plan) {
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
+        CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(JCApplication.getContext());
         dao.update(plan.getAq_lh_id(), plan.getAq_jctz_zt());
+        String[] ids = plan.getAq_sysid().split(",");
+        for (String id : ids) {
+            daolmpl.updateCheckPlanState(id, 3);
+        }
+        daolmpl.colseDateBase();
         dao.close();
     }
 }

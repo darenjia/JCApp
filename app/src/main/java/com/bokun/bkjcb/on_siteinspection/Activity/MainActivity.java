@@ -49,6 +49,7 @@ public class MainActivity extends BaseActivity
     private ImageView userImg;
     private TextView userName, userMessage;
     public static ManagerInfo user;
+    private Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,11 +124,12 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else if (!drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.openDrawer(GravityCompat.START);
+        CheckPlanFragment fragment = (CheckPlanFragment) viewMap.get("first");
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else if (!drawerLayout.isDrawerOpen(GravityCompat.START) && currentFragment != fragment) {
+            //loadView("检查计划", "first");
+            drawerLayout.openDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -157,7 +159,6 @@ public class MainActivity extends BaseActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -190,7 +191,7 @@ public class MainActivity extends BaseActivity
         if (menu != null) {
             menu.setGroupVisible(R.id.menu_map, false);
         }
-        Fragment currentFragment = viewMap.get(key);
+        currentFragment = viewMap.get(key);
         hideAllFragment();
         FragmentTransaction transaction = manager.beginTransaction();
         if (currentFragment == null) {

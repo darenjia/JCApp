@@ -13,7 +13,7 @@
         android:text="安全检查"
         android:textSize="18sp" />
 
-    <LinearLayout
+    <!--<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -37,9 +37,9 @@
                 style="@style/table_content"
                 android:text="@string/table_construction_address" />
 
-           <!-- <TextView
+           &lt;!&ndash; <TextView
                 style="@style/table_content"
-                android:text="@string/table_construction_tel" />-->
+                android:text="@string/table_construction_tel" />&ndash;&gt;
 
             <TextView
                 style="@style/table_content"
@@ -79,10 +79,10 @@
                 style="@style/table_content"
                 android:text="工程信息" />
 
-           <!-- <TextView
+           &lt;!&ndash; <TextView
                 android:id="@+id/construction_tel"
                 style="@style/table_content"
-                android:text="工程信息" />-->
+                android:text="工程信息" />&ndash;&gt;
 
             <TextView
                 android:id="@+id/construction_area"
@@ -104,7 +104,112 @@
                 style="@style/table_content"
                 android:text="工程信息" />
         </LinearLayout>
-    </LinearLayout>
+    </LinearLayout>-->
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableRow>
+
+            <TextView
+                style="@style/table_content"
+                android:layout_weight="1"
+                android:text="@string/table_construction_name" />
+
+            <TextView
+                android:id="@+id/construction_name"
+                style="@style/table_content"
+                android:layout_weight="2"
+                android:text="工程信息" />
+
+
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                style="@style/table_content"
+                android:layout_weight="1"
+                android:text="@string/table_construction_id" />
+
+            <TextView
+                android:id="@+id/construction_id"
+                style="@style/table_content"
+                android:layout_weight="2"
+                android:text="工程信息" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                style="@style/table_content"
+                android:layout_weight="1"
+                android:text="@string/table_construction_address" />
+
+            <TextView
+                android:id="@+id/construction_address"
+                style="@style/table_content"
+                android:layout_weight="2"
+                android:text="工程信息" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                style="@style/table_content"
+                android:layout_weight="1"
+                android:text="@string/table_construction_area" />
+
+            <TextView
+                android:id="@+id/construction_area"
+                style="@style/table_content"
+                android:layout_weight="2"
+                android:text="工程信息" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                style="@style/table_content"
+                android:layout_weight="1"
+                android:text="@string/table_construction_type" />
+
+            <TextView
+                android:id="@+id/construction_type"
+                style="@style/table_content"
+                android:layout_weight="2"
+                android:text="工程信息" />
+        </TableRow>
+
+        <TableRow android:visibility="gone">
+
+            <TextView
+                style="@style/table_content"
+                android:layout_weight="1"
+                android:text="@string/table_construction_manager" />
+
+            <TextView
+                android:id="@+id/construction_manager"
+                style="@style/table_content"
+                android:layout_weight="2"
+                android:text="工程信息" />
+        </TableRow>
+
+        <TableRow
+            android:visibility="gone">
+
+            <TextView
+                style="@style/table_content"
+                android:layout_weight="1"
+                android:text="@string/table_construction_user" />
+
+            <TextView
+                android:id="@+id/construction_user"
+                style="@style/table_content"
+                android:layout_weight="2"
+                android:text="工程信息" />
+        </TableRow>
+    </TableLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

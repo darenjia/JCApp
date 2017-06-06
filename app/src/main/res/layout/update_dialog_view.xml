@@ -8,7 +8,9 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
 
         <ProgressBar
             android:id="@+id/update_proBar_c"
@@ -34,7 +36,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/update_proBar_c"
             android:gravity="center"
-            android:paddingBottom="@dimen/small_size"
             android:text="当前版本为最新版"
             android:textColor="@color/text_color"
             android:textSize="@dimen/mid_font" />
@@ -48,7 +49,7 @@
             <Button
                 android:id="@+id/update_btn"
                 android:layout_width="match_parent"
-                android:layout_height="42dp"
+                android:layout_height="36dp"
                 android:background="@color/white"
                 android:text="关闭"
                 android:textColor="@color/text_color"

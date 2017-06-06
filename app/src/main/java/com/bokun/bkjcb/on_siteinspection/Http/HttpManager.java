@@ -160,7 +160,7 @@ public class HttpManager implements Runnable {
 
             String NAMESPACE = "http://zgzxjk/";
             String METHOD_NAME = requestVo.methodName;
-            String URL = "http://192.168.100.211:1856/zgzxjkWebService.asmx";
+            String URL = "http://192.168.137.1:1856/zgzxjkWebService.asmx";
             // 新建 SoapObject 对象
             SoapObject rpc = new SoapObject(NAMESPACE, METHOD_NAME);
             HashMap<String, String> map = requestVo.requestDataMap;

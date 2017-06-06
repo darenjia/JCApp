@@ -55,7 +55,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
                     case RequestListener.EVENT_GET_DATA_SUCCESS:
                         activity.pro_c.setVisibility(View.GONE);
                         activity.message.setText("当前版本已是最新版");
-                        activity.button.setVisibility(View.VISIBLE);
+                        //activity.button.setVisibility(View.VISIBLE);
                      /*   JsonResult result = (JsonResult) msg.obj;
                         if (result.success) {
                             MainActivity.ComeToMainActivity(activity, result.resData);
@@ -149,8 +149,12 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
                 showToast("记录已清除");
                 break;
             case R.id.about_comment:
+                Intent intent = new Intent(AboutActivity.this, FeedBackActivity.class);
+                startActivity(intent);
                 break;
             case R.id.about_intr:
+                Intent intent1 = new Intent(AboutActivity.this, EmptyActivity.class);
+                startActivity(intent1);
                 break;
             case R.id.about_update:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -178,12 +182,12 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
     public void onBackPressed() {
         setResult(resultCode);
         finish();
-        overridePendingTransition(R.anim.in, R.anim.out_right);
     }
 
     public static void toAboutActiivty(Activity activity) {
         Intent intent = new Intent(activity, AboutActivity.class);
         activity.startActivityForResult(intent, 1);
+        activity.overridePendingTransition(R.anim.in_right, R.anim.in);
     }
 
     protected void record(boolean flag) {
@@ -216,4 +220,9 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.in, R.anim.out_right);
+    }
 }

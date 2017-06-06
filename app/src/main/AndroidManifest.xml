@@ -89,6 +89,15 @@
         <activity
             android:name=".Activity.AboutActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.EmptyActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.FeedBackActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.PhotoActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

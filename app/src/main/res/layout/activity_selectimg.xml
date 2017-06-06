@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:id="@+id/activity_selectimg_scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#ffffff"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="110dp"
+                android:background="#eef1eff5">
+
+                <HorizontalScrollView
+                    android:id="@+id/selectimg_horizontalScrollView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp">
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:orientation="horizontal">
+
+                        <GridView
+                            android:id="@+id/noScrollgridview"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:fastScrollEnabled="true"
+                            android:focusable="true"
+                            android:gravity="center"
+                            android:horizontalSpacing="0dp"
+                            android:scrollbars="none"
+                            android:scrollingCache="false"
+                            android:stretchMode="spacingWidthUniform"
+                            android:verticalSpacing="1dp" />
+                    </LinearLayout>
+                </HorizontalScrollView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffff"
+                android:orientation="vertical">
+
+                <TextView style="@style/long_lines_style" />
+
+                <EditText
+                    android:id="@+id/comment_content"
+                    android:layout_width="fill_parent"
+                    android:layout_height="100dp"
+                    android:layout_margin="8dp"
+                    android:background="@null"
+                    android:gravity="left|top"
+                    android:textColor="#6F6F6F"
+                    android:textColorHint="#b9b9b9" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/selectimg_relativeLayout_below"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:background="#eef1eff5" />
+
+                <TextView style="@style/long_lines_style" />
+
+                <Button
+                    android:id="@+id/selectimg_bt_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:background="@drawable/bt_nobgd"
+                    android:gravity="center"
+                    android:text="#"
+                    android:textColor="#ff909a"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/activity_selectimg_send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="提交" />
+</LinearLayout>

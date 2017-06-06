@@ -198,6 +198,17 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
 
         return isSuccess != 0;
     }
+    public boolean updateCheckPlanState(String id,int newstate) {
+        int state = queryCheckPlanState(Integer.valueOf(id));
+        if (state == -1) {
+            return false;
+        }
+        ContentValues values = new ContentValues();
+        values.put("state", newstate);
+        int isSuccess = db.update("checkplan", values, "identifier = ?", new String[]{id});
+
+        return isSuccess != 0;
+    }
 
     public void colseDateBase() {
         db.close();

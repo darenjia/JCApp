@@ -40,6 +40,7 @@
 
     <TextView style="@style/splitLine" />
 
+
     <Switch
         android:id="@+id/about_auto_upload"
         style="@style/about_list"
@@ -77,8 +78,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/small_size"
-            android:textColor="@color/accent"
-            android:text="3.5M" />
+            android:text="3.5M"
+            android:textColor="@color/accent" />
     </LinearLayout>
 
     <TextView style="@style/splitLine" />
@@ -100,4 +101,5 @@
         android:text="检查更新" />
 
     <TextView style="@style/splitLine" />
+
 </LinearLayout>
