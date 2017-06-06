@@ -1,5 +1,6 @@
 package com.bokun.bkjcb.on_siteinspection.Activity;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,13 +10,14 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.Selection;
-import android.text.Spannable;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -45,6 +47,9 @@ import android.widget.Toast;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.Utils.Bimp;
 import com.bokun.bkjcb.on_siteinspection.Utils.FileUtils;
+import com.bokun.bkjcb.on_siteinspection.Utils.LocalTools;
+import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
+import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,8 +66,7 @@ public class FeedBackActivity extends AppCompatActivity implements OnItemClickLi
     private ImageView back;
     private EditText comment_content;
     private String temp;
-    private Button selectimg_bt_content_type, selectimg_bt_search;
-    private LinearLayout selectimg_relativeLayout_below;
+    private Button selectimg_bt_content_type;
     private ScrollView activity_selectimg_scrollView;
     private HorizontalScrollView selectimg_horizontalScrollView;
 
@@ -76,14 +80,24 @@ public class FeedBackActivity extends AppCompatActivity implements OnItemClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selectimg);
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("意见反馈");
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.back);
+        Utils.initSystemBar(this, toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         Init();
     }
 
     List<String> urList = new ArrayList<>();
 
     public void Init() {
-        dp = 10;
+        dp = LocalTools.dip2px(this, 10);
         comment_content = (EditText) findViewById(R.id.comment_content);
         comment_content.setFocusable(true);
         comment_content.setFocusableInTouchMode(true);
@@ -143,7 +157,6 @@ public class FeedBackActivity extends AppCompatActivity implements OnItemClickLi
             }
         });
 
-        selectimg_relativeLayout_below = (LinearLayout) findViewById(R.id.selectimg_relativeLayout_below);
         activity_selectimg_scrollView = (ScrollView) findViewById(R.id.activity_selectimg_scrollView);
         activity_selectimg_scrollView.setVerticalScrollBarEnabled(false);
 
@@ -163,13 +176,8 @@ public class FeedBackActivity extends AppCompatActivity implements OnItemClickLi
                                 / (float) displayheight;
 
                         if (ratio > 0.2f && ratio < 0.6f) {
-                            selectimg_relativeLayout_below
-                                    .setVisibility(View.VISIBLE);
                             activity_selectimg_scrollView.scrollBy(0,
                                     activity_selectimg_scrollView.getHeight());
-                        } else {
-                            selectimg_relativeLayout_below
-                                    .setVisibility(View.GONE);
                         }
                     }
                 });
@@ -395,7 +403,7 @@ public class FeedBackActivity extends AppCompatActivity implements OnItemClickLi
             }
             if (file != null) {
                 path = file.getPath();
-                photoUri = Uri.fromFile(file);
+                photoUri = getPhotoUri(openCameraIntent, file);
                 openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
 
                 startActivityForResult(openCameraIntent, TAKE_PICTURE);
@@ -431,33 +439,31 @@ public class FeedBackActivity extends AppCompatActivity implements OnItemClickLi
                     gridviewInit();
                 }
                 break;
-            case SELECTIMG_SEARCH:
-                if (resultCode == RESULT_OK && null != data) {
-                    String text = "#" + data.getStringExtra("topic") + "#";
-                    text = comment_content.getText().toString() + text;
-                    comment_content.setText(text);
-
-                    comment_content.getViewTreeObserver().addOnPreDrawListener(
-                            new OnPreDrawListener() {
-                                public boolean onPreDraw() {
-                                    comment_content.setEnabled(true);
-                                    // 设置光标为末尾
-                                    CharSequence cs = comment_content.getText();
-                                    if (cs instanceof Spannable) {
-                                        Spannable spanText = (Spannable) cs;
-                                        Selection.setSelection(spanText,
-                                                cs.length());
-                                    }
-                                    comment_content.getViewTreeObserver()
-                                            .removeOnPreDrawListener(this);
-                                    return false;
-                                }
-                            });
-
-                }
-
-                break;
         }
+    }
+
+    private Uri getPhotoUri(Intent intent, File file) {
+        Uri uri = null;
+        int currentapiVersion = Build.VERSION.SDK_INT;
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            if (file != null) {
+             /*获取当前系统的android版本号*/
+                LogUtil.logI("currentapiVersion====>" + currentapiVersion);
+                if (currentapiVersion < 24) {
+                    uri = Uri.fromFile(file);
+                } else {
+                    ContentValues contentValues = new ContentValues(1);
+
+                    contentValues.put(MediaStore.Images.Media.DATA, file.getAbsolutePath());
+                    uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+                }
+            } else {
+                Toast.makeText(this, R.string.mis_error_image_not_exist, Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, R.string.mis_msg_no_camera, Toast.LENGTH_SHORT).show();
+        }
+        return uri;
     }
 
     private void startPhotoZoom(Uri uri) {
@@ -468,17 +474,19 @@ public class FeedBackActivity extends AppCompatActivity implements OnItemClickLi
             String address = sDateFormat.format(new java.util.Date());
             if (!FileUtils.isFileExist("")) {
                 FileUtils.createSDDir("");
-
             }
-            drr.add(FileUtils.SDPATH + address + ".JPEG");
-            Uri imageUri = Uri.parse("file:///sdcard/formats/" + address
-                    + ".JPEG");
-
+            String path = FileUtils.SDPATH + address + ".JPEG";
+            drr.add(path);
+            File file = new File(path);
+            Uri imageUri = null;
             final Intent intent = new Intent("com.android.camera.action.CROP");
-
-            // 照片URL地址
-            intent.setDataAndType(uri, "image/*");
-
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                imageUri = FileProvider.getUriForFile(this, "com.bokun.bkjcb.on_siteinspection.fileProvider", file);
+            } else {
+                imageUri = Uri.fromFile(file);
+            }
+            intent.setDataAndType(imageUri, "image/*");
             intent.putExtra("crop", "true");
             intent.putExtra("aspectX", 1);
             intent.putExtra("aspectY", 1);

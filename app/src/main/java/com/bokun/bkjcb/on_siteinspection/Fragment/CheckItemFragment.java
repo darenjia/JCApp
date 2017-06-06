@@ -341,7 +341,6 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
     private void startAction(Intent intent, File file, int type) {
         if (currentapiVersion > 22) {
             if (type == REQUESR_CODE_TAKEPHOTO || type == REQUESR_CODE_VIDEO) {
-                LogUtil.logI("int:" + ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA));
                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
                         == PackageManager.PERMISSION_GRANTED) {
                     jumpToAction(intent, file, type);

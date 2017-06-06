@@ -100,4 +100,31 @@ public class Constants {
     public final static String GetUserURL = "http://192.168.100.211:1856/zgzxjkWebService.asmx?op=GetUser";
 
     public final static String GetXxclScURL = "http://192.168.100.211:1856/zgzxjkWebService.asmx?op=GetXxclSc";
+
+    public static final String FTP_HOST_DEFAULT = "192.168.100.104";
+    public static final int FTP_HOST_PORT = 21;
+    public static final String FTP_USER_DEFAULT = "hqh";
+    public static final String FTP_PASSWORD_DEFAULT = "1";
+
+    /**
+     * ftp状态
+     */
+    public static final String FTP_CONNECT_SUCCESSS = "ftp连接成功";
+    public static final String FTP_CONNECT_FAIL = "ftp连接失败";
+    public static final String FTP_DISCONNECT_SUCCESS = "ftp断开连接";
+    public static final String FTP_FILE_NOTEXISTS = "ftp上文件不存在";
+
+    public static final String FTP_UPLOAD_SUCCESS = "ftp文件上传成功";
+    public static final String FTP_UPLOAD_FAIL = "ftp文件上传失败";
+    public static final String FTP_UPLOAD_LOADING = "ftp文件正在上传";
+
+    public static final String FTP_DOWN_LOADING = "ftp文件正在下载";
+    public static final String FTP_DOWN_SUCCESS = "ftp文件下载成功";
+    public static final String FTP_DOWN_FAIL = "ftp文件下载失败";
+
+    public static final String FTP_DELETEFILE_SUCCESS = "ftp文件删除成功";
+    public static final String FTP_DELETEFILE_FAIL = "ftp文件删除失败";
+
+    public static final String FTP_GETALLPICPATH_SUCCESS = "ftp获取所有图片路径成功";
+    public static final String FTP_GETALLPICPATH_FAIL = "ftp获取所有图片路径失败";
 }
