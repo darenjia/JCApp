@@ -171,7 +171,7 @@ public class HttpManager implements Runnable {
             // 创建 HttpTransportSE 对象,并指定 WebService 的 WSDL 文档的 URL
             ht = new HttpTransportSE(URL);
             // 设置 debug 模式
-            ht.debug = true;
+            ht.debug = false;
             // 获得序列化的 envelope
             SoapSerializationEnvelope envelope =
                     new SoapSerializationEnvelope(SoapEnvelope.VER12);

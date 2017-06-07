@@ -34,6 +34,18 @@ public class FinishedPlanDao {
         return isSuccess != -1;
     }
 
+    public boolean update(FinishedPlan result) {
+//      database.execSQL("insert into checkresult values(null,2133,12312,1,'sadasdas','dasdas','wad','sad')");
+        ContentValues values = new ContentValues();
+        values.put("SysId", result.getSysID());
+        values.put("SysGcxxdjh", result.getSysGcxxdjh());
+        values.put("AQ_LH_ID", result.getAQ_LH_ID());
+        values.put("FinishedTime", result.getFinishedTime());
+        values.put("Username", result.getUsername());
+        long isSuccess = database.update("finishedplan", values, "SysId=?", new String[]{String.valueOf(result.getSysID())});
+        return isSuccess != 0;
+    }
+
     public ArrayList<FinishedPlan> queryAll() {
         ArrayList<FinishedPlan> list = new ArrayList<>();
         FinishedPlan result;
@@ -63,6 +75,14 @@ public class FinishedPlanDao {
             result.setUsername(cursor.getString(cursor.getColumnIndex("Username")));
         }
         return result;
+    }
+
+    public boolean queryById(String SysID) {
+        Cursor cursor = database.query("finishedplan", null, "SysId=?", new String[]{SysID}, null, null, null);
+        while (cursor.moveToNext()) {
+            return false;
+        }
+        return true;
     }
 
     public void close() {

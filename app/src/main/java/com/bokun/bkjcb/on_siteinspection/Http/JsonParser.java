@@ -111,6 +111,9 @@ public class JsonParser {
         Gson gson = new Gson();
         for (JsonElement element : array) {
             ProjectPlan projectPlan = gson.fromJson(element, ProjectPlan.class);
+            if (projectPlan.getAq_sysid() == null || projectPlan.getAq_sysid().equals("")) {
+                continue;
+            }
             results.add(projectPlan);
         }
         return results;

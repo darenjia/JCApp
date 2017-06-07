@@ -1,6 +1,7 @@
 package com.bokun.bkjcb.on_siteinspection.Ftp;
 
 import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
+import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPClientConfig;
@@ -14,7 +15,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by JiaHuaiQing on 2017/3/22.
@@ -73,24 +78,48 @@ public class FtpUtils {
      * @param listener    监听器
      * @throws IOException
      */
-    public void uploadMultiFile(List<File> fileList, String remotePath,
+    public void uploadMultiFile(HashMap<Integer, ArrayList<String>> pathMap, String remotePath,
                                 UploadProgressListener listener) throws IOException {
-
         // 上传之前初始化
         this.uploadBeforeOperate(remotePath, listener);
 
         boolean flag;
-
-        for (File singleFile : fileList) {
-            flag = uploadingSingle(singleFile, listener);
-            if (flag) {
-                listener.onUploadProgress(Constants.FTP_UPLOAD_SUCCESS, 0,
-                        singleFile);
-            } else {
-                listener.onUploadProgress(Constants.FTP_UPLOAD_FAIL, 0,
-                        singleFile);
+        Iterator iter = pathMap.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            int key = (int) entry.getKey();
+            ArrayList<String> val = (ArrayList<String>) entry.getValue();
+            for (String path : val) {
+                File singleFile = new File(path);
+                remotePath += "/" + key;
+                LogUtil.logI(remotePath);
+                // FTP下创建文件夹
+                ftpClient.makeDirectory(remotePath);
+                // 改变FTP目录
+                ftpClient.changeWorkingDirectory(remotePath);
+                try {
+                    deleteSingleFile(remotePath, singleFile.getName(), new DeleteFileProgressListener() {
+                        @Override
+                        public void onDeleteProgress(String currentStep) {
+                            LogUtil.logI("删除文件" + currentStep);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    listener.onUploadProgress(Constants.FTP_UPLOAD_FAIL, 0,
+                            singleFile);
+                }
+                flag = uploadingSingle(singleFile, listener);
+                if (flag) {
+                    listener.onUploadProgress(Constants.FTP_UPLOAD_SUCCESS, 0,
+                            singleFile);
+                } else {
+                    listener.onUploadProgress(Constants.FTP_UPLOAD_FAIL, 0,
+                            singleFile);
+                }
             }
         }
+
 
         // 上传完成之后关闭连接
         this.uploadAfterOperate(listener);
@@ -148,10 +177,6 @@ public class FtpUtils {
 
         // 设置模式
         ftpClient.setFileTransferMode(org.apache.commons.net.ftp.FTP.STREAM_TRANSFER_MODE);
-        // FTP下创建文件夹
-        ftpClient.makeDirectory(remotePath);
-        // 改变FTP目录
-        ftpClient.changeWorkingDirectory(remotePath);
         // 上传单个文件
 
     }
@@ -265,11 +290,11 @@ public class FtpUtils {
      * @param listener   监听器
      * @throws IOException
      */
-    public void deleteSingleFile(String serverPath, DeleteFileProgressListener listener)
+    public void deleteSingleFile(String serverPath, String fileName, DeleteFileProgressListener listener)
             throws Exception {
 
         // 打开FTP服务
-        try {
+      /*  try {
             this.openConnect();
             listener.onDeleteProgress(Constants.FTP_CONNECT_SUCCESSS);
         } catch (IOException e1) {
@@ -277,7 +302,7 @@ public class FtpUtils {
             listener.onDeleteProgress(Constants.FTP_CONNECT_FAIL);
             return;
         }
-
+*/
         // 先判断服务器文件是否存在
         FTPFile[] files = ftpClient.listFiles(serverPath);
         if (files.length == 0) {
@@ -287,7 +312,16 @@ public class FtpUtils {
 
         //进行删除操作
         boolean flag = true;
-        flag = ftpClient.deleteFile(serverPath);
+        for (FTPFile file : files) {
+            LogUtil.logI("ftp文件name" + file.getName());
+            if (file.getName().equals(fileName)) {
+                break;
+            } else {
+                return;
+            }
+        }
+        LogUtil.logI(serverPath + "/" + fileName);
+        flag = ftpClient.deleteFile(serverPath + "/" + fileName);
         if (flag) {
             listener.onDeleteProgress(Constants.FTP_DELETEFILE_SUCCESS);
         } else {
@@ -295,8 +329,8 @@ public class FtpUtils {
         }
 
         // 删除完成之后关闭连接
-        this.closeConnect();
-        listener.onDeleteProgress(Constants.FTP_DISCONNECT_SUCCESS);
+      /*  this.closeConnect();
+        listener.onDeleteProgress(Constants.FTP_DISCONNECT_SUCCESS);*/
 
         return;
     }

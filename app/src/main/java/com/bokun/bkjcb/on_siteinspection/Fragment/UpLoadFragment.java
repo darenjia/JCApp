@@ -52,7 +52,7 @@ public class UpLoadFragment extends MainFragment {
             @Override
             public void onPageSelected(int position) {
                 if (position == 1) {
-                    ((UpLoadChirldFragment) fragments.get(position)).refresh();
+                    ((UpLoadChirldFragment) fragments.get(position)).refresh("上传完成");
                 }
             }
 
@@ -83,5 +83,9 @@ public class UpLoadFragment extends MainFragment {
         public CharSequence getPageTitle(int position) {
             return tags[position];
         }
+    }
+
+    public void refresh() {
+        ((UpLoadChirldFragment) fragments.get(0)).refresh("等待上传");
     }
 }

@@ -28,6 +28,7 @@ import com.bokun.bkjcb.on_siteinspection.Fragment.UpLoadFragment;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.Utils.AppManager;
+import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 
 import java.util.HashMap;
@@ -50,6 +51,7 @@ public class MainActivity extends BaseActivity
     private TextView userName, userMessage;
     public static ManagerInfo user;
     private Fragment currentFragment;
+    private boolean needRefreshUpdateFragment = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +119,7 @@ public class MainActivity extends BaseActivity
     @Override
     protected void loadData() {
         user = JsonParser.getUserInfo(getIntent().getStringExtra("quxian"));
-        userMessage.setText("区县:" + user.quxian + " 权限:" + user.roles);
+        userMessage.setText("区县:" + user.quxian);
         userName.setText(Utils.getUserName());
         loadView("检查计划", "first");
     }
@@ -211,23 +213,11 @@ public class MainActivity extends BaseActivity
             if (key.equals("third")) {
                 menu.setGroupVisible(R.id.menu_map, true);
             }
+            if (key.equals("forth")) {
+                ((UpLoadFragment) currentFragment).refresh();
+            }
             transaction.show(currentFragment);
         }
-       /* FragmentTransaction transaction = manager.beginTransaction();
-        if (lastFragment == null) {
-            transaction.add(contentView.getId(), checkPlanFragment);
-            lastFragment = checkPlanFragment;
-        } else {
-            if (key.equals("first")) {
-                transaction.replace(contentView.getId(), checkPlanFragment);
-            } else if (key.equals("third")) {
-                transaction.replace(contentView.getId(), mapFragment);
-            } else if (key.equals("forth")) {
-                transaction.replace(contentView.getId(), upLoadFragment);
-            } else {
-                transaction.replace(contentView.getId(), testFragment);
-            }
-        }*/
         transaction.commit();
     }
 
@@ -263,11 +253,13 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1 && resultCode == 1) {
+        LogUtil.logI("返回MainActivity");
+        if (requestCode == 1 && resultCode == 2) {
             SearchFragment fragment = (SearchFragment) viewMap.get("second");
             if (fragment != null) {
                 fragment.cleanHistory();
             }
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

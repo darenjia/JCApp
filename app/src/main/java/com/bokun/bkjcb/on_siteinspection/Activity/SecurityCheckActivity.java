@@ -128,6 +128,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                         public void onClick(DialogInterface dialog, int which) {
                             LogUtil.logI("重新检查，清空数据");
                             results = new ArrayList<>();
+                            DataUtil.cleanData(context, plan.getIdentifier());
                             initFragments();
                         }
                     })

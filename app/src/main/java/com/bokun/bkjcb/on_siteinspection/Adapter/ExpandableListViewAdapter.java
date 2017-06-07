@@ -47,7 +47,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return plan_info.get(groupPosition).size();
+        return plan_info.get(groupPosition) == null ? 0 : plan_info.get(groupPosition).size();
     }
 
     @Override

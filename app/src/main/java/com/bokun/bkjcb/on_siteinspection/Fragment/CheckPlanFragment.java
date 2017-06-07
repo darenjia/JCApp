@@ -225,6 +225,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        LogUtil.logI("返回" + requestCode + "|" + resultCode);
         if (requestCode == 1) {
             if (resultCode == DATA_CHANGED) {
                 refreshData(data);
@@ -236,17 +237,17 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         int groupPosition = data.getExtras().getInt("groupPosition");
         int childPosition = data.getExtras().getInt("childPosition");
         int state = data.getExtras().getInt("state");
-        if (state == 2) {
-            checkSate(groupPosition);
-        }
         LogUtil.logI("计划状态题改变，刷新列表数据" + state);
         constuctions.get(groupPosition).get(childPosition).setState(state);
+        if (state == 2) {
+            checkState(groupPosition);
+        }
         adapter.notifyDataSetChanged();
         listview.collapseGroup(groupPosition);
         listview.expandGroup(groupPosition);
     }
 
-    private void checkSate(int groupPosition) {
+    private void checkState(int groupPosition) {
         for (CheckPlan plan : constuctions.get(groupPosition)) {
             if (plan.getState() == 2) {
                 continue;

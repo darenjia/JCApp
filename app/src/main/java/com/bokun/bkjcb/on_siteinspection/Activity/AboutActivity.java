@@ -145,7 +145,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
                 break;
             case R.id.about_clean_search:
                 SearchedWordDao.clean();
-                resultCode = 1;
+                resultCode = 2;
                 showToast("记录已清除");
                 break;
             case R.id.about_comment:

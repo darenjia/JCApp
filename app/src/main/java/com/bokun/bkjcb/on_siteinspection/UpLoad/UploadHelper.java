@@ -25,6 +25,7 @@ import org.ksoap2.serialization.SoapObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -58,7 +59,9 @@ public class UploadHelper {
     private ArrayList<ArrayList<CheckResult>> resultList;
     private UploadManager manager;
     private ArrayList<String> paths;
+    private HashMap<Integer, ArrayList<String>> pathMap;
     private ArrayList<String> remotePaths;
+    private String projectId;
     private ArrayList<UpLoadTask> tasks;
     private List<File> files;
     private long fileSize;
@@ -73,6 +76,10 @@ public class UploadHelper {
 
     public interface OnFinishedListener {
         void finish();
+
+        void updateProgress();
+
+        void failed();
     }
 
     public UploadHelper(Context context) {
@@ -88,6 +95,7 @@ public class UploadHelper {
         remotePaths = new ArrayList<>();
         LogUtil.logI(projectPlan.getAq_lh_jcmc() + " 任务开始");
         String s = projectPlan.getAq_sysid();
+        projectId = projectPlan.getAq_lh_id();
         String[] strings = s.split(",");
         for (String str : strings) {
             FinishedPlan plan = DataUtil.getFinishedPlan(str);
@@ -120,6 +128,9 @@ public class UploadHelper {
     }
 
     private void sendData() {
+        if (flag >= size) {
+            return;
+        }
         String json = jsons.get(flag);
         LogUtil.logI(json);
         HttpRequestVo request = new HttpRequestVo();
@@ -134,7 +145,6 @@ public class UploadHelper {
                     listener.onUpdate(jsons.size(), finishedPlans.size(), true);
                     sendData(jsons.get(0));
                     return;*/
-                    flag++;
                     Message message = new Message();
                     message.what = i;
                     message.obj = result;
@@ -147,10 +157,11 @@ public class UploadHelper {
 
     private void prePareFile() {
         //tasks = new ArrayList<>();
-        paths = new ArrayList<>();
+        pathMap = new HashMap<>();
         files = new ArrayList<>();
         ArrayList<CheckResult> list = resultList.get(flag);
         for (CheckResult result : list) {
+            paths = new ArrayList<>();
             if (result.getImageUrls() != null && result.getImageUrls().size() != 0) {
                 paths.addAll(result.getImageUrls());
             }
@@ -159,6 +170,9 @@ public class UploadHelper {
             }
             if (result.getVideoUrls() != null && result.getVideoUrls().size() != 0) {
                 paths.addAll(result.getVideoUrls());
+            }
+            if (paths.size() > 0) {
+                pathMap.put(result.getNum(), paths);
             }
         }
         for (int i = 0; i < paths.size(); i++) {
@@ -170,8 +184,14 @@ public class UploadHelper {
     }
 
     private void uploadFile() {
-        LogUtil.logI("任务数量：" + paths.size());
-        String path = "UploadFlie/" + remotePaths.get(flag);
+        LogUtil.logI("任务数量：" + pathMap.size());
+        if (pathMap.size() == 0) {
+            flag++;
+            listener.onUpdate(flag, size, true);
+            sendData();
+            return;
+        }
+        String path = "UploadFlie/" + projectId + "/" + remotePaths.get(flag);
        /* for (int i = 0; i < paths.size(); i++) {
             String path = paths.get(i);
             File file = new File(path);
@@ -196,10 +216,21 @@ public class UploadHelper {
             tasks.add(task);
             manager.addTask(task);
         }*/
-        FtpUploadTask task = new FtpUploadTask(files, path, new OnFinishedListener() {
+        FtpUploadTask task = new FtpUploadTask(pathMap, path, new OnFinishedListener() {
             @Override
             public void finish() {
+                flag++;
                 sendData();
+            }
+
+            @Override
+            public void updateProgress() {
+                listener.onUpdate((flag + 1), size, true);
+            }
+
+            @Override
+            public void failed() {
+                listener.onUpdate(flag, size, false);
             }
         });
         task.execute();

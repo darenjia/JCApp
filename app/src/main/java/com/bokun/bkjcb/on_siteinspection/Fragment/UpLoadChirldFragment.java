@@ -14,6 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
@@ -88,7 +89,7 @@ public class UpLoadChirldFragment extends BaseFragment {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             viewHolder.title.setText(projectPlan.getAq_lh_jcmc());
-            viewHolder.state.setText("等待上传");
+            //viewHolder.state.setText("等待上传");
             if (!finished) {
                 viewHolder.button.setText(getState(projectPlan.getState_upload()));
                 viewHolder.button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -99,17 +100,17 @@ public class UpLoadChirldFragment extends BaseFragment {
                             projectPlan.setState_upload(2);
                             if (position == 0) {
                                 startUpload(projectPlan);
-                                progress = viewHolder.button;
+                                progress = (CheckBox) buttonView;
                                 viewHolder.state.setText("正在上传");
                             } else {
+                                while (flag != 0 && projectPlans.get(flag - 1).getState_upload() == 0) {
+                                    projectPlans.remove(flag);
+                                    projectPlans.add(flag - 1, projectPlan);
+                                    flag--;
+                                }
+                                notifyDataSetChanged();
                                 buttonView.setText("等待");
                             }
-                            while (flag != 0 && projectPlans.get(flag - 1).getState_upload() == 0) {
-                                projectPlans.remove(flag);
-                                projectPlans.add(flag - 1, projectPlan);
-                                flag--;
-                            }
-                            notifyDataSetChanged();
                         } else {
                             if (!buttonView.getText().equals("上传")) {
                                 buttonView.setText("继续");
@@ -205,13 +206,14 @@ public class UpLoadChirldFragment extends BaseFragment {
                     return;
                 }
                 progress.setText(flag + "%");
-                if (flag == 0) {
+                if (flag == 100) {
                     ProjectPlan projectPlan = projectPlans.get(0);
                     projectPlan.setAq_jctz_zt("上传完成");
                     DataUtil.changeProjectState(projectPlan);
                     projectPlans.remove(0);
                     LogUtil.logI(projectPlans.size() + "");
                     adapter.notifyDataSetChanged();
+                    Toast.makeText(context, "上传成功", Toast.LENGTH_SHORT).show();
                     if (finished) {
                         loadTask.execute();
                     }
@@ -232,11 +234,11 @@ public class UpLoadChirldFragment extends BaseFragment {
         }
     }
 
-    public void refresh() {
+    public void refresh(String state) {
         LogUtil.logI("refresh");
         if (loadTask.getStatus() == AsyncTask.Status.FINISHED) {
             //checkPlans = DataUtil.queryCheckPlanFinished(getContext());
-            projectPlans = DataUtil.getProjectByState("上传完成");
+            projectPlans = DataUtil.getProjectByState(state);
             adapter.notifyDataSetChanged();
         }
     }

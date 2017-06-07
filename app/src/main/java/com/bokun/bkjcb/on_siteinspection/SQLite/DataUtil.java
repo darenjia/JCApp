@@ -24,7 +24,7 @@ public class DataUtil {
         try {
             for (int i = 0; i < results.size(); i++) {
                 result = results.get(i);
-                if (result.getId() != -1) {
+                if (result.getId() != -1 && daolmpl.queryById(result.getIdentifier())) {
                     daolmpl.updateCheckResult(result);
                 } else {
                     daolmpl.insertCheckResult(result);
@@ -51,6 +51,17 @@ public class DataUtil {
         daolmpl.colseDateBase();
         LogUtil.logI("查询所有该计划的结果" + "identity" + Identifier + " size:" + results.size());
         return results;
+    }
+
+    public static void cleanData(Context context, int Identifier) {
+        CheckResultDaolmpl daolmpl = new CheckResultDaolmpl(context);
+        CheckPlanDaolmpl planDaolmpl = new CheckPlanDaolmpl(context);
+        if (planDaolmpl.queryCheckPlan(Identifier) == null) {
+            planDaolmpl.colseDateBase();
+            return;
+        }
+        daolmpl.clean(Identifier);
+        daolmpl.colseDateBase();
     }
 
     public static void insertCheckPlans(Context context, ArrayList<CheckPlan> plans) {
@@ -145,8 +156,13 @@ public class DataUtil {
     }
 
     public static boolean saveFinishedPlan(FinishedPlan plan) {
+        boolean flag = false;
         FinishedPlanDao dao = new FinishedPlanDao(JCApplication.getContext());
-        boolean flag = dao.save(plan);
+        if (dao.queryById(String.valueOf(plan.getSysID()))) {
+            flag = dao.save(plan);
+        } else {
+            flag = dao.update(plan);
+        }
         dao.close();
         return flag;
     }

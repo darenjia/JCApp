@@ -13,9 +13,11 @@ public abstract class CheckResultDao {
 
     public abstract List<CheckResult> queryCheckResult(int Identifier);
 
-//    public abstract boolean queryCheckResultbyId(int id);
+    public abstract boolean queryById(int id);
 
     public abstract boolean updateCheckResult(CheckResult result);
+
+    public abstract void clean(int id);
 
     public abstract void changeCheckResult(CheckResult result);
 }

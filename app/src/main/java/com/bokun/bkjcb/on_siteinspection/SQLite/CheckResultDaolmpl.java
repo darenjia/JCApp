@@ -45,8 +45,8 @@ public class CheckResultDaolmpl extends CheckResultDao {
         Cursor cursor = database.query("checkresult", null, "identifier = ?", new String[]{String.valueOf(Identifier)}, null, null, "num ASC");
         while (cursor.moveToNext()) {
             result = new CheckResult();
-            //result.setId(cursor.getInt(cursor.getColumnIndex("id")));
-            //result.setIdentifier(cursor.getInt(cursor.getColumnIndex("identifier")));
+            result.setId(cursor.getInt(cursor.getColumnIndex("id")));
+            result.setIdentifier(cursor.getInt(cursor.getColumnIndex("identifier")));
             result.setNum(cursor.getInt(cursor.getColumnIndex("num")));
             result.setComment(cursor.getString(cursor.getColumnIndex("comment")));
             result.setResult(cursor.getInt(cursor.getColumnIndex("checkresult")));
@@ -60,6 +60,15 @@ public class CheckResultDaolmpl extends CheckResultDao {
     }
 
     @Override
+    public boolean queryById(int Identifier) {
+        Cursor cursor = database.query("checkresult", null, "identifier = ?", new String[]{String.valueOf(Identifier)}, null, null, "num ASC");
+        while (cursor.moveToNext()) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean updateCheckResult(CheckResult result) {
         ContentValues values = new ContentValues();
         values.put("identifier", result.getIdentifier());
@@ -70,13 +79,19 @@ public class CheckResultDaolmpl extends CheckResultDao {
         values.put("image", LocalTools.changeToString(result.getImageUrls()));
         values.put("video", LocalTools.changeToString(result.getVideoUrls()));
         long isSuccess = database.update("checkresult", values, "id = ?", new String[]{String.valueOf(result.getId())});
-        return isSuccess != -1;
+        return isSuccess != 0;
     }
 
     @Override
     public void changeCheckResult(CheckResult result) {
 
     }
+
+    @Override
+    public void clean(int id) {
+        database.delete("checkresult", "identifier=?", new String[]{String.valueOf(id)});
+    }
+
 
     public void colseDateBase() {
         database.close();

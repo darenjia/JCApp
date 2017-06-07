@@ -1,9 +1,7 @@
 package com.bokun.bkjcb.on_siteinspection.Ftp;
 
 import android.os.AsyncTask;
-import android.widget.Toast;
 
-import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.UpLoad.UploadHelper;
 import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
@@ -11,6 +9,7 @@ import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -22,12 +21,13 @@ public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
     private FtpUploadTask mUploadPicAsyncTask;
     private FtpUploadTask mUploadFailAsyncTask;
     private List<File> fileList;
+    private HashMap<Integer,ArrayList<String>> pathMap;
     private String folderPath;
     private List<File> fileUploadFailList = new ArrayList<>();
     private UploadHelper.OnFinishedListener finishedListener;
 
-    public FtpUploadTask(List<File> files, String folderPath, UploadHelper.OnFinishedListener listener) {
-        this.fileList = files;
+    public FtpUploadTask(HashMap<Integer,ArrayList<String>> pathMap, String folderPath, UploadHelper.OnFinishedListener listener) {
+        this.pathMap = pathMap;
         this.folderPath = folderPath;
         this.finishedListener = listener;
     }
@@ -36,7 +36,7 @@ public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
     protected Object doInBackground(final Object... params) {
         try {
             //多文件上传
-            new FtpUtils().uploadMultiFile(fileList, folderPath, new FtpUtils.UploadProgressListener() {
+            new FtpUtils().uploadMultiFile(pathMap, folderPath, new FtpUtils.UploadProgressListener() {
                 //上传进度
                 int result = 0;
 
@@ -51,6 +51,7 @@ public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
                         if (mUploadPicAsyncTask != null && mUploadPicAsyncTask.getStatus() == Status.RUNNING) {
                             mUploadPicAsyncTask.cancel(true);
                         }
+                        finishedListener.failed();
                         LogUtil.logI("onUploadProgress: " + "FTP_CONNECT_FAIL");
                     } else {
                         if (currentStep.equals(Constants.FTP_UPLOAD_SUCCESS)) {
@@ -101,6 +102,9 @@ public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
         LogUtil.logI("onProgressUpdate: " + values[0]);
+        if (values[0] == 100) {
+            finishedListener.updateProgress();
+        }
         if (isCancelled()) {
             LogUtil.logI("onProgressUpdate: " + "isCancelled");
             return;
@@ -131,13 +135,13 @@ public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
     protected void onCancelled(Object o) {
         super.onCancelled(o);
         ArrayList<File> fileUploadFailList = (ArrayList<File>) o;
-        if (fileUploadFailList != null && fileUploadFailList.size() > 0) {
+       /* if (fileUploadFailList != null && fileUploadFailList.size() > 0) {
             //多张图片在上传中，出现失败，关闭上次任务，然后进行重新上传
             LogUtil.logI("onCancelled: " + "I onCancelled=====");
             mUploadFailAsyncTask = (FtpUploadTask) new FtpUploadTask(fileUploadFailList, folderPath, null).execute();
             Toast.makeText(JCApplication.getContext(), "图片上传失败,正在重新上传", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(JCApplication.getContext(), Constants.FTP_CONNECT_FAIL, Toast.LENGTH_SHORT).show();
-        }
+        }*/
     }
 }

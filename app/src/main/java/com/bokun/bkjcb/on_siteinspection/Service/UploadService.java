@@ -44,14 +44,14 @@ public class UploadService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         LogUtil.logI("开始上传服务");
         helper = new UploadHelper(this);
-        ProjectPlan projectPlan = (ProjectPlan) intent.getExtras().getSerializable("plan");
+        ProjectPlan projectPlan = (ProjectPlan) intent.getSerializableExtra("plan");
         UIProgressListener listener = new UIProgressListener() {
             @Override
             public void onUIProgress(long currentBytes, long contentLength, boolean done) {
                 Intent broadcast = new Intent("com.bokun.jcapp.UPDATE_PROGRESS");
                 if (done) {
                     LogUtil.logI("contentLength" + contentLength + "===currentBytes" + currentBytes);
-                    double precent = 1 - (double) currentBytes / (double) contentLength;
+                    double precent = (double) currentBytes / (double) contentLength;
                     LogUtil.logI(precent + "百分比");
                     broadcast.putExtra("precent", (int) (precent * 100));
                 } else {
