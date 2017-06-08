@@ -11,6 +11,8 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -196,23 +198,23 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
     public void onPageScrollStateChanged(int state) {
     }
 
-    /*@Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        this.mMenu = menu;
-        getMenuInflater().inflate(R.menu.check_activity_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_submit, menu);
         return true;
-    }*/
+    }
 
-   /* @Override
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.btn_submit) {
-            Toast.makeText(context, "正在提交", Toast.LENGTH_SHORT).show();
-            CheckResultDaolmpl daolmpl = new CheckResultDaolmpl(context);
-            daolmpl.addCheckResult(new CheckResult());
-            daolmpl.colseDateBase();
+        if (item.getItemId() == R.id.menu_submit_btn) {
+            if (viewPager.getCurrentItem() != 15) {
+                viewPager.setCurrentItem(15);
+            } else {
+                ((LastFragment) fragments.get(15)).submit();
+            }
         }
         return super.onOptionsItemSelected(item);
-    }*/
+    }
 
     @Override
     public void onClick(View v) {

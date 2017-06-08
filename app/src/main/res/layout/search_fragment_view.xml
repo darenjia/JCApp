@@ -100,7 +100,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="未查询到相关信息" />
+            android:text="@string/search_no_result" />
     </RelativeLayout>
 
     <android.support.v7.widget.CardView

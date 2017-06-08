@@ -21,12 +21,13 @@ public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
     private FtpUploadTask mUploadPicAsyncTask;
     private FtpUploadTask mUploadFailAsyncTask;
     private List<File> fileList;
-    private HashMap<Integer,ArrayList<String>> pathMap;
+    private HashMap<Integer, ArrayList<String>> pathMap;
     private String folderPath;
     private List<File> fileUploadFailList = new ArrayList<>();
     private UploadHelper.OnFinishedListener finishedListener;
+    private FtpUtils ftpUtils;
 
-    public FtpUploadTask(HashMap<Integer,ArrayList<String>> pathMap, String folderPath, UploadHelper.OnFinishedListener listener) {
+    public FtpUploadTask(HashMap<Integer, ArrayList<String>> pathMap, String folderPath, UploadHelper.OnFinishedListener listener) {
         this.pathMap = pathMap;
         this.folderPath = folderPath;
         this.finishedListener = listener;
@@ -36,7 +37,8 @@ public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
     protected Object doInBackground(final Object... params) {
         try {
             //多文件上传
-            new FtpUtils().uploadMultiFile(pathMap, folderPath, new FtpUtils.UploadProgressListener() {
+            ftpUtils = new FtpUtils();
+            ftpUtils.uploadMultiFile(pathMap, folderPath, new FtpUtils.UploadProgressListener() {
                 //上传进度
                 int result = 0;
 
@@ -134,8 +136,8 @@ public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
     @Override
     protected void onCancelled(Object o) {
         super.onCancelled(o);
-        ArrayList<File> fileUploadFailList = (ArrayList<File>) o;
-       /* if (fileUploadFailList != null && fileUploadFailList.size() > 0) {
+       /* ArrayList<File> fileUploadFailList = (ArrayList<File>) o;
+        if (fileUploadFailList != null && fileUploadFailList.size() > 0) {
             //多张图片在上传中，出现失败，关闭上次任务，然后进行重新上传
             LogUtil.logI("onCancelled: " + "I onCancelled=====");
             mUploadFailAsyncTask = (FtpUploadTask) new FtpUploadTask(fileUploadFailList, folderPath, null).execute();
@@ -143,5 +145,12 @@ public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
         } else {
             Toast.makeText(JCApplication.getContext(), Constants.FTP_CONNECT_FAIL, Toast.LENGTH_SHORT).show();
         }*/
+        try {
+            if (ftpUtils != null) {
+                ftpUtils.closeConnect();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

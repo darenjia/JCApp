@@ -203,7 +203,7 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
             case R.id.check_content_btn_audio:
                 intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
                 String mp3Name = audioPath + getDateTime()
-                        + ".amr";
+                        + ".mp3";
                 audio = new File(path, mp3Name);
                 creatFile(audio);
                 startAction(intent, audio, REQUESR_CODE_RECORD);

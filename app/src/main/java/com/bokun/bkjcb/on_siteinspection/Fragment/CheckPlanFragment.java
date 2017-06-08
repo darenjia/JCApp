@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 
 import com.bokun.bkjcb.on_siteinspection.Activity.MainActivity;
 import com.bokun.bkjcb.on_siteinspection.Activity.SecurityCheckActivity;
@@ -49,9 +50,9 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     private AlertDialog dialog;
     public static int DATA_CHANGED = 1;
     public static int DATA_UNCHANGED = 0;
-    private Intent intent;
     private CacheUitl cacheUitl;
     private final String key = "sad1ee213124c1";
+    private TextView errorView;
 
     @Nullable
     @Override
@@ -66,6 +67,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperlayout);
         listview = (ExpandableListView) view.findViewById(R.id.plan_list);
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorRecycler));
+        errorView = (TextView) view.findViewById(R.id.error_view);
         //HttpRequestVo requestVo = new HttpRequestVo(Constants.GetXxclScURL, Constants.GetXxclSc.replace("quxian", MainActivity.quxian));
         //OkHttpManager manager = new OkHttpManager(context, this, requestVo);
         getDateFromNet();
@@ -99,16 +101,18 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
     @Override
     protected void getDataSucceed(JsonResult object) {
-
+        errorView.setVisibility(View.GONE);
         //new LodingAsyncTask().execute();
+        LogUtil.logI("获取数据成功");
         setExpandableListView();
     }
 
     @Override
     protected void getDataFailed() {
         super.getDataFailed();
-        LogUtil.logI(MainActivity.user.quxian);
-        setExpandableListView();
+        LogUtil.logI("换取数据失败");
+        //setExpandableListView();
+        errorView.setVisibility(View.VISIBLE);
     }
 
     private void setExpandableListView() {
@@ -144,6 +148,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                 getCheckPlanFromNet();
                 return;
             }
+
             cacheUitl = new CacheUitl();
             String cacheStr = cacheUitl.getData(key);
             if (cacheStr == null) {
@@ -171,6 +176,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         } else {
             i = RequestListener.EVENT_GET_DATA_EEEOR;
         }
+
         Message msg = new Message();
         msg.what = i;
         msg.obj = result;

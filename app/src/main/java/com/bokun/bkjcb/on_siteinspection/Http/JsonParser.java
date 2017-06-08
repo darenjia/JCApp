@@ -83,7 +83,12 @@ public class JsonParser {
                 } catch (JSONException e) {
                     checkPlan.setIdentifier(0);
                 }
-                checkPlan.setSysId(con.getInt("SysId"));
+                try {
+                    checkPlan.setSysId(con.getInt("SysId"));
+                } catch (JSONException e) {
+                    continue;
+                }
+
                 checkPlan.setAddress(con.getString("ScJbGcdz"));
                 checkPlan.setArea(con.getString("ScXzJzmj"));
                 try {

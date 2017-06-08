@@ -13,7 +13,7 @@
         android:orientation="vertical">
         <TextView
             style="@style/base_layout"
-            android:text="处理意见"
+            android:text="@string/lastfragment_comment"
             android:gravity="center"
             android:textSize="18sp"
             android:paddingTop="10dp"
@@ -32,13 +32,15 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="10dp"
             android:textSize="18sp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="检查人员："
+                android:text="@string/lastfragment_user"
                 android:layout_weight="1"
                 android:gravity="center"
                 />
@@ -46,21 +48,21 @@
                 android:id="@+id/lastFragment_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="张三"
+                android:text=""
                 android:gravity="center"
                 android:layout_weight="1"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="检查日期:"
+                android:text="@string/lastfragment_time"
                 android:layout_weight="2"
                 android:gravity="center"/>
             <TextView
                 android:id="@+id/lastFragment_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2017-3-28"
+                android:text=""
                 android:layout_weight="1"
                 android:gravity="center"/>
         </LinearLayout>

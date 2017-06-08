@@ -7,6 +7,7 @@ import com.bokun.bkjcb.on_siteinspection.Domain.CheckResult;
 import com.bokun.bkjcb.on_siteinspection.Domain.FinishedPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
+import com.bokun.bkjcb.on_siteinspection.Utils.FileUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 
 import java.util.ArrayList;
@@ -60,6 +61,8 @@ public class DataUtil {
             planDaolmpl.colseDateBase();
             return;
         }
+        ArrayList<CheckResult> results = daolmpl.queryCheckResult(Identifier);
+        FileUtils.deleteFile(results);
         daolmpl.clean(Identifier);
         daolmpl.colseDateBase();
     }

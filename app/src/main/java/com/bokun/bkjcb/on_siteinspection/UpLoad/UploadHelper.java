@@ -2,6 +2,7 @@ package com.bokun.bkjcb.on_siteinspection.UpLoad;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
@@ -73,6 +74,7 @@ public class UploadHelper {
     private String reqStr;
     private int size;
     private int flag = 0;
+    private FtpUploadTask task;
 
     public interface OnFinishedListener {
         void finish();
@@ -216,7 +218,7 @@ public class UploadHelper {
             tasks.add(task);
             manager.addTask(task);
         }*/
-        FtpUploadTask task = new FtpUploadTask(pathMap, path, new OnFinishedListener() {
+        task = new FtpUploadTask(pathMap, path, new OnFinishedListener() {
             @Override
             public void finish() {
                 flag++;
@@ -239,5 +241,11 @@ public class UploadHelper {
 
     public void pauseTask() {
         manager.pauseAllTask();
+    }
+
+    public void onStop() {
+        if (task != null && task.getStatus() == AsyncTask.Status.RUNNING) {
+            task.cancel(true);
+        }
     }
 }

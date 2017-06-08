@@ -81,7 +81,8 @@
                     android:ellipsize="end"
                     android:maxLines="3"
                     android:minHeight="40dp"
-                    android:paddingStart="10dp" />
+                    android:paddingStart="10dp"
+                    android:paddingLeft="10dp"/>
 
                 <TextView
                     android:id="@+id/check_content_pic_title"
@@ -140,6 +141,7 @@
                 android:paddingEnd="10dp"
                 android:paddingStart="10dp"
                 android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
                 android:src="@drawable/vector_drawable_camera" />
 
             <ImageView

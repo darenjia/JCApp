@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         app:tabGravity="fill"
         app:tabMode="fixed" />
+
     <android.support.v4.view.ViewPager
         android:id="@+id/upload_viewpager"
         android:layout_width="match_parent"

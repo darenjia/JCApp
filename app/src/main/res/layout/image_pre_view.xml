@@ -29,7 +29,7 @@
         android:maxLength="20"
         android:maxLines="1"
         android:padding="10dp"
-        android:text="210210.jpg"
+        android:text=""
         android:visibility="gone" />
 
     <TextView
@@ -59,7 +59,7 @@
             android:id="@+id/preview_delete"
             style="@style/button_layout"
             android:background="@color/colorNone"
-            android:text="删除" />
+            android:text="@string/delete" />
 
         <TextView
             android:layout_width="2dp"
@@ -70,6 +70,6 @@
             android:id="@+id/preview_cancel"
             style="@style/button_layout"
             android:background="@color/colorNone"
-            android:text="取消" />
+            android:text="@string/cancle" />
     </LinearLayout>
 </LinearLayout>

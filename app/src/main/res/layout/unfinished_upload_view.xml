@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/colorNone"
-            android:text="全部开始"
+            android:text="@string/start_all"
             android:textColor="#797979" />
 
         <LinearLayout
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/colorNone"
-            android:text="全部暂停"
+            android:text="@string/cancle_all"
             android:textColor="#797979" />
     </LinearLayout>
 </FrameLayout>

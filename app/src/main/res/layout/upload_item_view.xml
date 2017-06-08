@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center_vertical"
-            android:text="检查计划1"
+            android:text=""
             android:textSize="20sp" />
 
 
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:gravity="center_vertical"
-            android:text="等待上传"
+            android:text=""
             android:textSize="15sp" />
 
     </LinearLayout>
@@ -45,7 +45,7 @@
             android:background="@drawable/check_item_content_comment_bg"
             android:button="@null"
             android:gravity="center"
-            android:text="上传"
+            android:text=""
             android:textColor="#797979" />
 
         <!--<com.bokun.bkjcb.on_siteinspection.View.ProgressButton

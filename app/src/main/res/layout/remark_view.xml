@@ -9,7 +9,7 @@
         android:background="#eedfcc"
         android:gravity="center"
         android:padding="10dp"
-        android:text="备注信息"
+        android:text="@string/beizhu"
         android:textSize="18sp" />
 
     <TextView
@@ -36,6 +36,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#eedfcc"
-        android:text="保存" />
+        android:text="@string/save" />
 
 </LinearLayout>

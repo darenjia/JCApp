@@ -13,6 +13,8 @@
             android:layout_height="80dp"
             android:layout_marginRight="10dp"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
             android:layout_centerVertical="true" />
         
         <Button 
@@ -21,6 +23,7 @@
             android:layout_height="25dp"
             android:layout_marginTop="5dp"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:focusable="false"
             android:background="@drawable/bt_dynamic_del"
             />

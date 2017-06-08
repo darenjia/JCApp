@@ -10,7 +10,7 @@
         android:background="#dcdbdb"
         android:gravity="center"
         android:padding="10dp"
-        android:text="安全检查"
+        android:text="@string/title_activity_security"
         android:textSize="18sp" />
 
     <!--<LinearLayout
@@ -136,7 +136,7 @@
                 android:id="@+id/construction_id"
                 style="@style/table_content"
                 android:layout_weight="2"
-                android:text="工程信息" />
+                android:text="" />
         </TableRow>
 
         <TableRow>
@@ -150,7 +150,7 @@
                 android:id="@+id/construction_address"
                 style="@style/table_content"
                 android:layout_weight="2"
-                android:text="工程信息" />
+                android:text="" />
         </TableRow>
 
         <TableRow>
@@ -164,7 +164,7 @@
                 android:id="@+id/construction_area"
                 style="@style/table_content"
                 android:layout_weight="2"
-                android:text="工程信息" />
+                android:text="" />
         </TableRow>
 
         <TableRow>
@@ -178,7 +178,7 @@
                 android:id="@+id/construction_type"
                 style="@style/table_content"
                 android:layout_weight="2"
-                android:text="工程信息" />
+                android:text="" />
         </TableRow>
 
         <TableRow android:visibility="gone">
@@ -192,11 +192,10 @@
                 android:id="@+id/construction_manager"
                 style="@style/table_content"
                 android:layout_weight="2"
-                android:text="工程信息" />
+                android:text="" />
         </TableRow>
 
-        <TableRow
-            android:visibility="gone">
+        <TableRow android:visibility="gone">
 
             <TextView
                 style="@style/table_content"
@@ -207,7 +206,7 @@
                 android:id="@+id/construction_user"
                 style="@style/table_content"
                 android:layout_weight="2"
-                android:text="工程信息" />
+                android:text="" />
         </TableRow>
     </TableLayout>
 

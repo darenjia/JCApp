@@ -16,10 +16,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
+import com.bokun.bkjcb.on_siteinspection.Notification.NotificationUtil;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
+import com.bokun.bkjcb.on_siteinspection.Service.ServiceUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 
 import java.util.ArrayList;
@@ -33,13 +34,14 @@ public class UpLoadChirldFragment extends BaseFragment {
     private ListView listView;
     private LinearLayout layout;
     private ListAdapter adapter;
-    private ArrayList<CheckPlan> checkans;
     private ArrayList<ProjectPlan> projectPlans;
     private boolean finished;
     private CheckBox progress;
     private BroadcastReceiver receiver;
     private LocalBroadcastManager manager;
     private LoadData loadTask;
+    private NotificationUtil util;
+    private int count = 0;
 
     @Override
     public View initView() {
@@ -89,41 +91,54 @@ public class UpLoadChirldFragment extends BaseFragment {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             viewHolder.title.setText(projectPlan.getAq_lh_jcmc());
-            //viewHolder.state.setText("等待上传");
+            viewHolder.state.setText(getStateText(projectPlan.getState_upload()));
             if (!finished) {
                 viewHolder.button.setText(getState(projectPlan.getState_upload()));
-                viewHolder.button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        int flag = position;
-                        if (isChecked) {
-                            projectPlan.setState_upload(2);
-                            if (position == 0) {
-                                startUpload(projectPlan);
-                                progress = (CheckBox) buttonView;
-                                viewHolder.state.setText("正在上传");
-                            } else {
-                                while (flag != 0 && projectPlans.get(flag - 1).getState_upload() == 0) {
-                                    projectPlans.remove(flag);
-                                    projectPlans.add(flag - 1, projectPlan);
-                                    flag--;
-                                }
-                                notifyDataSetChanged();
-                                buttonView.setText("等待");
-                            }
-                        } else {
-                            if (!buttonView.getText().equals("上传")) {
-                                buttonView.setText("继续");
-                            }
-                        }
-                    }
-                });
-                if (projectPlan.getState_upload() == 2) {
+                if (projectPlan.getState_upload() == 2 || projectPlan.getState_upload() == 1) {
                     //LogUtil.logI("设置计划状态" + checkPlan.getName());
                     viewHolder.button.setChecked(true);
                 } else {
                     viewHolder.button.setChecked(false);
                 }
+                viewHolder.button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        int flag = position;
+                        if (isChecked) {
+                            while (flag != 0 && projectPlans.get(flag - 1).getState_upload() == 0) {
+                                projectPlans.remove(flag);
+                                projectPlans.add(flag - 1, projectPlan);
+                                flag--;
+                            }
+                            if (flag != 0) {
+                                projectPlan.setState_upload(1);
+                            } else {
+                                projectPlan.setState_upload(2);
+                            }
+                            notifyDataSetChanged();
+                            if (position == 0) {
+                                startUpload(projectPlan);
+                                progress = (CheckBox) buttonView;
+                                //viewHolder.state.setText("正在上传");
+                                buttonView.setText("0%");
+                            } else {
+                                buttonView.setText("等待");
+                            }
+                        } else {
+                            if (!buttonView.getText().equals("上传")) {
+                                buttonView.setText("上传");
+                                projectPlan.setState_upload(0);
+                                if (flag != (projectPlans.size() - 1)) {
+                                    projectPlans.remove(flag);
+                                    projectPlans.add(projectPlan);
+                                }
+                                stopUpload();
+                                notifyDataSetChanged();
+                            }
+                        }
+                    }
+                });
+
             } else {
                 viewHolder.state.setVisibility(View.GONE);
                 viewHolder.button.setVisibility(View.GONE);
@@ -139,12 +154,22 @@ public class UpLoadChirldFragment extends BaseFragment {
     }
 
     private void startUpload(ProjectPlan plan) {
+        util = NotificationUtil.newInstance();
         Intent intent = new Intent();
         intent.setAction("android.intent.action.STARTUPLOAD");//你定义的service的action
         intent.setPackage(getContext().getPackageName());
         intent.putExtra("plan", plan);
         getContext().startService(intent);
         openBroadCast();
+    }
+
+    private void stopUpload() {
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.STARTUPLOAD");//你定义的service的action
+        intent.setPackage(getContext().getPackageName());
+        if (ServiceUtil.isServiceRunning("com.bokun.bkjcb.on_siteinspection.Service.UploadService")) {
+            getContext().stopService(intent);
+        }
     }
 
     class LoadData extends AsyncTask {
@@ -199,6 +224,7 @@ public class UpLoadChirldFragment extends BaseFragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 int flag = intent.getExtras().getInt("precent");
+                util.Notify(count, flag);
                 if (flag == -1) {
                     ProjectPlan projectPlan = projectPlans.get(0);
                     projectPlan.setState_upload(0);
@@ -213,6 +239,7 @@ public class UpLoadChirldFragment extends BaseFragment {
                     projectPlans.remove(0);
                     LogUtil.logI(projectPlans.size() + "");
                     adapter.notifyDataSetChanged();
+                    util.Notify(++count, flag);
                     Toast.makeText(context, "上传成功", Toast.LENGTH_SHORT).show();
                     if (finished) {
                         loadTask.execute();
@@ -251,9 +278,23 @@ public class UpLoadChirldFragment extends BaseFragment {
         } else if (state == 2) {
             return "0%";
         } else if (state == 3) {
-            return "继续";
+            return "重新上传";
         } else {
             return "完成";
+        }
+    }
+
+    private String getStateText(int state) {
+        if (state == 0) {
+            return "等待上传";
+        } else if (state == 1) {
+            return "等待";
+        } else if (state == 2) {
+            return "正在上传";
+        } else if (state == 3) {
+            return "上传已取消";
+        } else {
+            return "上传完成";
         }
     }
 }

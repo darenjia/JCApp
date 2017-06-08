@@ -38,6 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
                 android:maxLines="1"
                 android:textColor="#333333"
                 android:textSize="16sp" />
@@ -46,9 +47,9 @@
                 android:id="@+id/secondline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/firstline"
                 android:layout_marginLeft="12dp"
-                android:gravity="right"
+                android:layout_marginStart="12dp"
+                android:gravity="end"
                 android:maxLines="1"
                 android:textColor="#999999"
                 android:textSize="13sp"
@@ -70,14 +71,13 @@
             android:fadingEdgeLength="0dp"
             android:footerDividersEnabled="false"
             android:headerDividersEnabled="false"
-            android:listSelector="@color/colorNone"/>
+            android:listSelector="@color/colorNone" />
     </LinearLayout>
 
     <com.amap.api.maps2d.MapView
         android:id="@+id/route_map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/bus_path"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </LinearLayout>

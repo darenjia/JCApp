@@ -82,21 +82,24 @@ public class FtpUtils {
                                 UploadProgressListener listener) throws IOException {
         // 上传之前初始化
         this.uploadBeforeOperate(remotePath, listener);
-
+        String childPath;
         boolean flag;
         Iterator iter = pathMap.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             int key = (int) entry.getKey();
             ArrayList<String> val = (ArrayList<String>) entry.getValue();
+            childPath = "" + key;
+            LogUtil.logI(remotePath);
+            // FTP下创建文件夹
+            ftpClient.makeDirectory(childPath);
+            // 改变FTP目录
+            ftpClient.changeWorkingDirectory(childPath);
             for (String path : val) {
                 File singleFile = new File(path);
-                remotePath += "/" + key;
-                LogUtil.logI(remotePath);
-                // FTP下创建文件夹
-                ftpClient.makeDirectory(remotePath);
-                // 改变FTP目录
-                ftpClient.changeWorkingDirectory(remotePath);
+                if (!singleFile.exists()) {
+                    continue;
+                }
                 try {
                     deleteSingleFile(remotePath, singleFile.getName(), new DeleteFileProgressListener() {
                         @Override
@@ -113,6 +116,7 @@ public class FtpUtils {
                 if (flag) {
                     listener.onUploadProgress(Constants.FTP_UPLOAD_SUCCESS, 0,
                             singleFile);
+                    ftpClient.changeToParentDirectory();
                 } else {
                     listener.onUploadProgress(Constants.FTP_UPLOAD_FAIL, 0,
                             singleFile);
@@ -178,7 +182,10 @@ public class FtpUtils {
         // 设置模式
         ftpClient.setFileTransferMode(org.apache.commons.net.ftp.FTP.STREAM_TRANSFER_MODE);
         // 上传单个文件
-
+        // FTP下创建文件夹
+        ftpClient.makeDirectory(remotePath);
+        // 改变FTP目录
+        ftpClient.changeWorkingDirectory(remotePath);
     }
 
     /**

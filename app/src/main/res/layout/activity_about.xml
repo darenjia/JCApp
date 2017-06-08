@@ -27,7 +27,7 @@
         android:layout_margin="@dimen/mid_size"
         android:drawableTop="@mipmap/check_app"
         android:gravity="center"
-        android:text="V1.00 地下空间检查" />
+        android:text="@string/about_kongjianjc" />
 
     <TextView style="@style/splitLine" />
 
@@ -36,7 +36,7 @@
         style="@style/about_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="使用介绍" />
+        android:text="@string/about_shiyongjs" />
 
     <TextView style="@style/splitLine" />
 
@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingRight="@dimen/small_size"
-        android:text="wifi下自动上传" />
+        android:text="@string/about_zidongsc" />
 
     <TextView style="@style/splitLine" />
 
@@ -56,7 +56,7 @@
         style="@style/about_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="清空搜索记录" />
+        android:text="@string/about_qingkongjilu" />
 
     <TextView style="@style/splitLine" />
 
@@ -70,7 +70,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="清除应用缓存" />
+            android:text="@string/about_qingchuhc" />
 
         <TextView
             android:id="@+id/about_cache_size"
@@ -78,7 +78,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/small_size"
-            android:text="3.5M"
             android:textColor="@color/accent" />
     </LinearLayout>
 
@@ -89,7 +88,7 @@
         style="@style/about_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="反馈及意见" />
+        android:text="@string/about_fankui" />
 
     <TextView style="@style/splitLine" />
 
@@ -98,7 +97,7 @@
         style="@style/about_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="检查更新" />
+        android:text="@string/about_gx" />
 
     <TextView style="@style/splitLine" />
 

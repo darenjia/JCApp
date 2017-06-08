@@ -9,6 +9,7 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
+import com.bokun.bkjcb.on_siteinspection.Notification.NotificationUtil;
 import com.bokun.bkjcb.on_siteinspection.UpLoad.UIProgressListener;
 import com.bokun.bkjcb.on_siteinspection.UpLoad.UploadHelper;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
@@ -23,6 +24,7 @@ public class UploadService extends Service {
 
     UploadHelper helper;
     ArrayList<CheckPlan> checkPlans;
+    private NotificationUtil util;
 
     @Nullable
     @Override
@@ -44,6 +46,8 @@ public class UploadService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         LogUtil.logI("开始上传服务");
         helper = new UploadHelper(this);
+        util = NotificationUtil.newInstance();
+        util.Notify(0, 0);
         ProjectPlan projectPlan = (ProjectPlan) intent.getSerializableExtra("plan");
         UIProgressListener listener = new UIProgressListener() {
             @Override
@@ -65,4 +69,9 @@ public class UploadService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        helper.onStop();
+    }
 }

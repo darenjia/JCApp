@@ -11,14 +11,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ExpandableListView
-            android:id="@+id/plan_list"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:childDivider="@color/bgColor_divier"
-            android:divider="@color/colorAccent"
-            android:dividerHeight="1dp"
-            android:groupIndicator="@drawable/expandable_listview_indicator" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/error_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/error_bg"
+                android:visibility="gone" />
+
+            <ExpandableListView
+                android:id="@+id/plan_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:childDivider="@color/bgColor_divier"
+                android:divider="@color/colorAccent"
+                android:dividerHeight="1dp"
+                android:groupIndicator="@drawable/expandable_listview_indicator" />
+        </LinearLayout>
+
 
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

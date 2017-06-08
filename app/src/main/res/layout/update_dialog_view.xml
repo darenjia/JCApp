@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/update_proBar_c"
             android:gravity="center"
-            android:text="当前版本为最新版"
+            android:text="@string/check_new_version_no"
             android:textColor="@color/text_color"
             android:textSize="@dimen/mid_font" />
 
@@ -51,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:background="@color/white"
-                android:text="关闭"
+                android:text="@string/close"
                 android:textColor="@color/text_color"
                 android:textSize="@dimen/mid_font"
                 android:visibility="gone" />

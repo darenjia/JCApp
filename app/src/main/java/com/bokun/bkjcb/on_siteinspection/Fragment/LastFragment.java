@@ -24,6 +24,8 @@ public class LastFragment extends BaseFragment {
     private CheckResult result;
     private OnClick clickListener;
     private TextView user;
+    private String str_date;
+    private EditText idea;
 
     public interface OnClick {
         void onClick(String time);
@@ -33,10 +35,10 @@ public class LastFragment extends BaseFragment {
     public View initView() {
         result = (CheckResult) getArguments().getSerializable("result");
         View view = LayoutInflater.from(getContext()).inflate(R.layout.last_fragment_view, null);
-        final EditText idea = (EditText) view.findViewById(R.id.lastFragment_idea);
+        idea = (EditText) view.findViewById(R.id.lastFragment_idea);
         user = (TextView) view.findViewById(R.id.lastFragment_user);
         TextView date = (TextView) view.findViewById(R.id.lastFragment_date);
-        final String str_date = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINESE).format(System.currentTimeMillis());
+        str_date = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINESE).format(System.currentTimeMillis());
         date.setText(str_date);
         String str = result.getComment();
         if (str != null) {
@@ -46,12 +48,16 @@ public class LastFragment extends BaseFragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                result.setComment(idea.getText().toString());
-                LogUtil.logI("正在提交");
-                clickListener.onClick(str_date);
+                submit();
             }
         });
         return view;
+    }
+
+    public void submit() {
+        result.setComment(idea.getText().toString());
+        LogUtil.logI("正在提交");
+        clickListener.onClick(str_date);
     }
 
     @Override
