@@ -90,7 +90,7 @@
             android:name=".Activity.AboutActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activity.EmptyActivity"
+            android:name=".Activity.GuideActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.FeedBackActivity"

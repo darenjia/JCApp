@@ -319,7 +319,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                         @Override
                         public void onClick(String time) {
                             boolean is = saveData(2, time);
-                            Toast.makeText(SecurityCheckActivity.this, "正在保存" + is, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SecurityCheckActivity.this, "数据已储存", Toast.LENGTH_SHORT).show();
                             setResultData(2);
                             finish();
                         }

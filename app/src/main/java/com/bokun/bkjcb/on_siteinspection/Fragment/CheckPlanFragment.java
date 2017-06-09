@@ -110,7 +110,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     @Override
     protected void getDataFailed() {
         super.getDataFailed();
-        LogUtil.logI("换取数据失败");
+        LogUtil.logI("获取数据失败");
         //setExpandableListView();
         errorView.setVisibility(View.VISIBLE);
     }
@@ -144,11 +144,12 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
             result = JsonParser.parseSoap((SoapObject) object);
             if (projectPlans == null || projectPlans.size() == 0) {
                 projectPlans = JsonParser.getProjectData(result.resData);
+                /*有个问题，如果返回数据的SysId发生变化，则此方法要改*/
                 DataUtil.saveProjectPlan(projectPlans);
                 getCheckPlanFromNet();
                 return;
             }
-
+            LogUtil.logI("返回数据结果：" + result.resData);
             cacheUitl = new CacheUitl();
             String cacheStr = cacheUitl.getData(key);
             if (cacheStr == null) {
@@ -174,6 +175,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                 constuctions.add(DataUtil.getCheckPlan(ids));
             }
         } else {
+            LogUtil.logI((object == null) + "");
             i = RequestListener.EVENT_GET_DATA_EEEOR;
         }
 

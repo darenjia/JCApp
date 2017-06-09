@@ -54,16 +54,14 @@ public class FileUtils {
 
     public static boolean isFileExist(String fileName) {
         File file = new File(SDPATH + fileName);
-        file.isFile();
         return file.exists();
     }
 
     public static void delFile(String fileName) {
         File file = new File(SDPATH + fileName);
-        if (file.isFile()) {
+        if (file.exists() && file.isFile()) {
             file.delete();
         }
-        file.exists();
     }
 
     public static void deleteDir(String path) {

@@ -153,7 +153,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
                 startActivity(intent);
                 break;
             case R.id.about_intr:
-                Intent intent1 = new Intent(AboutActivity.this, EmptyActivity.class);
+                Intent intent1 = new Intent(AboutActivity.this, GuideActivity.class);
                 startActivity(intent1);
                 break;
             case R.id.about_update:

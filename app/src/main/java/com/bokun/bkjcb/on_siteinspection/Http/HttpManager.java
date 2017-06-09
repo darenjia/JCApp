@@ -3,6 +3,7 @@ package com.bokun.bkjcb.on_siteinspection.Http;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
 
@@ -161,7 +162,7 @@ public class HttpManager implements Runnable {
             String NAMESPACE = "http://zgzxjk/";
             String METHOD_NAME = requestVo.methodName;
             //String URL = "http://192.168.137.1:1856/zgzxjkWebService.asmx";
-            String URL = "http://192.168.100.211:1856/zgzxjkWebService.asmx";
+            String URL = Constants.HTTPURL;
             // 新建 SoapObject 对象
             SoapObject rpc = new SoapObject(NAMESPACE, METHOD_NAME);
             HashMap<String, String> map = requestVo.requestDataMap;
@@ -171,7 +172,7 @@ public class HttpManager implements Runnable {
             // 创建 HttpTransportSE 对象,并指定 WebService 的 WSDL 文档的 URL
             ht = new HttpTransportSE(URL);
             // 设置 debug 模式
-            ht.debug = false;
+            ht.debug = true;
             // 获得序列化的 envelope
             SoapSerializationEnvelope envelope =
                     new SoapSerializationEnvelope(SoapEnvelope.VER12);

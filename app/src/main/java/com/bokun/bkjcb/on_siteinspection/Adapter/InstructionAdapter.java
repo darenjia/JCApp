@@ -16,10 +16,10 @@ import com.bokun.bkjcb.on_siteinspection.R;
 public class InstructionAdapter extends BaseExpandableListAdapter {
 
     private Context context;
-    private String[] titles;
+    private String[] titles = {"使用流程", "权限说明", "数据获取失败"};
     private String[][] contents;
 
-    public InstructionAdapter(Context contextst) {
+    public InstructionAdapter(Context context) {
         this.context = context;
         initData();
     }
@@ -74,14 +74,13 @@ public class InstructionAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        View view;
+        TextView view;
         if (convertView == null) {
-            view = View.inflate(context, R.layout.expandable_group_item_view, null);
+            view = (TextView) View.inflate(context, R.layout.search_tips_view, null);
         } else {
-            view = convertView;
+            view = (TextView) convertView;
         }
-        TextView title = (TextView) view.findViewById(R.id.group_title);
-        TextView quxian = (TextView) view.findViewById(R.id.group_quxian);
+        view.setText(titles[groupPosition]);
         return view;
     }
 
