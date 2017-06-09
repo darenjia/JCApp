@@ -8,6 +8,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.bokun.bkjcb.on_siteinspection.R;
+import com.bokun.bkjcb.on_siteinspection.View.GuidViewBuilder;
 
 /**
  * Created by BKJCB on 2017/3/20.
@@ -16,8 +17,9 @@ import com.bokun.bkjcb.on_siteinspection.R;
 public class InstructionAdapter extends BaseExpandableListAdapter {
 
     private Context context;
-    private String[] titles = {"使用流程", "权限说明", "数据获取失败"};
-    private String[][] contents;
+    private String[] titles = {"检查流程说明", "关于权限说明", "数据获取失败"};
+    private String[][] contents = {{""}, {""}, {""}};
+    private GuidViewBuilder builder;
 
     public InstructionAdapter(Context context) {
         this.context = context;
@@ -25,6 +27,7 @@ public class InstructionAdapter extends BaseExpandableListAdapter {
     }
 
     private void initData() {
+        builder = new GuidViewBuilder(context);
     }
 
     @Override
@@ -86,12 +89,8 @@ public class InstructionAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = View.inflate(context, R.layout.checkitemlist, null);
-        }
-        TextView title = (TextView) convertView.findViewById(R.id.check_item_title);
-        TextView state = (TextView) convertView.findViewById(R.id.check_item_state);
-        return convertView;
+
+        return builder.build(groupPosition);
     }
 
     @Override

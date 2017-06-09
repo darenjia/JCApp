@@ -77,9 +77,9 @@ public class UpLoadChirldFragment extends BaseFragment {
         }
 
         @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            //final CheckPlan checkPlan = checkPlans.get(position);
-            final ProjectPlan projectPlan = projectPlans.get(position);
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final int flg = position;
+            final ProjectPlan projectPlan = projectPlans.get(flg);
             if (convertView == null) {
                 convertView = View.inflate(getContext(), R.layout.upload_item_view, null);
                 viewHolder = new ViewHolder();
@@ -94,16 +94,10 @@ public class UpLoadChirldFragment extends BaseFragment {
             viewHolder.state.setText(getStateText(projectPlan.getState_upload()));
             if (!finished) {
                 viewHolder.button.setText(getState(projectPlan.getState_upload()));
-                if (projectPlan.getState_upload() == 2 || projectPlan.getState_upload() == 1) {
-                    //LogUtil.logI("设置计划状态" + checkPlan.getName());
-                    viewHolder.button.setChecked(true);
-                } else {
-                    viewHolder.button.setChecked(false);
-                }
                 viewHolder.button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        int flag = position;
+                        int flag = flg;
                         if (isChecked) {
                             while (flag != 0 && projectPlans.get(flag - 1).getState_upload() == 0) {
                                 projectPlans.remove(flag);
@@ -116,7 +110,7 @@ public class UpLoadChirldFragment extends BaseFragment {
                                 projectPlan.setState_upload(2);
                             }
                             notifyDataSetChanged();
-                            if (position == 0) {
+                            if (flg == 0) {
                                 startUpload(projectPlan);
                                 progress = (CheckBox) buttonView;
                                 //viewHolder.state.setText("正在上传");
@@ -138,7 +132,11 @@ public class UpLoadChirldFragment extends BaseFragment {
                         }
                     }
                 });
-
+                if (projectPlan.getState_upload() == 1 || projectPlan.getState_upload() == 2) {
+                    viewHolder.button.setChecked(true);
+                } else {
+                    viewHolder.button.setChecked(false);
+                }
             } else {
                 viewHolder.state.setVisibility(View.GONE);
                 viewHolder.button.setVisibility(View.GONE);
@@ -220,10 +218,12 @@ public class UpLoadChirldFragment extends BaseFragment {
         if (receiver != null) {
             return;
         }
+        LogUtil.logI("开启广播");
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 int flag = intent.getExtras().getInt("precent");
+                LogUtil.logI("百分比" + flag);
                 util.Notify(count, flag);
                 if (flag == -1) {
                     ProjectPlan projectPlan = projectPlans.get(0);
@@ -237,13 +237,16 @@ public class UpLoadChirldFragment extends BaseFragment {
                     projectPlan.setAq_jctz_zt("上传完成");
                     DataUtil.changeProjectState(projectPlan);
                     projectPlans.remove(0);
-                    LogUtil.logI(projectPlans.size() + "");
+                    LogUtil.logI("上传完成" + projectPlan.getAq_lh_jcmc());
+                    if (projectPlans.size() > 0) {
+                        projectPlans.get(0).setState_upload(2);
+                    }
                     adapter.notifyDataSetChanged();
                     util.Notify(++count, flag);
                     Toast.makeText(context, "上传成功", Toast.LENGTH_SHORT).show();
-                    if (finished) {
+                   /* if (finished) {
                         loadTask.execute();
-                    }
+                    }*/
                 }
             }
         };

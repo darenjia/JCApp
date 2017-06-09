@@ -65,7 +65,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
             plan.setState(cursor.getInt(cursor.getColumnIndex("state")));
         }
         cursor.close();
-        LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
+        //LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
         return plan;
     }
 
@@ -97,7 +97,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
             plan.setUser(cursor.getString(cursor.getColumnIndex("user")));
         }
         cursor.close();
-        LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
+        //LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
         return plan;
     }
 
@@ -128,7 +128,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
             plan.setUser(cursor.getString(cursor.getColumnIndex("user")));
             list.add(plan);
         }
-        LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
+        //LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
         return list;
     }
 
@@ -145,7 +145,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
             list.add(plan);
         }
         cursor.close();
-        LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
+        //LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
         return list;
     }
 

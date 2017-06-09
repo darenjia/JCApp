@@ -32,7 +32,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.READ_PHONE_STATE
+            //Manifest.permission.READ_PHONE_STATE
     };
     private boolean isNeedCheck = true;
 

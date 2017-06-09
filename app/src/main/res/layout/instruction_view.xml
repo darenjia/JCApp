@@ -4,11 +4,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ExpandableListView
-        android:id="@+id/instr_list"
+    <TextView
+        android:id="@+id/guide_txtsm"
+        style="@style/about_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:childDivider="@color/bgColor_divier"
-        android:divider="@color/white"
-        android:dividerHeight="1dp" />
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/guide_imgsm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>

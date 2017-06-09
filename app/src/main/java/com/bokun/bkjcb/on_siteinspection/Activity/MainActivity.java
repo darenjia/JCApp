@@ -51,7 +51,8 @@ public class MainActivity extends BaseActivity
     private TextView userName, userMessage;
     public static ManagerInfo user;
     private Fragment currentFragment;
-    private boolean needRefreshUpdateFragment = false;
+    private boolean opened = false;
+    private int count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +85,7 @@ public class MainActivity extends BaseActivity
     @Override
     protected void findView() {
         contentView = (ConstraintLayout) findViewById(R.id.content_main);
+        contentView.removeAllViews();
     }
 
     @Override
@@ -96,6 +98,7 @@ public class MainActivity extends BaseActivity
 
             @Override
             public void onDrawerOpened(View drawerView) {
+                opened = false;
                 InputMethodManager manager = ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE));
                 boolean isOpen = manager.isActive();
                 if (isOpen) {//因为是在fragment下，所以用了getView()获取view，也可以用findViewById（）来获取父控件
@@ -106,7 +109,7 @@ public class MainActivity extends BaseActivity
 
             @Override
             public void onDrawerClosed(View drawerView) {
-
+                count++;
             }
 
             @Override
@@ -126,12 +129,15 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
+        LogUtil.logI("back count" + count);
         CheckPlanFragment fragment = (CheckPlanFragment) viewMap.get("first");
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else if (!drawerLayout.isDrawerOpen(GravityCompat.START) && currentFragment != fragment) {
-            //loadView("检查计划", "first");
+        if (!drawerLayout.isDrawerOpen(GravityCompat.START) && !opened) {
             drawerLayout.openDrawer(GravityCompat.START);
+        } else if (drawerLayout.isDrawerOpen(GravityCompat.START) && !opened) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+            opened = true;
+        } else if (opened && currentFragment != fragment) {
+            loadView("检查计划", "first");
         } else {
             super.onBackPressed();
         }

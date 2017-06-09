@@ -119,7 +119,7 @@ public class DataUtil {
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);
         int state = daolmpl.queryCheckPlanState(indentifier);
         daolmpl.colseDateBase();
-        LogUtil.logI("查询一条检查计划状态" + indentifier + " state:" + state);
+       // LogUtil.logI("查询一条检查计划状态" + indentifier + " state:" + state);
         return state;
     }
 
