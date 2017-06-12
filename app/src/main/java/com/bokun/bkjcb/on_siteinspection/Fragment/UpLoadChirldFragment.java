@@ -9,8 +9,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -35,8 +34,10 @@ public class UpLoadChirldFragment extends BaseFragment {
     private LinearLayout layout;
     private ListAdapter adapter;
     private ArrayList<ProjectPlan> projectPlans;
+    private ProjectPlan task;
     private boolean finished;
-    private CheckBox progress;
+    private Button progress;
+    private Button startAll;
     private BroadcastReceiver receiver;
     private LocalBroadcastManager manager;
     private LoadData loadTask;
@@ -48,6 +49,7 @@ public class UpLoadChirldFragment extends BaseFragment {
         View view = View.inflate(getContext(), R.layout.unfinished_upload_view, null);
         listView = (ListView) view.findViewById(R.id.upload_listview);
         layout = (LinearLayout) view.findViewById(R.id.upload_btn);
+        startAll = (Button) view.findViewById(R.id.upload_start_all);
         return view;
     }
 
@@ -56,6 +58,20 @@ public class UpLoadChirldFragment extends BaseFragment {
         if (finished) {
             layout.setVisibility(View.GONE);
         }
+        startAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < projectPlans.size(); i++) {
+                    ProjectPlan projectPlan = projectPlans.get(i);
+                    if (projectPlan.getState_upload() == 0) {
+                        projectPlan.setState_upload(1);
+                    }
+                }
+                if (adapter != null) {
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     class ListAdapter extends BaseAdapter {
@@ -85,20 +101,30 @@ public class UpLoadChirldFragment extends BaseFragment {
                 viewHolder = new ViewHolder();
                 viewHolder.title = (TextView) convertView.findViewById(R.id.task_title);
                 viewHolder.state = (TextView) convertView.findViewById(R.id.task_state);
-                viewHolder.button = (CheckBox) convertView.findViewById(R.id.task_btn);
+                viewHolder.button = (Button) convertView.findViewById(R.id.task_btn);
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             viewHolder.title.setText(projectPlan.getAq_lh_jcmc());
             viewHolder.state.setText(getStateText(projectPlan.getState_upload()));
+            if (position == 0 && projectPlan.getState_upload() == 1 || projectPlan.getState_upload() == 2) {
+                viewHolder.state.setText("正在上传");
+                progress = viewHolder.button;
+                if (task == null) {
+                    task = projectPlan;
+                    viewHolder.button.setText("0%");
+                    LogUtil.logI("开始任务");
+                    startUpload(projectPlan);
+                }
+            }
             if (!finished) {
                 viewHolder.button.setText(getState(projectPlan.getState_upload()));
-                viewHolder.button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                viewHolder.button.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    public void onClick(View v) {
                         int flag = flg;
-                        if (isChecked) {
+                        if (((Button) v).getText().equals("上传")) {
                             while (flag != 0 && projectPlans.get(flag - 1).getState_upload() == 0) {
                                 projectPlans.remove(flag);
                                 projectPlans.add(flag - 1, projectPlan);
@@ -110,34 +136,24 @@ public class UpLoadChirldFragment extends BaseFragment {
                                 projectPlan.setState_upload(2);
                             }
                             notifyDataSetChanged();
-                            if (flg == 0) {
-                                startUpload(projectPlan);
-                                progress = (CheckBox) buttonView;
-                                //viewHolder.state.setText("正在上传");
-                                buttonView.setText("0%");
-                            } else {
-                                buttonView.setText("等待");
-                            }
+                            return;
                         } else {
-                            if (!buttonView.getText().equals("上传")) {
-                                buttonView.setText("上传");
-                                projectPlan.setState_upload(0);
-                                if (flag != (projectPlans.size() - 1)) {
-                                    projectPlans.remove(flag);
-                                    projectPlans.add(projectPlan);
-                                }
-                                stopUpload();
-                                notifyDataSetChanged();
+                            ((Button) v).setText("上传");
+                            projectPlan.setState_upload(0);
+                            if (flag != (projectPlans.size() - 1)) {
+                                projectPlans.remove(flag);
+                                projectPlans.add(projectPlan);
                             }
+                            stopUpload();
+                            task = null;
+                            notifyDataSetChanged();
                         }
                     }
+
                 });
-                if (projectPlan.getState_upload() == 1 || projectPlan.getState_upload() == 2) {
-                    viewHolder.button.setChecked(true);
-                } else {
-                    viewHolder.button.setChecked(false);
-                }
-            } else {
+            } else
+
+            {
                 viewHolder.state.setVisibility(View.GONE);
                 viewHolder.button.setVisibility(View.GONE);
             }
@@ -147,7 +163,7 @@ public class UpLoadChirldFragment extends BaseFragment {
         class ViewHolder {
             TextView title;
             TextView state;
-            CheckBox button;
+            Button button;
         }
     }
 
@@ -175,11 +191,9 @@ public class UpLoadChirldFragment extends BaseFragment {
         @Override
         protected Object doInBackground(Object[] objects) {
             if (!finished) {
-                //checkPlans = DataUtil.queryCheckPlanCanUpLoad(getContext());
                 projectPlans = DataUtil.getProjectByState("等待上传");
             } else {
                 projectPlans = DataUtil.getProjectByState("上传完成");
-                //checkPlans = DataUtil.queryCheckPlanFinished(getContext());
             }
             return null;
         }
@@ -193,6 +207,7 @@ public class UpLoadChirldFragment extends BaseFragment {
                 adapter.notifyDataSetChanged();
             }
         }
+
     }
 
     public void setFinished(boolean finished) {
@@ -226,8 +241,12 @@ public class UpLoadChirldFragment extends BaseFragment {
                 LogUtil.logI("百分比" + flag);
                 util.Notify(count, flag);
                 if (flag == -1) {
+                    Toast.makeText(context, "上传失败,稍后重试！", Toast.LENGTH_SHORT).show();
                     ProjectPlan projectPlan = projectPlans.get(0);
-                    projectPlan.setState_upload(0);
+                    projectPlan.setState_upload(3);
+                    projectPlans.remove(0);
+                    projectPlans.add(projectPlan);
+                    task = null;
                     adapter.notifyDataSetChanged();
                     return;
                 }
@@ -237,16 +256,11 @@ public class UpLoadChirldFragment extends BaseFragment {
                     projectPlan.setAq_jctz_zt("上传完成");
                     DataUtil.changeProjectState(projectPlan);
                     projectPlans.remove(0);
+                    task = null;
                     LogUtil.logI("上传完成" + projectPlan.getAq_lh_jcmc());
-                    if (projectPlans.size() > 0) {
-                        projectPlans.get(0).setState_upload(2);
-                    }
                     adapter.notifyDataSetChanged();
                     util.Notify(++count, flag);
                     Toast.makeText(context, "上传成功", Toast.LENGTH_SHORT).show();
-                   /* if (finished) {
-                        loadTask.execute();
-                    }*/
                 }
             }
         };
@@ -295,7 +309,7 @@ public class UpLoadChirldFragment extends BaseFragment {
         } else if (state == 2) {
             return "正在上传";
         } else if (state == 3) {
-            return "上传已取消";
+            return "上传失败，请重试";
         } else {
             return "上传完成";
         }

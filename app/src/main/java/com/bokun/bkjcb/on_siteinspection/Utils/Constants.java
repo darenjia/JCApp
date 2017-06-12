@@ -129,4 +129,5 @@ public class Constants {
     public static final String FTP_GETALLPICPATH_FAIL = "ftp获取所有图片路径失败";
 
     public static final String HTTPURL = "http://192.168.100.211:1856/zgzxjkWebService.asmx";
+    //public static final String HTTPURL = "http://101.231.52.50:8080/zgzxjkWebService.asmx";
 }

@@ -135,7 +135,7 @@ public class UploadHelper {
         }
         String json = jsons.get(flag);
         LogUtil.logI(json);
-        HttpRequestVo request = new HttpRequestVo();
+        final HttpRequestVo request = new HttpRequestVo();
         request.getRequestDataMap().put("jcnr", json);
         request.setMethodName("GetJianChaShuJu");
         HttpManager manager = new HttpManager(context, new RequestListener() {
@@ -151,6 +151,8 @@ public class UploadHelper {
                     message.what = i;
                     message.obj = result;
                     mHandler.sendMessage(message);
+                } else {
+                    listener.onUpdate(0, 0, false);
                 }
             }
         }, request);
