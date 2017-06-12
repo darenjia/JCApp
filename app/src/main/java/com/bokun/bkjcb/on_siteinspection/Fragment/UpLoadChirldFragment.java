@@ -305,7 +305,7 @@ public class UpLoadChirldFragment extends BaseFragment {
         } else if (state == 2) {
             return "0%";
         } else if (state == 3) {
-            return "重新上传";
+            return "上传";
         } else {
             return "完成";
         }

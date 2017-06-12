@@ -98,10 +98,15 @@ public class Constants {
             "  </soap12:Body>\n" +
             "</soap12:Envelope>";
 
-    public static final String FTP_HOST_DEFAULT = "192.168.100.104";
-    public static final int FTP_HOST_PORT = 21;
-    public static final String FTP_USER_DEFAULT = "hqh";
-    public static final String FTP_PASSWORD_DEFAULT = "1";
+    //public static final String HTTPURL = "http://192.168.100.211:1856/zgzxjkWebService.asmx";
+    public static final String HTTPURL = "http://101.231.52.50:8080/zgzxjkWebService.asmx";
+
+    //public static final String FTP_HOST_DEFAULT = "192.168.100.104";
+    public static final String FTP_HOST_DEFAULT = "101.231.52.50";
+    //public static final int FTP_HOST_PORT = 21;
+    public static final int FTP_HOST_PORT = 18000;
+    public static final String FTP_USER_DEFAULT = "zgzx1";
+    public static final String FTP_PASSWORD_DEFAULT = "123456";
 
     /**
      * ftp状态
@@ -125,6 +130,4 @@ public class Constants {
     public static final String FTP_GETALLPICPATH_SUCCESS = "ftp获取所有图片路径成功";
     public static final String FTP_GETALLPICPATH_FAIL = "ftp获取所有图片路径失败";
 
-    public static final String HTTPURL = "http://192.168.100.211:1856/zgzxjkWebService.asmx";
-    //public static final String HTTPURL = "http://101.231.52.50:8080/zgzxjkWebService.asmx";
 }
