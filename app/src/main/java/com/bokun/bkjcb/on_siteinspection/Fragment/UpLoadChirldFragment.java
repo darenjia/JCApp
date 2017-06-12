@@ -43,6 +43,7 @@ public class UpLoadChirldFragment extends BaseFragment {
     private LoadData loadTask;
     private NotificationUtil util;
     private int count = 0;
+    private UpLoadFragment.OnDataChangeListener listener;
 
     @Override
     public View initView() {
@@ -269,6 +270,7 @@ public class UpLoadChirldFragment extends BaseFragment {
                     adapter.notifyDataSetChanged();
                     util.Notify(++count, flag);
                     Toast.makeText(context, "上传成功", Toast.LENGTH_SHORT).show();
+                    listener.onDateChange();
                 }
             }
         };
@@ -321,5 +323,9 @@ public class UpLoadChirldFragment extends BaseFragment {
         } else {
             return "上传完成";
         }
+    }
+
+    public void setListenter(UpLoadFragment.OnDataChangeListener listener) {
+        this.listener = listener;
     }
 }

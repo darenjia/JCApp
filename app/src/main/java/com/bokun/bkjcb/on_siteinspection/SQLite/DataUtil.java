@@ -99,6 +99,13 @@ public class DataUtil {
         return plans;
     }
 
+    public static ArrayList<ProjectPlan> queryProjectPlan(String state) {
+        ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
+        ArrayList<ProjectPlan> plans = dao.query(state);
+        dao.close();
+        return plans;
+    }
+
     public static ArrayList<CheckPlan> queryCheckPlanFinished(Context context) {
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);
         ArrayList<CheckPlan> plans = daolmpl.queryFinishedCheckPlan();

@@ -97,9 +97,6 @@ public class Constants {
             "    </GetUser>\n" +
             "  </soap12:Body>\n" +
             "</soap12:Envelope>";
-    public final static String GetUserURL = "http://192.168.100.211:1856/zgzxjkWebService.asmx?op=GetUser";
-
-    public final static String GetXxclScURL = "http://192.168.100.211:1856/zgzxjkWebService.asmx?op=GetXxclSc";
 
     public static final String FTP_HOST_DEFAULT = "192.168.100.104";
     public static final int FTP_HOST_PORT = 21;

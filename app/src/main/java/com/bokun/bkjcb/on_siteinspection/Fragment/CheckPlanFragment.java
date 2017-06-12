@@ -1,9 +1,7 @@
 package com.bokun.bkjcb.on_siteinspection.Fragment;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -146,6 +144,9 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                 projectPlans = JsonParser.getProjectData(result.resData);
                 /*有个问题，如果返回数据的SysId发生变化，则此方法要改*/
                 DataUtil.saveProjectPlan(projectPlans);
+                projectPlans.clear();
+                projectPlans.addAll(DataUtil.queryProjectPlan("等待上传"));
+                projectPlans.addAll(DataUtil.queryProjectPlan("需办事项"));
                 getCheckPlanFromNet();
                 return;
             }
@@ -268,30 +269,19 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         DataUtil.changeProjectState(projectPlan);
     }
 
-    class LodingAsyncTask extends AsyncTask<Void, Integer, Boolean> {
-        ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            dialog = new ProgressDialog(context);
-            dialog.setMessage("数据加载中...");
-            dialog.show();
-        }
-
-        @Override
-        protected Boolean doInBackground(Void[] objects) {
-
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-            if (aBoolean) {
-
+    public void dateHasChange() {
+        projectPlans.clear();
+        projectPlans.addAll(DataUtil.queryProjectPlan("等待上传"));
+        projectPlans.addAll(DataUtil.queryProjectPlan("需办事项"));
+        constuctions.clear();
+        for (ProjectPlan plan : projectPlans) {
+            String sysIDs = plan.getAq_sysid();
+            String[] ids = {};
+            if (sysIDs != null) {
+                ids = sysIDs.split(",");
             }
-            dialog.dismiss();
+            constuctions.add(DataUtil.getCheckPlan(ids));
         }
+        adapter.notifyDataSetChanged();
     }
 }

@@ -39,7 +39,7 @@ import java.util.Map;
 * MianActivity
 * */
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, UpLoadFragment.OnDataChangeListener {
 
     private DrawerLayout drawerLayout;
     private ConstraintLayout contentView;
@@ -210,6 +210,7 @@ public class MainActivity extends BaseActivity
                 menu.setGroupVisible(R.id.menu_map, true);
             } else if (key.equals("forth")) {
                 currentFragment = new UpLoadFragment();
+                ((UpLoadFragment) currentFragment).setListener(this);
             } else if (key.equals("second")) {
                 currentFragment = new SearchFragment();
             }
@@ -247,7 +248,6 @@ public class MainActivity extends BaseActivity
         activity.finish();
     }
 
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -267,5 +267,14 @@ public class MainActivity extends BaseActivity
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onDateChange() {
+        LogUtil.logI("数据已改变");
+        CheckPlanFragment fragment = (CheckPlanFragment) viewMap.get("first");
+        if (fragment != null) {
+            fragment.dateHasChange();
+        }
     }
 }

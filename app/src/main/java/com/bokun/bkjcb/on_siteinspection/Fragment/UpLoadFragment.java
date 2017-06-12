@@ -22,6 +22,12 @@ public class UpLoadFragment extends MainFragment {
     ViewPager mViewPager;
     ArrayList<Fragment> fragments;
 
+    public interface OnDataChangeListener {
+        void onDateChange();
+    }
+
+    private OnDataChangeListener listener;
+
     @Override
     public View initView(LayoutInflater inflater) {
         View view = inflater.inflate(R.layout.upload_view, null);
@@ -35,6 +41,7 @@ public class UpLoadFragment extends MainFragment {
         fragments = new ArrayList<>();
         UpLoadChirldFragment unFinished = new UpLoadChirldFragment();
         unFinished.setFinished(false);
+        unFinished.setListenter(listener);
         fragments.add(unFinished);
         UpLoadChirldFragment finished = new UpLoadChirldFragment();
         finished.setFinished(true);
@@ -83,6 +90,10 @@ public class UpLoadFragment extends MainFragment {
         public CharSequence getPageTitle(int position) {
             return tags[position];
         }
+    }
+
+    public void setListener(OnDataChangeListener listener) {
+        this.listener = listener;
     }
 
     public void refresh() {
