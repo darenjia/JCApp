@@ -119,7 +119,7 @@ public class DataUtil {
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);
         int state = daolmpl.queryCheckPlanState(indentifier);
         daolmpl.colseDateBase();
-       // LogUtil.logI("查询一条检查计划状态" + indentifier + " state:" + state);
+        // LogUtil.logI("查询一条检查计划状态" + indentifier + " state:" + state);
         return state;
     }
 
@@ -198,5 +198,25 @@ public class DataUtil {
         }
         daolmpl.colseDateBase();
         dao.close();
+    }
+
+    public static void deleteFinishedProjectPlan() {
+        ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
+        CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(JCApplication.getContext());
+        CheckResultDao daoR = new CheckResultDaolmpl(JCApplication.getContext());
+        ArrayList<ProjectPlan> projectPlans;
+        ArrayList<CheckResult> checkResults = new ArrayList<>();
+        projectPlans = dao.query("上传完成");
+        ArrayList<CheckPlan> checkPlans = new ArrayList<>();
+        for (ProjectPlan p : projectPlans) {
+            String[] strings = p.getAq_sysid().split(",");
+            for (String s : strings) {
+                checkPlans.add(daolmpl.queryCheckPlan(s));
+            }
+        }
+        for (CheckPlan c : checkPlans) {
+            checkResults.addAll(daoR.queryCheckResult(c.getIdentifier()));
+        }
+        FileUtils.deleteFile(checkResults);
     }
 }

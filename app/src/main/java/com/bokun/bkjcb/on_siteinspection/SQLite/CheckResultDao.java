@@ -2,7 +2,7 @@ package com.bokun.bkjcb.on_siteinspection.SQLite;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckResult;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by BKJCB on 2017/3/20.
@@ -11,7 +11,7 @@ import java.util.List;
 public abstract class CheckResultDao {
     public abstract boolean insertCheckResult(CheckResult result);
 
-    public abstract List<CheckResult> queryCheckResult(int Identifier);
+    public abstract ArrayList<CheckResult> queryCheckResult(int Identifier);
 
     public abstract boolean queryById(int id);
 

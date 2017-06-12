@@ -56,18 +56,26 @@ public class UpLoadChirldFragment extends BaseFragment {
     @Override
     public void initData() {
         if (finished) {
-            layout.setVisibility(View.GONE);
+            startAll.setText("清空已完成");
+        } else {
+            startAll.setText("全部开始");
         }
         startAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (int i = 0; i < projectPlans.size(); i++) {
-                    ProjectPlan projectPlan = projectPlans.get(i);
-                    if (projectPlan.getState_upload() == 0) {
-                        projectPlan.setState_upload(1);
+                if (!finished) {
+                    for (int i = 0; i < projectPlans.size(); i++) {
+                        ProjectPlan projectPlan = projectPlans.get(i);
+                        if (projectPlan.getState_upload() == 0) {
+                            projectPlan.setState_upload(1);
+                        }
                     }
-                }
-                if (adapter != null) {
+                    if (adapter != null) {
+                        adapter.notifyDataSetChanged();
+                    }
+                } else {
+                    DataUtil.deleteFinishedProjectPlan();
+                    projectPlans.clear();
                     adapter.notifyDataSetChanged();
                 }
             }

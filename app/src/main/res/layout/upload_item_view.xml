@@ -44,6 +44,7 @@
             android:layout_marginRight="10dp"
             android:background="@drawable/check_item_content_comment_bg"
             android:checked="false"
+            android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
             android:text=""
             android:textColor="#797979" />
