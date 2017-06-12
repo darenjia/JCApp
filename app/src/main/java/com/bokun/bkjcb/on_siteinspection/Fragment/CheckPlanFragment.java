@@ -145,8 +145,9 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                 /*有个问题，如果返回数据的SysId发生变化，则此方法要改*/
                 DataUtil.saveProjectPlan(projectPlans);
                 projectPlans.clear();
-                projectPlans.addAll(DataUtil.queryProjectPlan("等待上传"));
-                projectPlans.addAll(DataUtil.queryProjectPlan("需办事项"));
+                //projectPlans.addAll(DataUtil.queryProjectPlan("等待上传"));
+                projectPlans.addAll(DataUtil.queryProjectPlan("上传完成"));
+                //projectPlans.addAll(DataUtil.queryProjectPlan("需办事项"));
                 getCheckPlanFromNet();
                 return;
             }
@@ -271,8 +272,8 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
     public void dateHasChange() {
         projectPlans.clear();
-        projectPlans.addAll(DataUtil.queryProjectPlan("等待上传"));
-        projectPlans.addAll(DataUtil.queryProjectPlan("需办事项"));
+        projectPlans.addAll(DataUtil.queryProjectPlan("上传完成"));
+        //projectPlans.addAll(DataUtil.queryProjectPlan("需办事项"));
         constuctions.clear();
         for (ProjectPlan plan : projectPlans) {
             String sysIDs = plan.getAq_sysid();

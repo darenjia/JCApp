@@ -101,7 +101,7 @@ public class DataUtil {
 
     public static ArrayList<ProjectPlan> queryProjectPlan(String state) {
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
-        ArrayList<ProjectPlan> plans = dao.query(state);
+        ArrayList<ProjectPlan> plans = dao.queryNo(state);
         dao.close();
         return plans;
     }
