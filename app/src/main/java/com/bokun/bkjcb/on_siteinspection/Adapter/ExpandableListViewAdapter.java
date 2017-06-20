@@ -102,6 +102,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         CheckPlan plan = plan_info.get(groupPosition).get(childPosition);
         title.setText(plan.getName());
         state.setText(getState(plan.getState()));
+        state.setTextColor(getColor(plan.getState()));
         return convertView;
     }
 
@@ -150,5 +151,16 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         } else {
             return "（数据已上传）";
         }
+    }
+
+    private int getColor(int state) {
+        if (state == 1) {
+            return context.getResources().getColor(R.color.holo_orange_light);
+        } else if (state == 2) {
+            return context.getResources().getColor(R.color.holo_blue_bright);
+        } else if (state == 3) {
+            return context.getResources().getColor(R.color.holo_green_light);
+        }
+        return context.getResources().getColor(R.color.text_color);
     }
 }

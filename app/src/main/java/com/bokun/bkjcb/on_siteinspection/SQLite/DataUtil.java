@@ -99,12 +99,21 @@ public class DataUtil {
         return plans;
     }
 
+    public static ArrayList<CheckPlan> queryCheckPlan(String name) {
+        CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(JCApplication.getContext());
+        ArrayList<CheckPlan> plans = daolmpl.query(name);
+        daolmpl.colseDateBase();
+        LogUtil.logI("查询所有检查计划" + plans.size());
+        return plans;
+    }
+
     public static ArrayList<ProjectPlan> queryProjectPlan(String state) {
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
         ArrayList<ProjectPlan> plans = dao.queryNo(state);
         dao.close();
         return plans;
     }
+
     public static ProjectPlan queryProjectPlanById(String id) {
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
         ProjectPlan plan = dao.queryById(id);
@@ -204,13 +213,13 @@ public class DataUtil {
     public static boolean changeProjectState(ProjectPlan plan) {
         boolean flag = false;
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
-//        CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(JCApplication.getContext());
+        CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(JCApplication.getContext());
         dao.update(plan.getAq_lh_id(), plan.getAq_jctz_zt());
-       /* String[] ids = plan.getAq_sysid().split(",");
+        String[] ids = plan.getAq_sysid().split(",");
         for (String id : ids) {
             flag = daolmpl.updateCheckPlanState(id, 3);
         }
-        daolmpl.colseDateBase();*/
+        daolmpl.colseDateBase();
         dao.close();
         return flag;
     }

@@ -135,6 +135,29 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
     }
 
     @Override
+    public ArrayList<CheckPlan> query(String name) {
+        ArrayList<CheckPlan> list = new ArrayList<>();
+        CheckPlan plan = null;
+        Cursor cursor = db.query("checkplan", null, "name like ?", new String[]{"%" + name + "%"}, null, null, null);
+        while (cursor.moveToNext()) {
+            plan = new CheckPlan();
+            plan.setIdentifier(cursor.getInt(cursor.getColumnIndex("identifier")));
+            plan.setName(cursor.getString(cursor.getColumnIndex("name")));
+            plan.setState(cursor.getInt(cursor.getColumnIndex("state")));
+            plan.setArea(cursor.getString(cursor.getColumnIndex("area")));
+            plan.setAddress(cursor.getString(cursor.getColumnIndex("address")));
+            plan.setSysId(cursor.getInt(cursor.getColumnIndex("sysId")));
+            plan.setType(cursor.getString(cursor.getColumnIndex("type")));
+            plan.setQuxian(cursor.getString(cursor.getColumnIndex("quxian")));
+            plan.setManager(cursor.getString(cursor.getColumnIndex("manager")));
+            plan.setUser(cursor.getString(cursor.getColumnIndex("user")));
+            list.add(plan);
+        }
+        //LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
+        return list;
+    }
+
+    @Override
     public ArrayList<CheckPlan> queryFinishedCheckPlan() {
         ArrayList<CheckPlan> list = new ArrayList<>();
         CheckPlan plan = null;
@@ -200,14 +223,15 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
 
         return isSuccess != 0;
     }
-    public boolean updateCheckPlanState(String id,int newstate) {
+
+    public boolean updateCheckPlanState(String id, int newstate) {
         int state = queryCheckPlanState(Integer.valueOf(id));
         if (state == -1) {
             return false;
         }
         ContentValues values = new ContentValues();
         values.put("state", newstate);
-        int isSuccess = db.update("checkplan", values, "identifier = ?", new String[]{id});
+        int isSuccess = db.update("checkplan", values, "sysId = ?", new String[]{id});
 
         return isSuccess != 0;
     }

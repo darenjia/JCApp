@@ -21,6 +21,8 @@ public abstract class CheckPlanDao {
 
     public abstract ArrayList<CheckPlan> queryCheckPlan();
 
+    public abstract ArrayList<CheckPlan> query(String name);
+
     public abstract ArrayList<CheckPlan> queryFinishedCheckPlan();
 
     public abstract ArrayList<CheckPlan> queryCanUpLoadCheckPlan();

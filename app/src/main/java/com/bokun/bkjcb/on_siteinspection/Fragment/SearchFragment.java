@@ -9,23 +9,26 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bokun.bkjcb.on_siteinspection.Adapter.StringAdapter;
+import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
-import com.bokun.bkjcb.on_siteinspection.Http.HttpManager;
-import com.bokun.bkjcb.on_siteinspection.Http.HttpRequestVo;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.R;
+import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.SQLite.SearchedWordDao;
 
 import org.ksoap2.serialization.SoapObject;
@@ -50,6 +53,9 @@ public class SearchFragment extends MainFragment implements RequestListener {
     private ArrayList<String> mItem;
     private ProgressBar marker_progress;
     private RelativeLayout error_tip;
+    private ArrayList<CheckPlan> checkPlans;
+    private LinearLayout linearLayout;
+    private ResultAdapter resultAdapter;
 
     @Override
     protected View initView(LayoutInflater inflater) {
@@ -65,6 +71,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
         listContainer = (ListView) view.findViewById(R.id.listContainer);
         error_tip = (RelativeLayout) view.findViewById(R.id.error_tip);
         marker_progress = (ProgressBar) view.findViewById(R.id.marker_progress);
+        linearLayout = (LinearLayout) view.findViewById(R.id.nav_view);
         set = new HashSet<>();
         SetTypeFace();
         stringAdapter = new StringAdapter(context, SearchedWordDao.all(context, 1));
@@ -80,6 +87,9 @@ public class SearchFragment extends MainFragment implements RequestListener {
     @Override
     protected void initData() {
         super.initData();
+        checkPlans = new ArrayList<>();
+        resultAdapter = new ResultAdapter();
+        listContainer.setAdapter(resultAdapter);
     }
 
     @Override
@@ -135,7 +145,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
                     edit_text_search.setText("");
                     listView.setVisibility(View.VISIBLE);
                     stringAdapter.initData();
-                    ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(edit_text_search,InputMethodManager.SHOW_IMPLICIT);
+                    ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(edit_text_search, InputMethodManager.SHOW_IMPLICIT);
                     IsAdapterEmpty();
                 }
             }
@@ -213,12 +223,22 @@ public class SearchFragment extends MainFragment implements RequestListener {
 
     private void search(String item, int page_num) {
         view_search.setVisibility(View.VISIBLE);
-        HttpRequestVo requestVo = new HttpRequestVo();
+        /*HttpRequestVo requestVo = new HttpRequestVo();
         requestVo.getRequestDataMap().put("", "");
         requestVo.setMethodName("GetXxclSc");
         HttpManager manager = new HttpManager(context, this, requestVo);
         //manager.postRequest();
-        mHandler.sendEmptyMessageDelayed(9, 2000);
+        mHandler.sendEmptyMessageDelayed(9, 2000);*/
+        checkPlans.clear();
+        checkPlans.addAll(DataUtil.queryCheckPlan(item));
+        view_search.setVisibility(View.GONE);
+        if (checkPlans.size() == 0) {
+            error_tip.setVisibility(View.VISIBLE);
+        } else {
+            error_tip.setVisibility(View.GONE);
+            listContainer.setVisibility(View.VISIBLE);
+            resultAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -228,5 +248,60 @@ public class SearchFragment extends MainFragment implements RequestListener {
         msg.what = i;
         msg.obj = result;
         mHandler.sendMessage(msg);
+    }
+
+    class ResultAdapter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            return checkPlans.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return checkPlans.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                convertView = View.inflate(context, R.layout.checkitemlist, null);
+            }
+            TextView title = (TextView) convertView.findViewById(R.id.check_item_title);
+            TextView state = (TextView) convertView.findViewById(R.id.check_item_state);
+            CheckPlan plan = checkPlans.get(position);
+            title.setText(plan.getName());
+            state.setText(getState(plan.getState()));
+            state.setTextColor(getColor(plan.getState()));
+            return convertView;
+        }
+    }
+
+    private int getColor(int state) {
+        if (state == 1){
+            return getResources().getColor(R.color.holo_orange_light);
+        }else if (state ==2){
+            return getResources().getColor(R.color.holo_blue_bright);
+        }else if (state ==3){
+            return getResources().getColor(R.color.holo_green_light);
+        }
+        return getResources().getColor(R.color.text_color);
+    }
+
+    private String getState(int state) {
+        if (state == 0) {
+            return "（检查未开始）";
+        } else if (state == 1) {
+            return "（检查未完成）";
+        } else if (state == 2) {
+            return "（检查已完成）";
+        } else {
+            return "（数据已上传）";
+        }
     }
 }

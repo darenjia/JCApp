@@ -109,25 +109,26 @@
         android:layout_height="match_parent"
         android:layout_below="@id/card_search"
         android:layout_margin="4dp"
-        android:visibility="gone"
+        android:visibility="visible"
         card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="2dp">
 
         <ListView
             android:id="@+id/listContainer"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="#fff"
-            android:clipToPadding="false"
-            android:divider="#fff"
-            android:paddingTop="56dp" />
+            android:divider="#767676"
+            android:dividerHeight="1dp"
+            />
 
         <LinearLayout
             android:id="@+id/nav_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <Button
                 android:id="@+id/lastPage"
