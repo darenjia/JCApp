@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -82,6 +83,17 @@ public class UpLoadChirldFragment extends BaseFragment {
                 }
             }
         });
+        if (finished) {
+            listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    ProjectPlan plan = projectPlans.get(position);
+                    plan.setAq_jctz_zt("等待上传");
+                    DataUtil.changeProjectState(plan);
+                    return true;
+                }
+            });
+        }
     }
 
     class ListAdapter extends BaseAdapter {

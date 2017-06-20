@@ -195,7 +195,7 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
                 }
                 intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 String picName = imagePath + getDateTime()
-                        + ".png";
+                        + ".jpg";
                 image = new File(path, picName);
                 creatFile(image);
                 startAction(intent, image, REQUESR_CODE_TAKEPHOTO);

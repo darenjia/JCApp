@@ -75,6 +75,8 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
             @Override
             public void onRefresh() {
                 refreshLayout.setRefreshing(true);
+                projectPlans.clear();
+                projectPlans.addAll(DataUtil.queryProjectPlan("上传完成"));
                 getDateFromNet();
             }
         });

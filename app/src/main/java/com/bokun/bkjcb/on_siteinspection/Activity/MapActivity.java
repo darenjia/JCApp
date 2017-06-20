@@ -54,7 +54,6 @@ import com.amap.api.maps2d.overlay.WalkRouteOverlay;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
-import com.amap.api.services.core.SuggestionCity;
 import com.amap.api.services.help.Inputtips;
 import com.amap.api.services.help.InputtipsQuery;
 import com.amap.api.services.help.Tip;
@@ -281,6 +280,12 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager manager = ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE));
+                boolean isOpen = manager.isActive();
+                if (isOpen) {
+                    LogUtil.logI("收起输入法");
+                    manager.hideSoftInputFromWindow(edit_text_search.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                }
                 finish();
             }
         });
@@ -897,9 +902,10 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
                     PoiResult poiResult = result;
                     // 取得搜索到的poiitems有多少页
                     poiItems = poiResult.getPois();// 取得第一页的poiitem数据，页数从数字0开始
-                    List<SuggestionCity> suggestionCities = poiResult
+                    Toast.makeText(this, "查询到" + poiItems.size() + "条记录", Toast.LENGTH_SHORT).show();
+                  /*  List<SuggestionCity> suggestionCities = poiResult
                             .getSearchSuggestionCitys();// 当搜索不到poiitem数据时，会返回含有搜索关键字的城市信息
-
+*/
                     if (poiItems != null && poiItems.size() > 0) {
                         LogUtil.logI("mItem" + mItem);
                         for (int i = 0; i < poiItems.size(); i++) {
@@ -921,14 +927,20 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
                         poiOverlay.removeFromMap();
                         poiOverlay.addToMap();
                         poiOverlay.zoomToSpan();
-                    } else if (suggestionCities != null
+                    } /*else if (suggestionCities != null
                             && suggestionCities.size() > 0) {
 //                        showSuggestCity(suggestionCities);
-                    } else {
-
+                    } */ else {
+                        //清理之前搜索结果的marker
+                        if (poiOverlay != null) {
+                            poiOverlay.removeFromMap();
+                        }
+                        aMap.clear();// 清理之前的图标
                     }
                 }
             } else {
+                aMap.clear();// 清理之前的图标
+                Toast.makeText(this, "未查询到相关地点！", Toast.LENGTH_SHORT).show();
             }
             marker_progress.setVisibility(View.GONE);
 //            resultAdapter.notifyDataSetChanged();
@@ -943,6 +955,8 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
 //                listContainer.setVisibility(View.GONE);
             }
         } else {
+            aMap.clear();// 清理之前的图标
+            Toast.makeText(this, "查询失败！", Toast.LENGTH_SHORT).show();
         }
     }
 

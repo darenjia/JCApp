@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#4894ec</color>
+    <color name="colorPrimaryDark">#2b5981</color>
     <color name="colorAccent">#6db2e7</color>
-    <color name="colorLogin">#3c79a7</color>
+    <color name="colorLogin">#4c94ca</color>
     <color name="colorNone">#00ffffff</color>
     <color name="colorGray">#bcb8b8</color>
     <color name="colorRecycler">#31b5f7</color>
@@ -29,8 +29,10 @@
 
     <color name="gay_progress">#9e9e9e</color>
     <color name="blue">#0099ff</color>
+    <color name="blue_low">#50afe6</color>
     <color name="accent">#BDBDBD</color>
     <color name="text_color">#6D6D6D</color>
     <color name="white">#FEFEFE</color>
     <color name="white_off">#BDBDBD</color>
+    <color name="black">#000000</color>
 </resources>

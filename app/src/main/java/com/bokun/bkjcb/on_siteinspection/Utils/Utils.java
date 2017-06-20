@@ -170,6 +170,7 @@ public class Utils {
                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 window.setStatusBarColor(Color.TRANSPARENT);
+//                window.setStatusBarColor(activity.getResources().getColor(R.color.blue));
                 window.setNavigationBarColor(Color.TRANSPARENT);
             }
         }

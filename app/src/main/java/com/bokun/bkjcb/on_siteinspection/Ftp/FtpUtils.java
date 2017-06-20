@@ -130,6 +130,8 @@ public class FtpUtils {
                             singleFile);
                 }
             }
+            //回到上一级目录
+            ftpClient.changeToParentDirectory();
 
         }
 

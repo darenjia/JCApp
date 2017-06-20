@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
-    android:background="@drawable/side_nav_bar"
+    android:background="@drawable/nav_bg"
     android:gravity="bottom"
     android:orientation="vertical"
     android:paddingBottom="@dimen/small_size"
@@ -36,6 +36,7 @@
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
-        android:text="" />
+        android:text=""
+        android:textColor="@color/white"/>
 
 </LinearLayout>

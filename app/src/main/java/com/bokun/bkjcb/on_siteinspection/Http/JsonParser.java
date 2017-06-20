@@ -104,8 +104,16 @@ public class JsonParser {
                 } catch (Exception e) {
                     checkPlan.setType("");
                 }
-                checkPlan.setName(con.getString("ScJbGcmc"));
-                checkPlan.setQuxian(con.getString("SysQuXian"));
+                try {
+                    checkPlan.setName(con.getString("ScJbGcmc"));
+                } catch (JSONException e) {
+                    checkPlan.setName("");
+                }
+                try {
+                    checkPlan.setQuxian(con.getString("SysQuXian"));
+                } catch (JSONException e) {
+                    checkPlan.setQuxian("");
+                }
                 results.add(checkPlan);
             }
         } catch (Exception e) {

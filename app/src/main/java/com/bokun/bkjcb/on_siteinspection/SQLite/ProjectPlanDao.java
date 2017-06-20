@@ -50,6 +50,7 @@ public class ProjectPlanDao {
             result.setAq_jctz_zt(cursor.getString(cursor.getColumnIndex("aq_jctz_zt")));
             result.setAq_sysid(cursor.getString(cursor.getColumnIndex("aq_sysid")));
             result.setAq_lh_seqid(cursor.getInt(cursor.getColumnIndex("aq_lh_seqid")));
+            result.setAq_lh_qxjd(cursor.getString(cursor.getColumnIndex("aq_lh_qxjd")));
             list.add(result);
         }
         return list;
@@ -79,6 +80,8 @@ public class ProjectPlanDao {
             result.setAq_lh_jcmc(cursor.getString(cursor.getColumnIndex("aq_lh_jcmc")));
             result.setAq_jctz_zt(cursor.getString(cursor.getColumnIndex("aq_jctz_zt")));
             result.setAq_sysid(cursor.getString(cursor.getColumnIndex("aq_sysid")));
+            result.setAq_lh_qxjd(cursor.getString(cursor.getColumnIndex("aq_lh_qxjd")));
+            result.setAq_lh_jcrq(cursor.getString(cursor.getColumnIndex("aq_lh_jcrq")));
             list.add(result);
         }
         return list;

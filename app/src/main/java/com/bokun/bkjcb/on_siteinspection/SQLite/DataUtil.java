@@ -204,13 +204,13 @@ public class DataUtil {
     public static boolean changeProjectState(ProjectPlan plan) {
         boolean flag = false;
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
-        CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(JCApplication.getContext());
+//        CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(JCApplication.getContext());
         dao.update(plan.getAq_lh_id(), plan.getAq_jctz_zt());
-        String[] ids = plan.getAq_sysid().split(",");
+       /* String[] ids = plan.getAq_sysid().split(",");
         for (String id : ids) {
             flag = daolmpl.updateCheckPlanState(id, 3);
         }
-        daolmpl.colseDateBase();
+        daolmpl.colseDateBase();*/
         dao.close();
         return flag;
     }
