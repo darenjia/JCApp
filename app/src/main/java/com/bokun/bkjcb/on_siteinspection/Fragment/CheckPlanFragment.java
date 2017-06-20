@@ -100,7 +100,6 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     @Override
     protected void getDataSucceed(JsonResult object) {
         errorView.setVisibility(View.GONE);
-        //new LodingAsyncTask().execute();
         LogUtil.logI("获取数据成功");
         setExpandableListView();
     }
@@ -140,7 +139,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         JsonResult result = null;
         if (object != null) {
             result = JsonParser.parseSoap((SoapObject) object);
-            if (projectPlans == null || projectPlans.size() == 0) {
+            if (projectPlans == null) {//|| projectPlans.size() == 0
                 projectPlans = JsonParser.getProjectData(result.resData);
                 /*有个问题，如果返回数据的SysId发生变化，则此方法要改*/
                 DataUtil.saveProjectPlan(projectPlans);

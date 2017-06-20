@@ -63,6 +63,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
             plan.setIdentifier(cursor.getInt(cursor.getColumnIndex("identifier")));
             plan.setName(cursor.getString(cursor.getColumnIndex("name")));
             plan.setState(cursor.getInt(cursor.getColumnIndex("state")));
+            plan.setSysId(cursor.getInt(cursor.getColumnIndex("sysId")));
         }
         cursor.close();
         //LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
@@ -78,6 +79,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
             plan.setIdentifier(cursor.getInt(cursor.getColumnIndex("identifier")));
             plan.setName(cursor.getString(cursor.getColumnIndex("name")));
             plan.setState(cursor.getInt(cursor.getColumnIndex("state")));
+            plan.setSysId(cursor.getInt(cursor.getColumnIndex("sysId")));
            /* values.put("sysId", plan.getSysId());
             values.put("name", plan.getName());
             values.put("state", plan.getState());

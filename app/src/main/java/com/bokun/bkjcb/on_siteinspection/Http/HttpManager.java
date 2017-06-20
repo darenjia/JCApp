@@ -183,6 +183,7 @@ public class HttpManager implements Runnable {
             envelope.setOutputSoapObject(rpc);
             // 使用 call 方法调用 WebService 方法
             ht.call(null, envelope);
+//            ht.call(null, null);
             // 获取返回结果
             SoapObject result = (SoapObject) envelope.bodyIn;
            /* // 使用 getResponse 方法获得 WebService 方法的返回结果
@@ -194,6 +195,7 @@ public class HttpManager implements Runnable {
                 listener.action(RequestListener.EVENT_GET_DATA_SUCCESS, result);
             } else {
                 ht.call(null, envelope);
+//                ht.call(null, null);
                 result = (SoapObject) envelope.bodyIn;
                 listener.action(RequestListener.EVENT_GET_DATA_SUCCESS, result);
             }

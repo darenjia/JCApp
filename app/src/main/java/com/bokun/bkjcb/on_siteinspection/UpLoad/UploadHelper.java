@@ -24,10 +24,8 @@ import com.google.gson.JsonElement;
 
 import org.ksoap2.serialization.SoapObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by DengShuai on 2017/4/19.
@@ -64,7 +62,7 @@ public class UploadHelper {
     private ArrayList<String> remotePaths;
     private String projectId;
     private ArrayList<UpLoadTask> tasks;
-    private List<File> files;
+//    private List<File> files;
     private long fileSize;
     private long uploadSize;
     private ProgressListener listener;
@@ -97,12 +95,12 @@ public class UploadHelper {
         remotePaths = new ArrayList<>();
         LogUtil.logI(projectPlan.getAq_lh_jcmc() + " 任务开始");
         String s = projectPlan.getAq_sysid();
-        projectId = projectPlan.getAq_lh_id();
+        projectId = String.valueOf(projectPlan.getAq_lh_seqid());
         String[] strings = s.split(",");
         for (String str : strings) {
             FinishedPlan plan = DataUtil.getFinishedPlan(str);
             CheckPlan checkPlan = DataUtil.queryCheckPlan(context, plan.getSysGcxxdjh());
-            remotePaths.add(String.valueOf(checkPlan.getIdentifier()));
+            remotePaths.add(String.valueOf(checkPlan.getSysId()));
             results = DataUtil.readData(context, checkPlan.getIdentifier());
             resultList.add(results);
             Gson gson = new Gson();
@@ -143,7 +141,7 @@ public class UploadHelper {
             public void action(int i, Object object) {
                 JsonResult result = JsonParser.parseSoap((SoapObject) object);
                 if (result.success) {
-                  /*  jsons.remove(0);
+                 /* jsons.remove(0);
                     listener.onUpdate(jsons.size(), finishedPlans.size(), true);
                     sendData(jsons.get(0));
                     return;*/
@@ -162,7 +160,7 @@ public class UploadHelper {
     private void prePareFile() {
         //tasks = new ArrayList<>();
         pathMap = new HashMap<>();
-        files = new ArrayList<>();
+//        files = new ArrayList<>();
         ArrayList<CheckResult> list = resultList.get(flag);
         for (CheckResult result : list) {
             paths = new ArrayList<>();
@@ -179,11 +177,11 @@ public class UploadHelper {
                 pathMap.put(result.getNum(), paths);
             }
         }
-        for (int i = 0; i < paths.size(); i++) {
+       /* for (int i = 0; i < paths.size(); i++) {
             File file = new File(paths.get(i));
             files.add(file);
             fileSize += file.length();
-        }
+        }*/
 
     }
 
@@ -195,34 +193,12 @@ public class UploadHelper {
             sendData();
             return;
         }
-        String path = "UploadFlie/" + projectId + "/" + remotePaths.get(flag);
-       /* for (int i = 0; i < paths.size(); i++) {
-            String path = paths.get(i);
-            File file = new File(path);
-            if (file.length() == 0) {
-                continue;
-            }
-            URL url = null;
-            try {
-                url = new URL("");
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            UpLoadTask task = new UpLoadTask(file, url, new UpLoadTask.OnTaskFinished() {
-                @Override
-                public void finished(UpLoadTask task) {
-                    tasks.remove(task);
-                    uploadSize += task.getSize();
-                    listener.onUpdate(uploadSize, fileSize, manager.getIsFinishedAll());
-                    LogUtil.logI("上传文件大小" + uploadSize);
-                }
-            });
-            tasks.add(task);
-            manager.addTask(task);
-        }*/
+        String path = "downpdf/" + projectId + "/" + remotePaths.get(flag);
+
         task = new FtpUploadTask(pathMap, path, new OnFinishedListener() {
             @Override
             public void finish() {
+                // listener.onUpdate((flag + 1), size, true);
                 flag++;
                 sendData();
             }
@@ -238,7 +214,6 @@ public class UploadHelper {
             }
         });
         task.execute();
-
     }
 
     public void pauseTask() {

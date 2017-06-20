@@ -105,6 +105,12 @@ public class DataUtil {
         dao.close();
         return plans;
     }
+    public static ProjectPlan queryProjectPlanById(String id) {
+        ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
+        ProjectPlan plan = dao.queryById(id);
+        dao.close();
+        return plan;
+    }
 
     public static ArrayList<CheckPlan> queryCheckPlanFinished(Context context) {
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);

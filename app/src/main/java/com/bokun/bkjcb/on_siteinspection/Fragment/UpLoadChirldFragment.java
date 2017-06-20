@@ -30,6 +30,7 @@ import java.util.ArrayList;
 
 public class UpLoadChirldFragment extends BaseFragment {
 
+    private final String serviceName = "com.bokun.bkjcb.on_siteinspection.Service.UploadService";
     private ListView listView;
     private LinearLayout layout;
     private ListAdapter adapter;
@@ -178,10 +179,11 @@ public class UpLoadChirldFragment extends BaseFragment {
 
     private void startUpload(ProjectPlan plan) {
         util = NotificationUtil.newInstance();
+
         Intent intent = new Intent();
         intent.setAction("android.intent.action.STARTUPLOAD");//你定义的service的action
         intent.setPackage(getContext().getPackageName());
-        intent.putExtra("plan", plan);
+        intent.putExtra("plan", plan.getAq_lh_id());
         getContext().startService(intent);
         openBroadCast();
     }
@@ -190,7 +192,7 @@ public class UpLoadChirldFragment extends BaseFragment {
         Intent intent = new Intent();
         intent.setAction("android.intent.action.STARTUPLOAD");//你定义的service的action
         intent.setPackage(getContext().getPackageName());
-        if (ServiceUtil.isServiceRunning("com.bokun.bkjcb.on_siteinspection.Service.UploadService")) {
+        if (ServiceUtil.isServiceRunning(serviceName)) {
             getContext().stopService(intent);
         }
     }
@@ -261,16 +263,18 @@ public class UpLoadChirldFragment extends BaseFragment {
                 }
                 progress.setText(flag + "%");
                 if (flag == 100) {
-                    ProjectPlan projectPlan = projectPlans.get(0);
-                    projectPlan.setAq_jctz_zt("上传完成");
-                    DataUtil.changeProjectState(projectPlan);
-                    projectPlans.remove(0);
-                    task = null;
-                    LogUtil.logI("上传完成" + projectPlan.getAq_lh_jcmc());
-                    adapter.notifyDataSetChanged();
-                    util.Notify(++count, flag);
-                    Toast.makeText(context, "上传成功", Toast.LENGTH_SHORT).show();
-                    listener.onDateChange();
+                    if (projectPlans.size() > 0) {
+                        ProjectPlan projectPlan = projectPlans.get(0);
+                        projectPlan.setAq_jctz_zt("上传完成");
+                        DataUtil.changeProjectState(projectPlan);
+                        projectPlans.remove(0);
+                        task = null;
+                        LogUtil.logI("上传完成" + projectPlan.getAq_lh_jcmc());
+                        adapter.notifyDataSetChanged();
+                        util.Notify(++count, flag);
+                        Toast.makeText(context, "上传成功", Toast.LENGTH_SHORT).show();
+                        listener.onDateChange();
+                    }
                 }
             }
         };

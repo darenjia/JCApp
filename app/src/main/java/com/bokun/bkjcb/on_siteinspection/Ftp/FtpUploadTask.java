@@ -43,7 +43,7 @@ public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
                 int result = 0;
 
                 @Override
-                public void onUploadProgress(String currentStep, long uploadSize, File file) {
+                public void onUploadProgress(String currentStep, long uploadSize, long size, File file) {
                     LogUtil.logI("onUploadProgress: " + currentStep);
                     if (currentStep.equals(Constants.FTP_CONNECT_FAIL)) {
                         //连接失败，取消任务
@@ -57,7 +57,9 @@ public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
                         LogUtil.logI("onUploadProgress: " + "FTP_CONNECT_FAIL");
                     } else {
                         if (currentStep.equals(Constants.FTP_UPLOAD_SUCCESS)) {
-                            result = 100;
+                            if (uploadSize == size) {
+                                result = 100;
+                            }
                         } else if (currentStep.equals(Constants.FTP_UPLOAD_LOADING)) {
                             long fize = file.length();
                             float num = (float) uploadSize / (float) fize;
@@ -78,6 +80,7 @@ public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            finishedListener.failed();
         } finally {
             if (fileUploadFailList != null && fileUploadFailList.size() > 0) {
                 //处理上传失败
@@ -105,7 +108,7 @@ public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
         super.onProgressUpdate(values);
         LogUtil.logI("onProgressUpdate: " + values[0]);
         if (values[0] == 100) {
-            finishedListener.updateProgress();
+            //finishedListener.updateProgress();
         }
         if (isCancelled()) {
             LogUtil.logI("onProgressUpdate: " + "isCancelled");
@@ -129,6 +132,7 @@ public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
             mUploadPicAsyncTask = null;
         }
         if (finishedListener != null) {
+            finishedListener.updateProgress();
             finishedListener.finish();
         }
     }

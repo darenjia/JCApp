@@ -86,11 +86,19 @@ public class JsonParser {
                 try {
                     checkPlan.setSysId(con.getInt("SysId"));
                 } catch (JSONException e) {
-                    continue;
+                    checkPlan.setSysId(0);
                 }
 
-                checkPlan.setAddress(con.getString("ScJbGcdz"));
-                checkPlan.setArea(con.getString("ScXzJzmj"));
+                try {
+                    checkPlan.setAddress(con.getString("ScJbGcdz"));
+                } catch (JSONException e) {
+                    checkPlan.setAddress("");
+                }
+                try {
+                    checkPlan.setArea(con.getString("ScXzJzmj"));
+                } catch (JSONException e) {
+                    checkPlan.setArea("");
+                }
                 try {
                     checkPlan.setType(con.getString("SysSsmc"));
                 } catch (Exception e) {

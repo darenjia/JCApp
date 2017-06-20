@@ -63,7 +63,7 @@ public class ProgressInputStream extends InputStream {
     private long maybeUpdateDisplay(long progress, long lastUpdate) {
         if (progress - lastUpdate > TEN_KILOBYTES) {
             lastUpdate = progress;
-            this.listener.onUploadProgress(Constants.FTP_UPLOAD_LOADING, progress, this.localFile);
+            this.listener.onUploadProgress(Constants.FTP_UPLOAD_LOADING, progress, 0, this.localFile);
         }
         return lastUpdate;
     }

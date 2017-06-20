@@ -1,5 +1,7 @@
 package com.bokun.bkjcb.on_siteinspection.Ftp;
 
+import android.util.Log;
+
 import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 
@@ -59,10 +61,10 @@ public class FtpUtils {
         boolean flag;
         flag = uploadingSingle(singleFile, listener);
         if (flag) {
-            listener.onUploadProgress(Constants.FTP_UPLOAD_SUCCESS, 0,
+            listener.onUploadProgress(Constants.FTP_UPLOAD_SUCCESS, 0, 0,
                     singleFile);
         } else {
-            listener.onUploadProgress(Constants.FTP_UPLOAD_FAIL, 0,
+            listener.onUploadProgress(Constants.FTP_UPLOAD_FAIL, 0, 0,
                     singleFile);
         }
 
@@ -84,11 +86,14 @@ public class FtpUtils {
         this.uploadBeforeOperate(remotePath, listener);
         String childPath;
         boolean flag;
+        long currentSize = 0;
+        long size = 0;
         Iterator iter = pathMap.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
             int key = (int) entry.getKey();
             ArrayList<String> val = (ArrayList<String>) entry.getValue();
+            size += val.size();
             childPath = "" + key;
             LogUtil.logI(remotePath);
             // FTP下创建文件夹
@@ -101,27 +106,31 @@ public class FtpUtils {
                     continue;
                 }
                 try {
-                    deleteSingleFile(remotePath, singleFile.getName(), new DeleteFileProgressListener() {
+                    int reUpload = deleteSingleFile(null, singleFile, new DeleteFileProgressListener() {
                         @Override
                         public void onDeleteProgress(String currentStep) {
                             LogUtil.logI("删除文件" + currentStep);
                         }
                     });
+                    if (reUpload == 1) {
+                        continue;
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    listener.onUploadProgress(Constants.FTP_UPLOAD_FAIL, 0,
+                    listener.onUploadProgress(Constants.FTP_UPLOAD_FAIL, 0, 0,
                             singleFile);
                 }
                 flag = uploadingSingle(singleFile, listener);
                 if (flag) {
-                    listener.onUploadProgress(Constants.FTP_UPLOAD_SUCCESS, 0,
-                            singleFile);
-                    ftpClient.changeToParentDirectory();
+                    listener.onUploadProgress(Constants.FTP_UPLOAD_SUCCESS, ++currentSize, size,
+                            null);
+                    //ftpClient.changeToParentDirectory();
                 } else {
-                    listener.onUploadProgress(Constants.FTP_UPLOAD_FAIL, 0,
+                    listener.onUploadProgress(Constants.FTP_UPLOAD_FAIL, 0, 0,
                             singleFile);
                 }
             }
+
         }
 
 
@@ -172,10 +181,10 @@ public class FtpUtils {
         try {
             this.openConnect();
             listener.onUploadProgress(Constants.FTP_CONNECT_SUCCESSS, 0,
-                    null);
+                    0, null);
         } catch (IOException e1) {
             e1.printStackTrace();
-            listener.onUploadProgress(Constants.FTP_CONNECT_FAIL, 0, null);
+            listener.onUploadProgress(Constants.FTP_CONNECT_FAIL, 0, 0, null);
             return;
         }
 
@@ -197,7 +206,7 @@ public class FtpUtils {
     private void uploadAfterOperate(UploadProgressListener listener)
             throws IOException {
         this.closeConnect();
-        listener.onUploadProgress(Constants.FTP_DISCONNECT_SUCCESS, 0, null);
+        listener.onUploadProgress(Constants.FTP_DISCONNECT_SUCCESS, 0, 0, null);
     }
 
     // -------------------------------------------------------文件下载方法------------------------------------------------
@@ -297,7 +306,7 @@ public class FtpUtils {
      * @param listener   监听器
      * @throws IOException
      */
-    public void deleteSingleFile(String serverPath, String fileName, DeleteFileProgressListener listener)
+    public int deleteSingleFile(String serverPath, File f, DeleteFileProgressListener listener)
             throws Exception {
 
         // 打开FTP服务
@@ -311,24 +320,27 @@ public class FtpUtils {
         }
 */
         // 先判断服务器文件是否存在
-        FTPFile[] files = ftpClient.listFiles(serverPath);
+        FTPFile[] files = ftpClient.listFiles();
         if (files.length == 0) {
             listener.onDeleteProgress(Constants.FTP_FILE_NOTEXISTS);
-            return;
+            return 0;
         }
 
         //进行删除操作
+        FTPFile ftpFile = null;
         boolean flag = true;
         for (FTPFile file : files) {
             LogUtil.logI("ftp文件name" + file.getName());
-            if (file.getName().equals(fileName)) {
+            if (file.getName().equals(f.getName())) {
+                ftpFile = file;
                 break;
-            } else {
-                return;
             }
         }
-        LogUtil.logI(serverPath + "/" + fileName);
-        flag = ftpClient.deleteFile(serverPath + "/" + fileName);
+        LogUtil.logI(serverPath + "/" + f.getName());
+        if (ftpFile != null && ftpFile.getSize() == getFileSize(f)) {
+            return 1;
+        }
+        flag = ftpClient.deleteFile(serverPath + "/" + f.getName());
         if (flag) {
             listener.onDeleteProgress(Constants.FTP_DELETEFILE_SUCCESS);
         } else {
@@ -339,7 +351,7 @@ public class FtpUtils {
       /*  this.closeConnect();
         listener.onDeleteProgress(Constants.FTP_DISCONNECT_SUCCESS);*/
 
-        return;
+        return 0;
     }
 
     // -------------------------------------------------------打开关闭连接------------------------------------------------
@@ -455,7 +467,7 @@ public class FtpUtils {
      * 上传进度监听
      */
     public interface UploadProgressListener {
-        public void onUploadProgress(String currentStep, long uploadSize, File file);
+        public void onUploadProgress(String currentStep, long uploadSize, long size, File file);
     }
 
     /*
@@ -470,5 +482,25 @@ public class FtpUtils {
      */
     public interface DeleteFileProgressListener {
         public void onDeleteProgress(String currentStep);
+    }
+
+    /**
+     * 获取指定文件大小
+     *
+     * @param file
+     * @return s
+     * @throws Exception
+     */
+    public static long getFileSize(File file) throws Exception {
+        long size = 0;
+        if (file.exists()) {
+            FileInputStream fis = null;
+            fis = new FileInputStream(file);
+            size = fis.available();
+        } else {
+            file.createNewFile();
+            Log.e("获取文件大小", "文件不存在!");
+        }
+        return size;
     }
 }
