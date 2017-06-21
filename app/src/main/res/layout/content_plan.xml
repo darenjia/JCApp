@@ -23,6 +23,14 @@
                 android:background="@drawable/error_bg"
                 android:visibility="gone" />
 
+            <TextView
+                android:id="@+id/null_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="暂无检查计划，下拉刷新试一试"
+                android:visibility="gone" />
+
             <ExpandableListView
                 android:id="@+id/plan_list"
                 android:layout_width="match_parent"

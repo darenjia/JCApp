@@ -72,6 +72,9 @@ public class JsonParser {
     public static ArrayList<CheckPlan> getJSONData(String json) {
         LogUtil.logI(json);
         ArrayList<CheckPlan> results = new ArrayList<>();
+        if (json.equals("{}")) {
+            return results;
+        }
         try {
             //将JSON的String 转成一个JsonArray对象
             JSONArray jsonArray = new JSONArray(json);
@@ -126,6 +129,9 @@ public class JsonParser {
     public static ArrayList<ProjectPlan> getProjectData(String json) {
         LogUtil.logI(json);
         ArrayList<ProjectPlan> results = new ArrayList<>();
+        if (json.equals("{}")) {
+            return results;
+        }
         //将JSON的String 转成一个JsonArray对象
         com.google.gson.JsonParser parser = new com.google.gson.JsonParser();
         JsonArray array = parser.parse(json).getAsJsonArray();
@@ -146,6 +152,7 @@ public class JsonParser {
             JSONObject jsonObject = new JSONObject(json);
             result.quxian = jsonObject.getString("quxian");
             result.roles = jsonObject.getString("roles");
+            result.username = jsonObject.getString("sys_realname");
         } catch (JSONException e) {
             e.printStackTrace();
         }

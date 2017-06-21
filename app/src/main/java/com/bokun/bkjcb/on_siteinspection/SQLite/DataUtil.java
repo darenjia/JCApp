@@ -114,6 +114,13 @@ public class DataUtil {
         return plans;
     }
 
+    public static ArrayList<ProjectPlan> queryProjectPlan(String state, String quxian) {
+        ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
+        ArrayList<ProjectPlan> plans = dao.queryNo(state, quxian);
+        dao.close();
+        return plans;
+    }
+
     public static ProjectPlan queryProjectPlanById(String id) {
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
         ProjectPlan plan = dao.queryById(id);
@@ -167,7 +174,9 @@ public class DataUtil {
         CheckPlan plan;
         for (String id : ids) {
             plan = daolmpl.queryCheckPlan(id);
-            plans.add(plan);
+            if (plan != null) {
+                plans.add(plan);
+            }
         }
         daolmpl.colseDateBase();
         return plans;

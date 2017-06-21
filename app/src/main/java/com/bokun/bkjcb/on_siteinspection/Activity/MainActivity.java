@@ -26,10 +26,10 @@ import com.bokun.bkjcb.on_siteinspection.Fragment.MapFragment;
 import com.bokun.bkjcb.on_siteinspection.Fragment.SearchFragment;
 import com.bokun.bkjcb.on_siteinspection.Fragment.UpLoadFragment;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
+import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.Utils.AppManager;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
-import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -122,8 +122,9 @@ public class MainActivity extends BaseActivity
     @Override
     protected void loadData() {
         user = JsonParser.getUserInfo(getIntent().getStringExtra("quxian"));
+        JCApplication.user = user;
         userMessage.setText("区县:" + user.quxian);
-        userName.setText(Utils.getUserName());
+        userName.setText(user.username);
         loadView("检查计划", "first");
     }
 

@@ -26,6 +26,7 @@ import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.CacheUitl;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
+import com.bokun.bkjcb.on_siteinspection.Utils.MD5Util;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 import com.bokun.bkjcb.on_siteinspection.View.ConstructionDetailView;
 
@@ -49,8 +50,9 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     public static int DATA_CHANGED = 1;
     public static int DATA_UNCHANGED = 0;
     private CacheUitl cacheUitl;
-    private final String key = "sad1ee213124c1";
+    private String key = "sad1ee213124c1";
     private TextView errorView;
+    private TextView nullView;
 
     @Nullable
     @Override
@@ -66,6 +68,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         listview = (ExpandableListView) view.findViewById(R.id.plan_list);
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorRecycler));
         errorView = (TextView) view.findViewById(R.id.error_view);
+        nullView = (TextView) view.findViewById(R.id.null_view);
         //HttpRequestVo requestVo = new HttpRequestVo(Constants.GetXxclScURL, Constants.GetXxclSc.replace("quxian", MainActivity.quxian));
         //OkHttpManager manager = new OkHttpManager(context, this, requestVo);
         getDateFromNet();
@@ -75,8 +78,10 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
             @Override
             public void onRefresh() {
                 refreshLayout.setRefreshing(true);
-                projectPlans.clear();
-                projectPlans.addAll(DataUtil.queryProjectPlan("上传完成"));
+                if (projectPlans != null) {
+                    projectPlans.clear();
+                    projectPlans.addAll(DataUtil.queryProjectPlan("上传完成", MainActivity.user.quxian));
+                }
                 getDateFromNet();
             }
         });
@@ -92,8 +97,22 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     }
 
     private void getCheckPlanFromNet() {
+        StringBuilder sysIds = new StringBuilder();
+        if (projectPlans != null && projectPlans.size() > 0) {
+            for (int i = 0; i < projectPlans.size(); i++) {
+                String ids = projectPlans.get(i).getAq_sysid();
+                if (ids != null && !ids.equals("")) {
+                    sysIds.append(ids);
+                }
+                if (i < projectPlans.size() - 1) {
+                    sysIds.append(",");
+                }
+            }
+        }
+        key = MD5Util.encode(sysIds.toString());
         HttpRequestVo requestVo = new HttpRequestVo();
         requestVo.getRequestDataMap().put("quxian", MainActivity.user.quxian);
+        requestVo.getRequestDataMap().put("sysids", sysIds.toString());
         requestVo.setMethodName("GetXxclSc");
         HttpManager manager = new HttpManager(context, this, requestVo);
         manager.postRequest();
@@ -115,6 +134,12 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     }
 
     private void setExpandableListView() {
+        if (projectPlans.size() == 0) {
+            nullView.setVisibility(View.VISIBLE);
+            return;
+        } else {
+            nullView.setVisibility(View.GONE);
+        }
         int width = Utils.getWindowWidthOrHeight(context, "Width");
         int left = width - (width / 10);
         int right = width - (width / 10) + (width / 20);
@@ -147,7 +172,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                 DataUtil.saveProjectPlan(projectPlans);
                 projectPlans.clear();
                 //projectPlans.addAll(DataUtil.queryProjectPlan("等待上传"));
-                projectPlans.addAll(DataUtil.queryProjectPlan("上传完成"));
+                projectPlans.addAll(DataUtil.queryProjectPlan("上传完成", MainActivity.user.quxian));
                 //projectPlans.addAll(DataUtil.queryProjectPlan("需办事项"));
                 getCheckPlanFromNet();
                 return;
@@ -273,7 +298,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
     public void dateHasChange() {
         projectPlans.clear();
-        projectPlans.addAll(DataUtil.queryProjectPlan("上传完成"));
+        projectPlans.addAll(DataUtil.queryProjectPlan("上传完成", MainActivity.user.quxian));
         //projectPlans.addAll(DataUtil.queryProjectPlan("需办事项"));
         constuctions.clear();
         for (ProjectPlan plan : projectPlans) {

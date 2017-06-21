@@ -7,9 +7,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckResult;
+import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
-import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -62,7 +62,7 @@ public class LastFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        String username = Utils.getUserName();
+        String username = JCApplication.user.username;
         user.setText(username);
 
     }
