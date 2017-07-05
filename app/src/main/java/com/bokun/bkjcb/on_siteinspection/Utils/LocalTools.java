@@ -149,6 +149,20 @@ public class LocalTools {
         }
     }
 
+    public static String getImagePath(Context context, Uri uri) {
+        String path = null;
+        //通过Uri和selection老获取真实的图片路径
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            }
+            cursor.close();
+        }
+        LogUtil.logI(path);
+        return path;
+    }
+
     public static ImageView setImageView(Context context, LinearLayout.LayoutParams params, Drawable drawable, Bitmap bitmap) {
         ImageView imageView = new ImageView(context);
         imageView.setLayoutParams(params);

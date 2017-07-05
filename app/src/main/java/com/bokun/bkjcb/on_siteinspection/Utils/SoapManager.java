@@ -15,7 +15,9 @@ import java.util.Iterator;
  */
 
 public class SoapManager {
-    /** SoapObject解析对象 **/
+    /**
+     * SoapObject解析对象
+     **/
     private static SoapManager instance;
 
     /**
@@ -36,6 +38,7 @@ public class SoapManager {
 
     /**
      * the method is used to convert the soapObject to json.
+     *
      * @param soapObject
      * @return
      */
@@ -52,10 +55,11 @@ public class SoapManager {
 
     /**
      * 将SoapObject转json字符串
+     *
      * @param soapresult SoapObject
      * @param jsonResult JSONObject
      */
-    private void getSoapresult(SoapObject soapresult, JSONObject jsonResult, HashSet<String> hashset){
+    private void getSoapresult(SoapObject soapresult, JSONObject jsonResult, HashSet<String> hashset) {
         try {
             if (soapresult != null) {
                 PropertyInfo proinfo = null;
@@ -64,7 +68,7 @@ public class SoapManager {
                 String curName = null;
 
                 int count = soapresult.getPropertyCount();
-                for(int i=0; i<count ;i++){
+                for (int i = 0; i < count; i++) {
                     //获取当前节点的信息
                     proinfo = new PropertyInfo();
                     soapresult.getPropertyInfo(i, proinfo);
@@ -72,20 +76,20 @@ public class SoapManager {
                     curName = proinfo.getName();
 
                     //判断当前节点的类型，如果是SoapPrimitive则可以直接取值，如果是SoapObject则继续解析
-                    if(SoapPrimitive.class == proinfo.getType()){
+                    if (SoapPrimitive.class == proinfo.getType()) {
                         jsonResult.put(curName, proinfo.getValue());
-                    }else if(SoapObject.class == proinfo.getType()){
+                    } else if (SoapObject.class == proinfo.getType()) {
 
                         childJson = new JSONObject();
                         childsoap = (SoapObject) soapresult.getProperty(i);
 
                         //判断该节点下面有相同节点，那么他就是一个数组
-                        if(isArrayNode(childsoap)){
+                        if (isArrayNode(childsoap)) {
                             hashset.add(curName);
                         }
 
                         //处理相同名字的节点，到时候好替换成JSONArray
-                        if(jsonResult.has(curName)){
+                        if (jsonResult.has(curName)) {
                             curName = curName + i;
                         }
 
@@ -93,7 +97,12 @@ public class SoapManager {
                         getSoapresult(childsoap, childJson, hashset);
 
                         //将子节点添加到根节点下面
-                        jsonResult.put(curName, childJson);
+//                        LogUtil.logI("childJSON:"+childJson.toString());
+                        if (childJson.toString().equals("{}")) {
+                            jsonResult.put(curName, "");
+                        }else {
+                            jsonResult.put(curName, childJson);
+                        }
                     }
                 }
             }
@@ -104,18 +113,19 @@ public class SoapManager {
 
     /**
      * 判断该节点下面是否有相同的节点，如果说明是数组
+     *
      * @param childsoap
      * @return
      */
-    public boolean isArrayNode(SoapObject childsoap){
+    public boolean isArrayNode(SoapObject childsoap) {
         PropertyInfo proinfo = null;
         int count = childsoap.getPropertyCount();
 
-        for(int i=0; i<count; i++){
+        for (int i = 0; i < count; i++) {
             proinfo = new PropertyInfo();
             childsoap.getPropertyInfo(i, proinfo);
-            if(SoapObject.class == proinfo.getType()){
-                if(childsoap.hasProperty(proinfo.getName())){
+            if (SoapObject.class == proinfo.getType()) {
+                if (childsoap.hasProperty(proinfo.getName())) {
                     return true;
                 }
             }
@@ -127,7 +137,7 @@ public class SoapManager {
     /**
      * 获取SoapObject中数组转化成JSONArray
      */
-    private String getSoapJsonResult(JSONObject jsonResult, HashSet<String> hashset){
+    private String getSoapJsonResult(JSONObject jsonResult, HashSet<String> hashset) {
         try {
             String key = "";
             String jsonkey = "";
@@ -136,12 +146,12 @@ public class SoapManager {
             JSONArray jsonArray = new JSONArray();
 
             Iterator<String> setIt = hashset.iterator();
-            while(setIt.hasNext()){
+            while (setIt.hasNext()) {
                 key = setIt.next().toString();
                 tempJson = (JSONObject) jsonResult.remove(key);
-                if(tempJson != null){
+                if (tempJson != null) {
                     it = tempJson.keys();
-                    while(it.hasNext()){
+                    while (it.hasNext()) {
                         jsonkey = it.next().toString();
                         jsonArray.put(tempJson.getJSONObject(jsonkey));
                     }

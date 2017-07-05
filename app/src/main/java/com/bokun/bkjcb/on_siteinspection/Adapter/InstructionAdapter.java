@@ -17,8 +17,8 @@ import com.bokun.bkjcb.on_siteinspection.View.GuidViewBuilder;
 public class InstructionAdapter extends BaseExpandableListAdapter {
 
     private Context context;
-    private String[] titles = {"检查流程说明", "关于权限说明", "数据获取失败"};
-    private String[][] contents = {{""}, {""}, {""}};
+    private String[] titles = {"检查流程说明", "关于权限说明", "数据获取失败","程序运行异常"};
+    private String[][] contents = {{""}, {""}, {""},{""}};
     private GuidViewBuilder builder;
 
     public InstructionAdapter(Context context) {

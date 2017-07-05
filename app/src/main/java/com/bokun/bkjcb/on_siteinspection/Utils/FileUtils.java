@@ -15,9 +15,9 @@ import java.util.ArrayList;
 public class FileUtils {
 
     public static String SDPATH = Environment.getExternalStorageDirectory()
-            + "/formats/";
+            + "/Bokun/formats/";
     public static String SDPATH1 = Environment.getExternalStorageDirectory()
-            + "/myimages/";
+            + "/Bokun/myimages/";
 
     public static void saveBitmap(Bitmap bm, String picName) {
         Log.e("", "保存图片");
@@ -41,19 +41,20 @@ public class FileUtils {
         }
     }
 
-    public static File createSDDir(String dirName) throws IOException {
-        File dir = new File(SDPATH + dirName);
+    public static File createSDDir(String fileName) throws IOException {
+        File dir = new File(fileName);
         if (Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
-
-            System.out.println("createSDDir:" + dir.getAbsolutePath());
-            System.out.println("createSDDir:" + dir.mkdir());
+            File parent = new File(SDPATH);
+            if (!parent.exists()){
+                parent.mkdirs();
+            }
         }
         return dir;
     }
 
     public static boolean isFileExist(String fileName) {
-        File file = new File(SDPATH + fileName);
+        File file = new File(fileName);
         return file.exists();
     }
 

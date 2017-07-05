@@ -293,7 +293,7 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
                 setImage(image.getAbsolutePath(), CAMERA_IMAGE);
                 imagePaths.add(image.getAbsolutePath());
             } else if (requestCode == REQUESR_CODE_TAKEPHOTO) {
-                LogUtil.logI("拍完进入剪裁");
+                LogUtil.logI("拍完进入剪裁" + image.length() + "size:" + image.getAbsolutePath());
                 Intent intent = new Intent("com.android.camera.action.CROP");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -304,10 +304,9 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
                 }
                 intent.putExtra("output", uri);
                 intent.putExtra("crop", "true");
-//                intent.putExtra("aspectX", 1);// 裁剪框比例
-//                intent.putExtra("aspectY", 1);
-//                intent.putExtra("outputX", 150);// 输出图片大小
-//                intent.putExtra("outputY", 150);
+//                intent.putExtra("scale", false);
+//                intent.putExtra("scaleUpIfNeeded", false);
+                intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
                 intent.putExtra("return-data", false);
                 startActivityForResult(intent, REQUESR_CODE_CROPPHOTO);
             } else if (requestCode == REQUESR_CODE_VIDEO) {
@@ -541,5 +540,6 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
         LogUtil.logI("width" + width);
         return width;
     }
+
 
 }

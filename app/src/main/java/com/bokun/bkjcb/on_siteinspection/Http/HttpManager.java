@@ -156,7 +156,6 @@ public class HttpManager implements Runnable {
      */
     private void sendPostRequest() {
         HttpTransportSE ht;
-        boolean again = true;
         try {
 
             String NAMESPACE = "http://zgzxjk/";

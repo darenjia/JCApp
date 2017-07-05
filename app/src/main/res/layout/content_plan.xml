@@ -28,7 +28,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="暂无检查计划，下拉刷新试一试"
+                android:textSize="@dimen/mid_font"
+                android:text="暂无检查计划，下拉刷新试试"
                 android:visibility="gone" />
 
             <ExpandableListView

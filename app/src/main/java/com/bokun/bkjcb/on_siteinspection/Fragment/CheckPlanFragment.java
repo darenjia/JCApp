@@ -108,14 +108,18 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                     sysIds.append(",");
                 }
             }
+            LogUtil.logI(sysIds.toString());
+            key = MD5Util.encode(sysIds.toString());
+            HttpRequestVo requestVo = new HttpRequestVo();
+            requestVo.getRequestDataMap().put("quxian", MainActivity.user.quxian);
+            requestVo.getRequestDataMap().put("sysids", sysIds.toString());
+            requestVo.setMethodName("GetXxclSc");
+            HttpManager manager = new HttpManager(context, this, requestVo);
+            manager.postRequest();
+        } else {
+            refreshLayout.setRefreshing(false);
+            nullView.setVisibility(View.VISIBLE);
         }
-        key = MD5Util.encode(sysIds.toString());
-        HttpRequestVo requestVo = new HttpRequestVo();
-        requestVo.getRequestDataMap().put("quxian", MainActivity.user.quxian);
-        requestVo.getRequestDataMap().put("sysids", sysIds.toString());
-        requestVo.setMethodName("GetXxclSc");
-        HttpManager manager = new HttpManager(context, this, requestVo);
-        manager.postRequest();
     }
 
     @Override
@@ -170,11 +174,11 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                 projectPlans = JsonParser.getProjectData(result.resData);
                 /*有个问题，如果返回数据的SysId发生变化，则此方法要改*/
                 DataUtil.saveProjectPlan(projectPlans);
+                getCheckPlanFromNet();
                 projectPlans.clear();
                 //projectPlans.addAll(DataUtil.queryProjectPlan("等待上传"));
                 projectPlans.addAll(DataUtil.queryProjectPlan("上传完成", MainActivity.user.quxian));
                 //projectPlans.addAll(DataUtil.queryProjectPlan("需办事项"));
-                getCheckPlanFromNet();
                 return;
             }
             LogUtil.logI("返回数据结果：" + result.resData);

@@ -3,6 +3,8 @@ package com.bokun.bkjcb.on_siteinspection.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -48,11 +50,9 @@ import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.Utils.Bimp;
 import com.bokun.bkjcb.on_siteinspection.Utils.FileUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.LocalTools;
-import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -389,7 +389,7 @@ public class FeedBackActivity extends AppCompatActivity implements OnItemClickLi
 
             String sdcardState = Environment.getExternalStorageState();
             String sdcardPathDir = Environment
-                    .getExternalStorageDirectory().getPath() + "/tempImage/";
+                    .getExternalStorageDirectory().getPath() + "/Bokun/tempImage";
             File file = null;
             if (Environment.MEDIA_MOUNTED.equals(sdcardState)) {
                 // 有sd卡，是否有myImage文件夹
@@ -405,7 +405,6 @@ public class FeedBackActivity extends AppCompatActivity implements OnItemClickLi
                 path = file.getPath();
                 photoUri = getPhotoUri(openCameraIntent, file);
                 openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-
                 startActivityForResult(openCameraIntent, TAKE_PICTURE);
             }
 
@@ -448,12 +447,10 @@ public class FeedBackActivity extends AppCompatActivity implements OnItemClickLi
         if (intent.resolveActivity(getPackageManager()) != null) {
             if (file != null) {
              /*获取当前系统的android版本号*/
-                LogUtil.logI("currentapiVersion====>" + currentapiVersion);
                 if (currentapiVersion < 24) {
                     uri = Uri.fromFile(file);
                 } else {
                     ContentValues contentValues = new ContentValues(1);
-
                     contentValues.put(MediaStore.Images.Media.DATA, file.getAbsolutePath());
                     uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
                 }
@@ -467,44 +464,44 @@ public class FeedBackActivity extends AppCompatActivity implements OnItemClickLi
     }
 
     private void startPhotoZoom(Uri uri) {
-        try {
-            // 获取系统时间 然后将裁剪后的图片保存至指定的文件夹
-            SimpleDateFormat sDateFormat = new SimpleDateFormat(
-                    "yyyyMMddhhmmss");
-            String address = sDateFormat.format(new java.util.Date());
-            if (!FileUtils.isFileExist("")) {
-                FileUtils.createSDDir("");
-            }
-            String path = FileUtils.SDPATH + address + ".JPEG";
-            drr.add(path);
-            File file = new File(path);
-            Uri imageUri = null;
-            final Intent intent = new Intent("com.android.camera.action.CROP");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                imageUri = FileProvider.getUriForFile(this, "com.bokun.bkjcb.on_siteinspection.fileProvider", file);
-            } else {
-                imageUri = Uri.fromFile(file);
-            }
-            intent.setDataAndType(imageUri, "image/*");
-            intent.putExtra("crop", "true");
-            intent.putExtra("aspectX", 1);
-            intent.putExtra("aspectY", 1);
-            intent.putExtra("outputX", 480);
-            intent.putExtra("outputY", 480);
-            // 输出路径
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-            // 输出格式
-            intent.putExtra("outputFormat",
-                    Bitmap.CompressFormat.JPEG.toString());
-            // 不启用人脸识别
-            intent.putExtra("noFaceDetection", false);
-            intent.putExtra("return-data", false);
-            startActivityForResult(intent, CUT_PHOTO_REQUEST_CODE);
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        // 获取系统时间 然后将裁剪后的图片保存至指定的文件夹
+        SimpleDateFormat sDateFormat = new SimpleDateFormat(
+                "yyyyMMddhhmmss");
+        String address = sDateFormat.format(new java.util.Date());
+        String path = FileUtils.SDPATH + address + ".JPEG";
+        drr.add(path);
+        File file = new File(path);
+        Uri imageUri = null;
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            imageUri = FileProvider.getUriForFile(this, "com.bokun.bkjcb.on_siteinspection.fileProvider", file);
+            List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+            for (ResolveInfo resolveInfo : resInfoList) {
+                String packageName = resolveInfo.activityInfo.packageName;
+                grantUriPermission(packageName, imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
+        } else {
+            imageUri = Uri.fromFile(file);
         }
+
+        intent.setDataAndType(uri, "image/*");
+        intent.putExtra("crop", "true");
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        intent.putExtra("outputX", 480);
+        intent.putExtra("outputY", 480);
+        // 输出路径
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        // 输出格式
+        intent.putExtra("outputFormat",
+                Bitmap.CompressFormat.JPEG.toString());
+        // 不启用人脸识别
+        intent.putExtra("noFaceDetection", true);
+        intent.putExtra("return-data", false);
+        startActivityForResult(intent, CUT_PHOTO_REQUEST_CODE);
+
     }
 
     protected void onDestroy() {
