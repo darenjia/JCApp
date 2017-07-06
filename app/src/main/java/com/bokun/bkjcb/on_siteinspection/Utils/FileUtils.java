@@ -17,7 +17,7 @@ public class FileUtils {
     public static String SDPATH = Environment.getExternalStorageDirectory()
             + "/Bokun/formats/";
     public static String SDPATH1 = Environment.getExternalStorageDirectory()
-            + "/Bokun/myimages/";
+            + "/Bokun/tempImage/";
 
     public static void saveBitmap(Bitmap bm, String picName) {
         Log.e("", "保存图片");

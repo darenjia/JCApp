@@ -3,8 +3,6 @@ package com.bokun.bkjcb.on_siteinspection.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -16,7 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -48,9 +45,11 @@ import android.widget.Toast;
 
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.Utils.Bimp;
+import com.bokun.bkjcb.on_siteinspection.Utils.CropUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.FileUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.LocalTools;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
+import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -358,11 +357,12 @@ public class FeedBackActivity extends AppCompatActivity implements OnItemClickLi
             });
             bt2.setOnClickListener(new OnClickListener() {
                 public void onClick(View v) {
-                    Intent i = new Intent(
+                    /*Intent i = new Intent(
                             // 相册
                             Intent.ACTION_PICK,
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(i, RESULT_LOAD_IMAGE);
+                    startActivityForResult(i, RESULT_LOAD_IMAGE);*/
+                    CropUtil.pickFromGallery(FeedBackActivity.this, RESULT_LOAD_IMAGE);
                     dismiss();
                 }
             });
@@ -388,8 +388,9 @@ public class FeedBackActivity extends AppCompatActivity implements OnItemClickLi
                     MediaStore.ACTION_IMAGE_CAPTURE);
 
             String sdcardState = Environment.getExternalStorageState();
-            String sdcardPathDir = Environment
-                    .getExternalStorageDirectory().getPath() + "/Bokun/tempImage";
+           /* String sdcardPathDir = Environment
+                    .getExternalStorageDirectory().getPath() + "/Bokun/tempImage/";*/
+            String sdcardPathDir = FileUtils.SDPATH1;
             File file = null;
             if (Environment.MEDIA_MOUNTED.equals(sdcardState)) {
                 // 有sd卡，是否有myImage文件夹
@@ -428,8 +429,9 @@ public class FeedBackActivity extends AppCompatActivity implements OnItemClickLi
                     }
                 }
                 break;
-            case CUT_PHOTO_REQUEST_CODE:
+            case UCrop.REQUEST_CROP:
                 if (resultCode == RESULT_OK && null != data) {// 裁剪返回
+//                    CropUtil.handleCropResult(data, new File(drr.get(drr.size() - 1)));
                     Bitmap bitmap = Bimp.getLoacalBitmap(drr.get(drr.size() - 1));
                     PhotoActivity.bitmap.add(bitmap);
                     bitmap = Bimp.createFramedPhoto(480, 480, bitmap,
@@ -472,7 +474,12 @@ public class FeedBackActivity extends AppCompatActivity implements OnItemClickLi
         String path = FileUtils.SDPATH + address + ".JPEG";
         drr.add(path);
         File file = new File(path);
-        Uri imageUri = null;
+        File fileParent = new File(FileUtils.SDPATH);
+        if (!fileParent.exists()) {
+            fileParent.mkdirs();
+        }
+        CropUtil.startCropActivity(uri, file, this);
+       /* Uri imageUri = null;
         Intent intent = new Intent("com.android.camera.action.CROP");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -486,7 +493,7 @@ public class FeedBackActivity extends AppCompatActivity implements OnItemClickLi
             imageUri = Uri.fromFile(file);
         }
 
-        intent.setDataAndType(uri, "image/*");
+        intent.setDataAndType(uri, "image*//*");
         intent.putExtra("crop", "true");
         intent.putExtra("aspectX", 1);
         intent.putExtra("aspectY", 1);
@@ -500,7 +507,7 @@ public class FeedBackActivity extends AppCompatActivity implements OnItemClickLi
         // 不启用人脸识别
         intent.putExtra("noFaceDetection", true);
         intent.putExtra("return-data", false);
-        startActivityForResult(intent, CUT_PHOTO_REQUEST_CODE);
+        startActivityForResult(intent, CUT_PHOTO_REQUEST_CODE);*/
 
     }
 

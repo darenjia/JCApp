@@ -11,14 +11,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -31,10 +29,12 @@ import android.widget.Toast;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckResult;
 import com.bokun.bkjcb.on_siteinspection.R;
+import com.bokun.bkjcb.on_siteinspection.Utils.CropUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.LocalTools;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 import com.bokun.bkjcb.on_siteinspection.View.ImagePreview;
+import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
 import java.io.IOException;
@@ -286,7 +286,7 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUESR_CODE_CROPPHOTO) {
+            if (requestCode == UCrop.REQUEST_CROP) {
 //                Bundle bundle = data.getExtras();
 //                LogUtil.logI("bitmap" + (bundle.get("data") == null));
 //                Bitmap bitmap = (Bitmap) bundle.get("data");
@@ -294,13 +294,13 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
                 imagePaths.add(image.getAbsolutePath());
             } else if (requestCode == REQUESR_CODE_TAKEPHOTO) {
                 LogUtil.logI("拍完进入剪裁" + image.length() + "size:" + image.getAbsolutePath());
-                Intent intent = new Intent("com.android.camera.action.CROP");
+              /*  Intent intent = new Intent("com.android.camera.action.CROP");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     Uri contentUri = FileProvider.getUriForFile(getContext(), "com.bokun.bkjcb.on_siteinspection.fileProvider", image);
-                    intent.setDataAndType(contentUri, "image/*");
+                    intent.setDataAndType(contentUri, "image*//*");
                 } else {
-                    intent.setDataAndType(Uri.fromFile(image), "image/*");
+                    intent.setDataAndType(Uri.fromFile(image), "image*//*");
                 }
                 intent.putExtra("output", uri);
                 intent.putExtra("crop", "true");
@@ -308,7 +308,8 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
 //                intent.putExtra("scaleUpIfNeeded", false);
                 intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
                 intent.putExtra("return-data", false);
-                startActivityForResult(intent, REQUESR_CODE_CROPPHOTO);
+                startActivityForResult(intent, REQUESR_CODE_CROPPHOTO);*/
+                CropUtil.startCropActivity(uri, image, getContext(), CheckItemFragment.this);
             } else if (requestCode == REQUESR_CODE_VIDEO) {
 //                Bitmap bitmap = (Bitmap) bundle.get("data");
 //                Bitmap bitmap = getCutBitmap(sdcardTempFile.getAbsolutePath());
