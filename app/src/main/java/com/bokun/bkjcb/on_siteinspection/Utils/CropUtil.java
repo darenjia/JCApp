@@ -38,7 +38,7 @@ public class CropUtil {
     }
 
     public static void startCropActivity(@NonNull Uri uri, File file, Activity activity) {
-
+        LogUtil.logI(file.getAbsolutePath());
         UCrop uCrop = UCrop.of(uri, Uri.fromFile(file));
         uCrop = basisConfig(uCrop, 2, null, null);
         uCrop = advancedConfig(uCrop);
@@ -46,7 +46,7 @@ public class CropUtil {
     }
 
     public static void startCropActivity(@NonNull Uri uri, File file, Context context, android.support.v4.app.Fragment fragment) {
-
+        LogUtil.logI(file.getAbsolutePath());
         UCrop uCrop = UCrop.of(uri, Uri.fromFile(file));
         uCrop = basisConfig(uCrop, 2, null, null);
         uCrop = advancedConfig(uCrop);
@@ -148,6 +148,7 @@ public class CropUtil {
 
        */
         options.setToolbarColor(ContextCompat.getColor(context, R.color.colorPrimary));
+        options.setStatusBarColor(ContextCompat.getColor(context, R.color.colorPrimary));
         return uCrop.withOptions(options);
     }
 

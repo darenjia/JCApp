@@ -52,7 +52,7 @@
     <string name="nextpage">下一页</string>
     <string name="about_kongjianjc">V1.00 地下空间检查</string>
     <string name="about_shiyongjs">使用介绍</string>
-    <string name="about_zidongsc">wifi下自动上传</string>
+    <string name="about_zidongsc">仅wifi下上传</string>
     <string name="about_qingkongjilu">清空搜索记录</string>
     <string name="about_qingchuhc">清除应用缓存</string>
     <string name="about_fankui">反馈及意见</string>

@@ -197,7 +197,7 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
                 String picName = imagePath + getDateTime()
                         + ".jpg";
                 image = new File(path, picName);
-                creatFile(image);
+                //creatFile(image);
                 startAction(intent, image, REQUESR_CODE_TAKEPHOTO);
                 break;
             case R.id.check_content_btn_audio:
@@ -205,7 +205,7 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
                 String mp3Name = audioPath + getDateTime()
                         + ".mp3";
                 audio = new File(path, mp3Name);
-                creatFile(audio);
+                //creatFile(audio);
                 startAction(intent, audio, REQUESR_CODE_RECORD);
                 break;
             case R.id.check_content_btn_video:
@@ -215,7 +215,7 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
                 vdoName = videoPath + getDateTime()
                         + ".mp4";
                 video = new File(path, vdoName);
-                creatFile(video);
+                //creatFile(video);
                 startAction(intent, video, REQUESR_CODE_VIDEO);
                 break;
             case R.id.check_content_btn_remark:
@@ -290,6 +290,7 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
 //                Bundle bundle = data.getExtras();
 //                LogUtil.logI("bitmap" + (bundle.get("data") == null));
 //                Bitmap bitmap = (Bitmap) bundle.get("data");
+                LogUtil.logI("剪裁完成");
                 setImage(image.getAbsolutePath(), CAMERA_IMAGE);
                 imagePaths.add(image.getAbsolutePath());
             } else if (requestCode == REQUESR_CODE_TAKEPHOTO) {
@@ -309,6 +310,7 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
                 intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
                 intent.putExtra("return-data", false);
                 startActivityForResult(intent, REQUESR_CODE_CROPPHOTO);*/
+                LogUtil.logI(uri.toString());
                 CropUtil.startCropActivity(uri, image, getContext(), CheckItemFragment.this);
             } else if (requestCode == REQUESR_CODE_VIDEO) {
 //                Bitmap bitmap = (Bitmap) bundle.get("data");
