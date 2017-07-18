@@ -76,7 +76,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
         SetTypeFace();
         stringAdapter = new StringAdapter(context, SearchedWordDao.all(context, 1));
         mItem = new ArrayList<>();
-        listView.setTextFilterEnabled(false);
+        listView.setTextFilterEnabled(true);
         listView.setAdapter(stringAdapter);
         InitiateSearch();
         HandleSearch();
@@ -130,7 +130,8 @@ public class SearchFragment extends MainFragment implements RequestListener {
                 String txt = s.toString().trim();
                 if (txt.length() > 0) {
                     clearSearch.setImageResource(R.mipmap.ic_close);
-                    listView.setFilterText(txt);
+//                    listView.setFilterText(txt);
+                    stringAdapter.getFilter().filter(txt);
                 } else {
                     stringAdapter.initData();
                     clearSearch.setImageResource(R.mipmap.ic_keyboard_voice);

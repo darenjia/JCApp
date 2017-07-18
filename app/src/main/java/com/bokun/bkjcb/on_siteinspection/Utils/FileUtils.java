@@ -92,12 +92,14 @@ public class FileUtils {
         return true;
     }
 
-    public static void deleteFile(final ArrayList<CheckResult> results) {
+    public static void deleteFile(ArrayList<CheckResult> results) {
+        final ArrayList<CheckResult> checkResults = new ArrayList<>();
+        checkResults.addAll(results);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 ArrayList<String> paths = new ArrayList<>();
-                for (CheckResult result : results) {
+                for (CheckResult result : checkResults) {
                     if (result.getImageUrls() != null && result.getImageUrls().size() != 0) {
                         paths.addAll(result.getImageUrls());
                     }

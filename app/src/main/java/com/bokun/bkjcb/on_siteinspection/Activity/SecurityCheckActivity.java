@@ -29,6 +29,7 @@ import com.bokun.bkjcb.on_siteinspection.Fragment.CheckPlanFragment;
 import com.bokun.bkjcb.on_siteinspection.Fragment.LastFragment;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
+import com.bokun.bkjcb.on_siteinspection.Utils.FileUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 
@@ -267,6 +268,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                 .setNeutralButton("直接退出", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        deleteGarbage();
                         finish();
                     }
                 })
@@ -297,6 +299,12 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
         }
         DataUtil.updateCheckPlanState(this, plan);
         return DataUtil.saveData(this, results);
+    }
+
+    private void deleteGarbage() {
+        if (results.size() > 0) {
+            FileUtils.deleteFile(results);
+        }
     }
 
     private class LoadTask extends AsyncTask {

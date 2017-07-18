@@ -39,12 +39,12 @@ public class ConstructionDetailView {
         return view;
     }
 
-    public View setData(CheckPlan checkPlan, View.OnClickListener listener) {
+    public View setData(CheckPlan checkPlan, boolean flag, View.OnClickListener listener) {
         this.checkPlan = checkPlan;
-        return getConstructionDetailView(listener);
+        return getConstructionDetailView(flag, listener);
     }
 
-    private View getConstructionDetailView(View.OnClickListener listener) {
+    private View getConstructionDetailView(boolean flag, View.OnClickListener listener) {
         initViews();
         mViewName.setText(checkPlan.getName());
         mViewId.setText(checkPlan.getIdentifier() + "");
@@ -54,7 +54,13 @@ public class ConstructionDetailView {
         mViewType.setText(checkPlan.getType());
         mViewManager.setText("");
         mViewUser.setText("");
-        mButtonCheck.setOnClickListener(listener);
+        if (flag) {
+            mButtonCheck.setText("当前计划暂不可检查");
+            mButtonCheck.setClickable(false);
+            mButtonCheck.setBackgroundColor(context.getResources().getColor(R.color.text_color));
+        } else {
+            mButtonCheck.setOnClickListener(listener);
+        }
         return resView;
     }
 

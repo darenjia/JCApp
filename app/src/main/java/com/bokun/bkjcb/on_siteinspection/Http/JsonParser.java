@@ -142,6 +142,7 @@ public class JsonParser {
                 continue;
             }
             results.add(projectPlan);
+            LogUtil.logI(projectPlan.getAQ_JCTZ_sfjc() + "检查状态");
         }
         return results;
     }

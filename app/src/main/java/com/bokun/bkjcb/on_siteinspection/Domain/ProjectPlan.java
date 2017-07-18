@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by DengShuai on 2017/6/2.
  */
 
-public class ProjectPlan implements Serializable{
+public class ProjectPlan implements Serializable {
     private int aq_lh_yyh;
     private int aq_lh_seqid;
     private String aq_lh_id;
@@ -21,6 +21,16 @@ public class ProjectPlan implements Serializable{
     private String aq_jctype;
     private String aq_sysid;
     private String aq_jctz_zt;
+    private int AQ_JCTZ_sfjc;
+
+    public int getAQ_JCTZ_sfjc() {
+        return AQ_JCTZ_sfjc;
+    }
+
+    public void setAQ_JCTZ_sfjc(int AQ_JCTZ_sfjc) {
+        this.AQ_JCTZ_sfjc = AQ_JCTZ_sfjc;
+    }
+
     private int state_upload = 0;//上传状态，0未开始，1等待开始,2,正在进行,3暂停,4已完成
 
     public int getAq_lh_yyh() {

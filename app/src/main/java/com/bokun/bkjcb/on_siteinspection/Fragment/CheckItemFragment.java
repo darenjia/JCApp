@@ -37,7 +37,6 @@ import com.bokun.bkjcb.on_siteinspection.View.ImagePreview;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -197,7 +196,7 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
                 String picName = imagePath + getDateTime()
                         + ".jpg";
                 image = new File(path, picName);
-                //creatFile(image);
+                creatFile(image);
                 startAction(intent, image, REQUESR_CODE_TAKEPHOTO);
                 break;
             case R.id.check_content_btn_audio:
@@ -205,7 +204,7 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
                 String mp3Name = audioPath + getDateTime()
                         + ".mp3";
                 audio = new File(path, mp3Name);
-                //creatFile(audio);
+                creatFile(audio);
                 startAction(intent, audio, REQUESR_CODE_RECORD);
                 break;
             case R.id.check_content_btn_video:
@@ -215,7 +214,7 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
                 vdoName = videoPath + getDateTime()
                         + ".mp4";
                 video = new File(path, vdoName);
-                //creatFile(video);
+                creatFile(video);
                 startAction(intent, video, REQUESR_CODE_VIDEO);
                 break;
             case R.id.check_content_btn_remark:
@@ -519,11 +518,6 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
     private void creatFile(File file) {
         if (!file.exists()) {
             file.getParentFile().mkdirs();
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 

@@ -38,17 +38,16 @@ public class UploadHelper {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == RequestListener.EVENT_GET_DATA_SUCCESS) {
-                prePareFile();
-                uploadFile();
-               /* JsonResult result = (JsonResult) msg.obj;
-                LogUtil.logI(result.message);
-                ToastUtil.show(context, result.message);
+                JsonResult result = (JsonResult) msg.obj;
                 if (result.success) {
-                    listener.onUpdate(100, 100, true);
+                    prePareFile();
+                    uploadFile();
                 } else {
-                    listener.onUpdate(100, 100, false);
-                }*/
+                    listener.onUpdate(0, 0, false);
+                    Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show();
+                }
             } else {
+                listener.onUpdate(0, 0, false);
                 Toast.makeText(context, "上传失败，请稍后再试", Toast.LENGTH_SHORT).show();
             }
         }
@@ -62,7 +61,7 @@ public class UploadHelper {
     private ArrayList<String> remotePaths;
     private String projectId;
     private ArrayList<UpLoadTask> tasks;
-//    private List<File> files;
+    //    private List<File> files;
     private long fileSize;
     private long uploadSize;
     private ProgressListener listener;
@@ -112,18 +111,6 @@ public class UploadHelper {
             finishedPlans.add(plan);
             checkPlans.add(checkPlan);
         }
-
-
-
-      /*  OkHttpManager okHttpManager = new OkHttpManager(context, new RequestListener() {
-            @Override
-            public void action(int i, Object object) {
-                LogUtil.logI("请求上传，请求结果：" + i);
-                mHandler.sendEmptyMessage(5);
-//                mHandler.sendEmptyMessage(i);
-            }
-        }, new HttpRequestVo("", str), 2);
-        okHttpManager.postRequest();*/
         sendData();
     }
 
@@ -140,18 +127,18 @@ public class UploadHelper {
             @Override
             public void action(int i, Object object) {
                 JsonResult result = JsonParser.parseSoap((SoapObject) object);
-                if (result.success) {
+//                if (result.success) {
                  /* jsons.remove(0);
                     listener.onUpdate(jsons.size(), finishedPlans.size(), true);
                     sendData(jsons.get(0));
                     return;*/
-                    Message message = new Message();
-                    message.what = i;
-                    message.obj = result;
-                    mHandler.sendMessage(message);
-                } else {
-                    listener.onUpdate(0, 0, false);
-                }
+                Message message = new Message();
+                message.what = i;
+                message.obj = result;
+                mHandler.sendMessage(message);
+//                } else {
+//                    listener.onUpdate(0, 0, false);
+//                }
             }
         }, request);
         manager.postRequest();

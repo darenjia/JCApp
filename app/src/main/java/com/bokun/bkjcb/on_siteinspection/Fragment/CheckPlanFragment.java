@@ -219,9 +219,9 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
     private void createDailog(final CheckPlan checkPlan, final int groupPosition, final int childPosition) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
+        boolean flag = projectPlans.get(groupPosition).getAQ_JCTZ_sfjc() == 1;
         ConstructionDetailView constructionDetailView = ConstructionDetailView.getConstructionView(context);
-        View view = constructionDetailView.setData(checkPlan, new View.OnClickListener() {
+        View view = constructionDetailView.setData(checkPlan, flag, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.btn_check) {
