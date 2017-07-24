@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
+import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +19,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
+import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.Notification.NotificationUtil;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.Service.ServiceUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
+import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
 
 import java.util.ArrayList;
 
@@ -77,7 +81,7 @@ public class UpLoadChirldFragment extends BaseFragment {
                         adapter.notifyDataSetChanged();
                     }
                 } else {
-                    DataUtil.deleteFinishedProjectPlan();
+                    DataUtil.deleteFinishedProjectPlan(JCApplication.user);
                     projectPlans.clear();
                     adapter.notifyDataSetChanged();
                 }
@@ -190,14 +194,24 @@ public class UpLoadChirldFragment extends BaseFragment {
     }
 
     private void startUpload(ProjectPlan plan) {
-        util = NotificationUtil.newInstance();
+        if (NetworkUtils.isEnable(getContext())) {
+            util = NotificationUtil.newInstance();
 
-        Intent intent = new Intent();
-        intent.setAction("android.intent.action.STARTUPLOAD");//你定义的service的action
-        intent.setPackage(getContext().getPackageName());
-        intent.putExtra("plan", plan.getAq_lh_id());
-        getContext().startService(intent);
-        openBroadCast();
+            Intent intent = new Intent();
+            intent.setAction("android.intent.action.STARTUPLOAD");//你定义的service的action
+            intent.setPackage(getContext().getPackageName());
+            intent.putExtra("plan", plan.getAq_lh_id());
+            getContext().startService(intent);
+            openBroadCast();
+        } else {
+            Snackbar.make(startAll, "无网络连接，请检查网络", Snackbar.LENGTH_LONG).setAction("设置", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                    getContext().startActivity(intent);
+                }
+            }).show();
+        }
     }
 
     private void stopUpload() {
@@ -214,9 +228,9 @@ public class UpLoadChirldFragment extends BaseFragment {
         @Override
         protected Object doInBackground(Object[] objects) {
             if (!finished) {
-                projectPlans = DataUtil.getProjectByState("等待上传");
+                projectPlans = DataUtil.getProjectByState("等待上传", JCApplication.user);
             } else {
-                projectPlans = DataUtil.getProjectByState("上传完成");
+                projectPlans = DataUtil.getProjectByState("上传完成", JCApplication.user);
             }
             return null;
         }
@@ -308,7 +322,7 @@ public class UpLoadChirldFragment extends BaseFragment {
         LogUtil.logI("refresh");
         if (loadTask.getStatus() == AsyncTask.Status.FINISHED) {
             //checkPlans = DataUtil.queryCheckPlanFinished(getContext());
-            projectPlans = DataUtil.getProjectByState(state);
+            projectPlans = DataUtil.getProjectByState(state, JCApplication.user);
             adapter.notifyDataSetChanged();
         }
     }

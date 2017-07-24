@@ -24,6 +24,7 @@ public class SQLiteOpenUtil extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(Constants.CREATE_CHECK_RESULT);
+        db.execSQL(Constants.CREATE_USER_TABLE);
         db.execSQL(Constants.CREATE_CHECK_PLAN_TABLE);
         db.execSQL(Constants.CREATE_SEARCH_HISTORY);
         db.execSQL(Constants.CREATE_FINISHED_PALN);

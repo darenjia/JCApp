@@ -2,8 +2,8 @@ package com.bokun.bkjcb.on_siteinspection.Http;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
-import com.bokun.bkjcb.on_siteinspection.Domain.ManagerInfo;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
+import com.bokun.bkjcb.on_siteinspection.Domain.User;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -49,16 +49,22 @@ public class JsonParser {
         LogUtil.logI(object.toString());
         SoapObject detail = (SoapObject) object.getProperty(0);
         String content = XmlParser.parseSoapObject(detail);
+        LogUtil.logI(content);
         if (content.length() > 0) {
             try {
                 JSONObject jsonObject = new JSONObject(content);
                 result.success = jsonObject.getBoolean("success");
                 result.message = jsonObject.getString("message");
+                String s;
                 try {
-                    result.resData = jsonObject.getString("data");
+                    s = jsonObject.getString("data");
                 } catch (JSONException e) {
-                    result.resData = "";
+                    s = "";
                 }
+                if (s.equals("")) {
+                    s = "{}";
+                }
+                result.resData = s;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -147,13 +153,13 @@ public class JsonParser {
         return results;
     }
 
-    public static ManagerInfo getUserInfo(String json) {
-        ManagerInfo result = new ManagerInfo();
+    public static User getUserInfo(String json) {
+        User result = new User();
         try {
             JSONObject jsonObject = new JSONObject(json);
-            result.quxian = jsonObject.getString("quxian");
-            result.roles = jsonObject.getString("roles");
-            result.username = jsonObject.getString("sys_realname");
+            result.setQuxian(jsonObject.getString("quxian"));
+            result.setRole(jsonObject.getString("roles"));
+            result.setRealName(jsonObject.getString("sys_realname"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -20,7 +20,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bokun.bkjcb.on_siteinspection.Domain.ManagerInfo;
+import com.bokun.bkjcb.on_siteinspection.Domain.User;
 import com.bokun.bkjcb.on_siteinspection.Fragment.CheckPlanFragment;
 import com.bokun.bkjcb.on_siteinspection.Fragment.MapFragment;
 import com.bokun.bkjcb.on_siteinspection.Fragment.SearchFragment;
@@ -28,8 +28,10 @@ import com.bokun.bkjcb.on_siteinspection.Fragment.UpLoadFragment;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.R;
+import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.AppManager;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
+import com.bokun.bkjcb.on_siteinspection.Utils.SPUtils;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,10 +51,11 @@ public class MainActivity extends BaseActivity
     private Menu menu;
     private ImageView userImg;
     private TextView userName, userMessage;
-    public static ManagerInfo user;
+    public static User user;
     private Fragment currentFragment;
     private boolean opened = false;
     private int count = 0;
+    private User userInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,10 +124,18 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void loadData() {
-        user = JsonParser.getUserInfo(getIntent().getStringExtra("quxian"));
+        String s = getIntent().getStringExtra("info");
+        if (s == null) {
+            user = (User) getIntent().getExtras().get("user");
+        } else {
+            user = JsonParser.getUserInfo(s);
+            user.setUserName((String) SPUtils.get(this, "UserName", ""));
+            user.setPassword((String) SPUtils.get(this, "PassWord", ""));
+            DataUtil.insertUser(user);
+        }
         JCApplication.user = user;
-        userMessage.setText("区县:" + user.quxian);
-        userName.setText(user.username);
+        userMessage.setText("区县:" + user.getQuxian());
+        userName.setText(user.getRealName());
         loadView("检查计划", "first");
     }
 
@@ -244,7 +255,14 @@ public class MainActivity extends BaseActivity
 
     public static void ComeToMainActivity(Activity activity, String string) {
         Intent intent = new Intent(activity, MainActivity.class);
-        intent.putExtra("quxian", string);
+        intent.putExtra("info", string);
+        activity.startActivity(intent);
+        activity.finish();
+    }
+
+    public static void ComeToMainActivity(Activity activity, User user) {
+        Intent intent = new Intent(activity, MainActivity.class);
+        intent.putExtra("user", user);
         activity.startActivity(intent);
         activity.finish();
     }

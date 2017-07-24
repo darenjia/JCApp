@@ -115,6 +115,7 @@
                         android:gravity="center_vertical"
                         android:hint="search"
                         android:imeOptions="actionSearch"
+                        android:imeActionId="6"
                         android:inputType="textCapWords|textAutoComplete"
                         android:maxLines="1"
                         android:paddingLeft="12dp"

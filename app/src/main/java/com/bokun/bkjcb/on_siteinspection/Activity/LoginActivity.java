@@ -3,7 +3,6 @@ package com.bokun.bkjcb.on_siteinspection.Activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
@@ -23,12 +22,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
+import com.bokun.bkjcb.on_siteinspection.Domain.User;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpManager;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpRequestVo;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.R;
+import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
+import com.bokun.bkjcb.on_siteinspection.Utils.MD5Util;
+import com.bokun.bkjcb.on_siteinspection.Utils.SPUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 
 import org.ksoap2.serialization.SoapObject;
@@ -46,6 +49,7 @@ public class LoginActivity extends BaseActivity implements RequestListener {
     private Button mChangeUser;
     private LinearLayout mLoginView;
     private boolean isRemberPass;
+    private String passWord;
 
     private static class MyHandler extends Handler {
         private final WeakReference<LoginActivity> mActivity;
@@ -60,7 +64,7 @@ public class LoginActivity extends BaseActivity implements RequestListener {
             if (activity != null) {
                 switch (msg.what) {
                     case RequestListener.EVENT_NOT_NETWORD:
-                        Snackbar.make(activity.mCardView, "", Snackbar.LENGTH_LONG).setAction("设置", new View.OnClickListener() {
+                        Snackbar.make(activity.mCardView, "无网络连接，请检查网络", Snackbar.LENGTH_LONG).setAction("设置", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
@@ -122,7 +126,7 @@ public class LoginActivity extends BaseActivity implements RequestListener {
         mPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
                     attemptLogin();
                     return true;
                 }
@@ -192,7 +196,7 @@ public class LoginActivity extends BaseActivity implements RequestListener {
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (TextUtils.isEmpty(password) || !isPasswordValid(password)) {
             mPassword.setError(getString(R.string.error_invalid_password));
             focusView = mPassword;
             cancel = true;
@@ -214,31 +218,35 @@ public class LoginActivity extends BaseActivity implements RequestListener {
             // form field with an error.g
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-//
-            // String requestJson = Constants.GetUser.replace("UserName", userName).replace("UserPwd", password);
-            // HttpRequestVo request = new HttpRequestVo(Constants.GetUserURL, requestJson);
-            HttpRequestVo request = new HttpRequestVo();
-            request.getRequestDataMap().put("user", userName);
-            request.getRequestDataMap().put("password", password);
-            request.setMethodName("GetUser");
-            httpManager = new HttpManager(this, this, request, 2);
-            httpManager.postRequest();
-            mLoginView.setVisibility(View.VISIBLE);
-            mCardView.setVisibility(View.GONE);
+            User user = DataUtil.getUser(userName);
+            if (user != null) {
+                if (MD5Util.encode(password).equals(passWord)) {
+                    MainActivity.ComeToMainActivity(this, user);
+                } else {
+                    mPassword.setError("密码错误");
+                }
+            } else {
+                HttpRequestVo request = new HttpRequestVo();
+                request.getRequestDataMap().put("user", userName);
+                request.getRequestDataMap().put("password", password);
+                request.setMethodName("GetUser");
+                httpManager = new HttpManager(this, this, request, 2);
+                httpManager.postRequest();
+                mLoginView.setVisibility(View.VISIBLE);
+                mCardView.setVisibility(View.GONE);
+            }
         }
     }
 
     @Override
     protected void loadData() {
-        String flag = getFormPrefer("isRemberPass");
+        String flag = (String) SPUtils.get(this, "isRemberPass", "false");
         isRemberPass = flag.equals("true");
         if (isRemberPass) {
-            String username = getFormPrefer("UserName");
-            String password = getFormPrefer("PassWord");
+            String username = (String) SPUtils.get(this, "UserName", "");
+            passWord = (String) SPUtils.get(this, "PassWord", "");
             mUserName.setText(username);
-            mPassword.setText(password);
+//            mPassword.setText(password);
             mRembPass.setChecked(true);
         }
     }
@@ -252,6 +260,9 @@ public class LoginActivity extends BaseActivity implements RequestListener {
         Message msg = new Message();
         msg.what = i;
         msg.obj = result;
+        if (i == RequestListener.EVENT_GET_DATA_SUCCESS && result.success) {
+            saveInfo();
+        }
         mHandler.sendMessage(msg);
     }
 
@@ -272,30 +283,22 @@ public class LoginActivity extends BaseActivity implements RequestListener {
         activity.startActivity(intent);
     }
 
-    private String getFormPrefer(String key) {
-        SharedPreferences preferences = getSharedPreferences("default", MODE_PRIVATE);
-        return preferences.getString(key, "");
-    }
-
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    private void saveInfo() {
         boolean flag = mRembPass.isChecked();
         if (flag) {
             String username = mUserName.getText().toString();
             String password = mPassword.getText().toString();
             if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
-                writeToSharedPreferences("UserName", username);
-                writeToSharedPreferences("PassWord", password);
-                writeToSharedPreferences("isRemberPass", "true");
+                SPUtils.put(this, "UserName", username);
+                SPUtils.put(this, "PassWord", MD5Util.encode(password));
+                SPUtils.put(this, "isRemberPass", "true");
             }
         }
     }
 
-    public void writeToSharedPreferences(String key, String value) {
-        SharedPreferences preferences = getSharedPreferences("default", MODE_APPEND);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(key, value);
-        editor.commit();
-    }
 }

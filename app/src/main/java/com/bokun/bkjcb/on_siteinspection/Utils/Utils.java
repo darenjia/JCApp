@@ -3,7 +3,6 @@ package com.bokun.bkjcb.on_siteinspection.Utils;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -111,10 +110,10 @@ public class Utils {
             File oldfile = new File(oldPath);
             if (oldfile.exists()) { //文件存在时
                 if (oldfile.isFile()) {
-                    if (!newFlie.exists()) {
+                   /* if (!newFlie.exists()) {
                         newFlie.mkdirs();
                         newFlie.createNewFile();
-                    }
+                    }*/
                     InputStream inStream = new FileInputStream(oldPath); //读入原文件
                     FileOutputStream fs = new FileOutputStream(newFlie);
                     byte[] buffer = new byte[4 * 1024];
@@ -252,8 +251,7 @@ public class Utils {
     }
 
     public static String getUserName() {
-        SharedPreferences preferences = JCApplication.getContext().getSharedPreferences("default", Context.MODE_PRIVATE);
-        String username = preferences.getString("UserName", "");
+        String username = (String) SPUtils.get(JCApplication.getContext(), "UserName", "");
         return username;
     }
 }

@@ -13,10 +13,11 @@ public class Constants {
     //用户表
     public final static String CREATE_USER_TABLE = "create table UserInfo(" +
             "id Integer primary key," +
-            "name varchar(10)" +
-            "password char(30)" +
-            "lastupdatetime long" +
-            "plancount int" +
+            "name varchar(10)," +
+            "password char(30)," +
+            "quxian char(10)," +
+            "roles char(50)," +
+            "sys_realname char(20)" +
             ")";
     //检查计划表
     public final static String CREATE_PLAN_TABLE = "create table PlanInfo(" +
@@ -42,7 +43,8 @@ public class Constants {
             "aq_jctype char(30)," +
             "aq_sysid char(100)," +
             "aq_jctz_zt char(30)," +
-            "AQ_JCTZ_sfjc int(5)"+
+            "AQ_JCTZ_sfjc int(5)," +
+            "userId int(5)" +
             ")";
 
     public final static String CREATE_CHECK_PLAN_TABLE = "create table checkplan(" +
@@ -103,22 +105,22 @@ public class Constants {
     *正式IP地址
     * */
 
-//    public static final String HTTPURL = "http://101.231.52.50:8080/zgzxjkWebService.asmx";
-//    public static final String FTP_HOST_DEFAULT = "101.231.52.50";
-//    public static final int FTP_HOST_PORT = 18000;
-//    public static final String FTP_USER_DEFAULT = "zgzx1";
-//    public static final String FTP_PASSWORD_DEFAULT = "zgzx";
+    public static final String HTTPURL = "http://101.231.52.50:8080/zgzxjkWebService.asmx";
+    public static final String FTP_HOST_DEFAULT = "101.231.52.50";
+    public static final int FTP_HOST_PORT = 18000;
+    public static final String FTP_USER_DEFAULT = "zgzx1";
+    public static final String FTP_PASSWORD_DEFAULT = "zgzx";
 
 
     /*
     * 测试IP地址
     * */
 //    public static final String HTTPURL = "http://192.168.100.211:8080/zgzxjkWebService.asmx";
-    public static final String HTTPURL = "http://192.168.100.136:8080/zgzxjkWebService.asmx  ";
-    public static final String FTP_HOST_DEFAULT = "192.168.100.211";
-    public static final int FTP_HOST_PORT = 21;
-    public static final String FTP_USER_DEFAULT = "zgzx";
-    public static final String FTP_PASSWORD_DEFAULT = "123456";
+//    public static final String HTTPURL = "http://192.168.100.136:8080/zgzxjkWebService.asmx";
+//    public static final String FTP_HOST_DEFAULT = "192.168.100.211";
+//    public static final int FTP_HOST_PORT = 21;
+//    public static final String FTP_USER_DEFAULT = "zgzx";
+//    public static final String FTP_PASSWORD_DEFAULT = "123456";
 
     /**
      * ftp状态
@@ -141,5 +143,7 @@ public class Constants {
 
     public static final String FTP_GETALLPICPATH_SUCCESS = "ftp获取所有图片路径成功";
     public static final String FTP_GETALLPICPATH_FAIL = "ftp获取所有图片路径失败";
+
+    public static final String CAAHE_KEY = "projectkey22335151";
 
 }

@@ -6,6 +6,7 @@ import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckResult;
 import com.bokun.bkjcb.on_siteinspection.Domain.FinishedPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
+import com.bokun.bkjcb.on_siteinspection.Domain.User;
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.Utils.FileUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
@@ -114,9 +115,9 @@ public class DataUtil {
         return plans;
     }
 
-    public static ArrayList<ProjectPlan> queryProjectPlan(String state, String quxian) {
+    public static ArrayList<ProjectPlan> queryProjectPlan(String state, int userId) {
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
-        ArrayList<ProjectPlan> plans = dao.queryNo(state, quxian);
+        ArrayList<ProjectPlan> plans = dao.queryNo(state, userId);
         dao.close();
         return plans;
     }
@@ -201,24 +202,28 @@ public class DataUtil {
         return flag;
     }
 
-    public static ArrayList<ProjectPlan> getProjectByState(String state) {
+    public static ArrayList<ProjectPlan> getProjectByState(String state, User user) {
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
-        ArrayList<ProjectPlan> list = dao.query(state);
+        ArrayList<ProjectPlan> list = dao.query(state, user.getId());
         dao.close();
         return list;
     }
 
-    public static boolean saveProjectPlan(ArrayList<ProjectPlan> plans) {
-        ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
-        for (ProjectPlan p : plans) {
-            String id = dao.issaved(p.getAq_lh_id());
-            if (id == null) {
-                dao.save(p);
-            } else {
-                dao.update(id, p);
+    public static boolean saveProjectPlan(ArrayList<ProjectPlan> plans, User user) {
+        if (plans.size() > 0) {
+            ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
+            for (ProjectPlan p : plans) {
+                String id = dao.issaved(p.getAq_lh_id());
+                if (id == null) {
+                    dao.save(p, user.getId());
+                } else {
+                    dao.update(id, p);
+                }
             }
+            dao.close();
+        } else {
+            return false;
         }
-        dao.close();
         return true;
     }
 
@@ -236,13 +241,13 @@ public class DataUtil {
         return flag;
     }
 
-    public static void deleteFinishedProjectPlan() {
+    public static void deleteFinishedProjectPlan(User user) {
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(JCApplication.getContext());
         CheckResultDao daoR = new CheckResultDaolmpl(JCApplication.getContext());
         ArrayList<ProjectPlan> projectPlans;
         ArrayList<CheckResult> checkResults = new ArrayList<>();
-        projectPlans = dao.query("上传完成");
+        projectPlans = dao.query("上传完成", user.getId());
         ArrayList<CheckPlan> checkPlans = new ArrayList<>();
         for (ProjectPlan p : projectPlans) {
             String[] strings = p.getAq_sysid().split(",");
@@ -254,5 +259,18 @@ public class DataUtil {
             checkResults.addAll(daoR.queryCheckResult(c.getIdentifier()));
         }
         FileUtils.deleteFile(checkResults);
+    }
+
+    public static void insertUser(User user) {
+        UserDao dao = new UserDao();
+        dao.addUser(user);
+        dao.close();
+    }
+
+    public static User getUser(String name) {
+        UserDao dao = new UserDao();
+        User user = dao.getUser(name);
+        dao.close();
+        return user;
     }
 }

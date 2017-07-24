@@ -21,7 +21,7 @@ public class ProjectPlanDao {
         database = util.getWritableDatabase();
     }
 
-    public boolean save(ProjectPlan result) {
+    public boolean save(ProjectPlan result, int userId) {
         ContentValues values = new ContentValues();
         values.put("aq_lh_yyh", result.getAq_lh_yyh());
         values.put("aq_lh_seqid", result.getAq_lh_seqid());
@@ -36,14 +36,15 @@ public class ProjectPlanDao {
         values.put("aq_sysid", result.getAq_sysid());
         values.put("aq_jctz_zt", result.getAq_jctz_zt());
         values.put("AQ_JCTZ_sfjc", result.getAQ_JCTZ_sfjc());
+        values.put("userId", userId);
         long isSuccess = database.insert("constructioninfo", "id", values);
         return isSuccess != -1;
     }
 
-    public ArrayList<ProjectPlan> query(String state) {
+    public ArrayList<ProjectPlan> query(String state, int userId) {
         ArrayList<ProjectPlan> list = new ArrayList<>();
         ProjectPlan result = null;
-        Cursor cursor = database.query("constructioninfo", null, "aq_jctz_zt=?", new String[]{state}, null, null, null);
+        Cursor cursor = database.query("constructioninfo", null, "aq_jctz_zt=? and userId = ?", new String[]{state, String.valueOf(userId)}, null, null, null);
         while (cursor.moveToNext()) {
             result = new ProjectPlan();
             result.setAq_lh_id(cursor.getString(cursor.getColumnIndex("aq_lh_id")));
@@ -91,10 +92,10 @@ public class ProjectPlanDao {
         return list;
     }
 
-    public ArrayList<ProjectPlan> queryNo(String state, String quxian) {
+    public ArrayList<ProjectPlan> queryNo(String state, int userId) {
         ArrayList<ProjectPlan> list = new ArrayList<>();
         ProjectPlan result = null;
-        Cursor cursor = database.query("constructioninfo", null, "aq_jctz_zt != ? and aq_lh_qxjd = ?", new String[]{state, quxian}, null, null, null);
+        Cursor cursor = database.query("constructioninfo", null, "aq_jctz_zt != ? and userId = ?", new String[]{state, String.valueOf(userId)}, null, null, null);
         while (cursor.moveToNext()) {
             result = new ProjectPlan();
             result.setAq_lh_id(cursor.getString(cursor.getColumnIndex("aq_lh_id")));
