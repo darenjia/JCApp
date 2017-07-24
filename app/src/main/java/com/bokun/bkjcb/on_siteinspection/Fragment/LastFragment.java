@@ -62,7 +62,7 @@ public class LastFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        String username = JCApplication.user.username;
+        String username = JCApplication.user.getRealName();
         user.setText(username);
 
     }

@@ -35,7 +35,7 @@ public class MainFragment extends Fragment {
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
                 case RequestListener.EVENT_NOT_NETWORD:
-                    Snackbar.make(contentView, "", Snackbar.LENGTH_LONG).setAction("设置", new View.OnClickListener() {
+                    Snackbar.make(contentView, "无网络连接，请检查网络", Snackbar.LENGTH_LONG).setAction("设置", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);

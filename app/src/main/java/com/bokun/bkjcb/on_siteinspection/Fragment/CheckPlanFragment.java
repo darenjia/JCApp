@@ -22,9 +22,11 @@ import com.bokun.bkjcb.on_siteinspection.Http.HttpManager;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpRequestVo;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
+import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.CacheUitl;
+import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.MD5Util;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
@@ -59,6 +61,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = View.inflate(context, R.layout.content_plan, null);
+        cacheUitl = new CacheUitl();
         initPlanLayout(view);
         return view;
     }
@@ -80,7 +83,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                 refreshLayout.setRefreshing(true);
                 if (projectPlans != null) {
                     projectPlans.clear();
-                    projectPlans.addAll(DataUtil.queryProjectPlan("上传完成", MainActivity.user.quxian));
+                    projectPlans.addAll(DataUtil.queryProjectPlan("上传完成", MainActivity.user.getId()));
                 }
                 getDateFromNet();
             }
@@ -89,7 +92,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
     private void getDateFromNet() {
         HttpRequestVo requestVo = new HttpRequestVo();
-        requestVo.getRequestDataMap().put("quxian", MainActivity.user.quxian);
+        requestVo.getRequestDataMap().put("quxian", JCApplication.user.getQuxian());
         requestVo.getRequestDataMap().put("user", Utils.getUserName());
         requestVo.setMethodName("GetJianChaJiHua");
         HttpManager manager = new HttpManager(context, this, requestVo);
@@ -111,7 +114,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
             LogUtil.logI(sysIds.toString());
             key = MD5Util.encode(sysIds.toString());
             HttpRequestVo requestVo = new HttpRequestVo();
-            requestVo.getRequestDataMap().put("quxian", MainActivity.user.quxian);
+            requestVo.getRequestDataMap().put("quxian", JCApplication.user.getQuxian());
             requestVo.getRequestDataMap().put("sysids", sysIds.toString());
             requestVo.setMethodName("GetXxclSc");
             HttpManager manager = new HttpManager(context, this, requestVo);
@@ -132,9 +135,24 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     @Override
     protected void getDataFailed() {
         super.getDataFailed();
-        LogUtil.logI("获取数据失败");
+        LogUtil.logI("获取数据失败,从缓存读数据");
         //setExpandableListView();
-        errorView.setVisibility(View.VISIBLE);
+//        errorView.setVisibility(View.VISIBLE);
+        projectPlans = DataUtil.queryProjectPlan("上传完成", MainActivity.user.getId());
+        if (projectPlans == null) {
+//            errorView.setVisibility(View.VISIBLE);
+        }
+        constuctions = new ArrayList<>();
+        for (ProjectPlan plan : projectPlans) {
+            String sysIDs = plan.getAq_sysid();
+            String[] ids = {};
+            if (sysIDs != null) {
+                ids = sysIDs.split(",");
+            }
+            constuctions.add(DataUtil.getCheckPlan(ids));
+        }
+        setExpandableListView();
+
     }
 
     private void setExpandableListView() {
@@ -173,16 +191,24 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
             if (projectPlans == null) {//|| projectPlans.size() == 0
                 projectPlans = JsonParser.getProjectData(result.resData);
                 /*有个问题，如果返回数据的SysId发生变化，则此方法要改*/
-                DataUtil.saveProjectPlan(projectPlans);
-                getCheckPlanFromNet();
-                projectPlans.clear();
-                //projectPlans.addAll(DataUtil.queryProjectPlan("等待上传"));
-                projectPlans.addAll(DataUtil.queryProjectPlan("上传完成", MainActivity.user.quxian));
-                //projectPlans.addAll(DataUtil.queryProjectPlan("需办事项"));
+                cacheUitl.saveData(Constants.CAAHE_KEY, result.resData);
+                boolean flag = DataUtil.saveProjectPlan(projectPlans, MainActivity.user);
+                if (flag) {
+                    getCheckPlanFromNet();
+                    projectPlans.clear();
+                    //projectPlans.addAll(DataUtil.queryProjectPlan("等待上传"));
+                    projectPlans.addAll(DataUtil.queryProjectPlan("上传完成", MainActivity.user.getId()));
+                    //projectPlans.addAll(DataUtil.queryProjectPlan("需办事项"));
+                } else {
+                    i = RequestListener.EVENT_GET_DATA_SUCCESS;
+                    Message msg = new Message();
+                    msg.what = i;
+                    msg.obj = result;
+                    mHandler.sendMessage(msg);
+                }
                 return;
             }
             LogUtil.logI("返回数据结果：" + result.resData);
-            cacheUitl = new CacheUitl();
             String cacheStr = cacheUitl.getData(key);
             if (cacheStr == null) {
                 cacheUitl.saveData(key, result.resData);
@@ -208,7 +234,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
             }
         } else {
             LogUtil.logI((object == null) + "");
-            i = RequestListener.EVENT_GET_DATA_EEEOR;
+            i = RequestListener.EVENT_NOT_NETWORD;
         }
 
         Message msg = new Message();
@@ -219,6 +245,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
     private void createDailog(final CheckPlan checkPlan, final int groupPosition, final int childPosition) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//        projectPlans.get(1).setAQ_JCTZ_sfjc(2);
         boolean flag = projectPlans.get(groupPosition).getAQ_JCTZ_sfjc() == 1;
         ConstructionDetailView constructionDetailView = ConstructionDetailView.getConstructionView(context);
         View view = constructionDetailView.setData(checkPlan, flag, new View.OnClickListener() {
@@ -302,7 +329,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
     public void dateHasChange() {
         projectPlans.clear();
-        projectPlans.addAll(DataUtil.queryProjectPlan("上传完成", MainActivity.user.quxian));
+        projectPlans.addAll(DataUtil.queryProjectPlan("上传完成", MainActivity.user.getId()));
         //projectPlans.addAll(DataUtil.queryProjectPlan("需办事项"));
         constuctions.clear();
         for (ProjectPlan plan : projectPlans) {
