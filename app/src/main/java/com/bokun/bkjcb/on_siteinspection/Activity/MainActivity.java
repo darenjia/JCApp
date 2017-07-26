@@ -55,7 +55,6 @@ public class MainActivity extends BaseActivity
     private Fragment currentFragment;
     private boolean opened = false;
     private int count = 0;
-    private User userInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

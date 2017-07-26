@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
+import com.bokun.bkjcb.on_siteinspection.Domain.User;
 
 import java.util.ArrayList;
 
@@ -118,7 +119,7 @@ public class ProjectPlanDao {
         return result > 0;
     }
 
-    public boolean update(String id, ProjectPlan result) {
+    public boolean update(String id, ProjectPlan result, User user) {
         ContentValues values = new ContentValues();
         values.put("aq_lh_yyh", result.getAq_lh_yyh());
         values.put("aq_lh_seqid", result.getAq_lh_seqid());
@@ -133,13 +134,13 @@ public class ProjectPlanDao {
         values.put("aq_sysid", result.getAq_sysid());
         values.put("aq_jctz_zt", result.getAq_jctz_zt());
         values.put("AQ_JCTZ_sfjc", result.getAQ_JCTZ_sfjc());
-        int flag = database.update("constructioninfo", values, "aq_lh_id=?", new String[]{id});
-
+        values.put("userId", user.getId());
+        int flag = database.update("constructioninfo", values, "id = ? ", new String[]{id});
         return flag > 0;
     }
 
-    public String issaved(String aq_lh_id) {
-        Cursor cursor = database.query("constructioninfo", new String[]{"id"}, "aq_lh_id = ?", new String[]{aq_lh_id}, null, null, null);
+    public String issaved(int id) {
+        Cursor cursor = database.query("constructioninfo", new String[]{"id"}, "aq_lh_seqid = ?", new String[]{String.valueOf(id)}, null, null, null);
         while (cursor.moveToNext()) {
             return cursor.getString(0);
         }

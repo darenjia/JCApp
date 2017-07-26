@@ -55,6 +55,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     private String key = "sad1ee213124c1";
     private TextView errorView;
     private TextView nullView;
+    private boolean planFlag = true;//判断是否是获取工程还是计划
 
     @Nullable
     @Override
@@ -85,6 +86,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                     projectPlans.clear();
                     projectPlans.addAll(DataUtil.queryProjectPlan("上传完成", MainActivity.user.getId()));
                 }
+                planFlag = true;
                 getDateFromNet();
             }
         });
@@ -188,12 +190,13 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         JsonResult result = null;
         if (object != null) {
             result = JsonParser.parseSoap((SoapObject) object);
-            if (projectPlans == null) {//|| projectPlans.size() == 0
+            if (projectPlans == null || planFlag) {//|| projectPlans.size() == 0
                 projectPlans = JsonParser.getProjectData(result.resData);
                 /*有个问题，如果返回数据的SysId发生变化，则此方法要改*/
                 cacheUitl.saveData(Constants.CAAHE_KEY, result.resData);
                 boolean flag = DataUtil.saveProjectPlan(projectPlans, MainActivity.user);
                 if (flag) {
+                    planFlag = false;
                     getCheckPlanFromNet();
                     projectPlans.clear();
                     //projectPlans.addAll(DataUtil.queryProjectPlan("等待上传"));
@@ -246,6 +249,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     private void createDailog(final CheckPlan checkPlan, final int groupPosition, final int childPosition) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 //        projectPlans.get(1).setAQ_JCTZ_sfjc(2);
+        LogUtil.logI(projectPlans.get(groupPosition).getAQ_JCTZ_sfjc() + "");
         boolean flag = projectPlans.get(groupPosition).getAQ_JCTZ_sfjc() == 1;
         ConstructionDetailView constructionDetailView = ConstructionDetailView.getConstructionView(context);
         View view = constructionDetailView.setData(checkPlan, flag, new View.OnClickListener() {
@@ -264,7 +268,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                     CheckPlanFragment.this.startActivityForResult(intent, 1);
                 }
             }
-        });
+        }, projectPlans.get(groupPosition).getAq_lh_jcmc());
         builder.setView(view);
         builder.setCancelable(true);
         dialog = builder.create();

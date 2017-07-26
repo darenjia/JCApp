@@ -210,14 +210,15 @@ public class DataUtil {
     }
 
     public static boolean saveProjectPlan(ArrayList<ProjectPlan> plans, User user) {
+
         if (plans.size() > 0) {
             ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
             for (ProjectPlan p : plans) {
-                String id = dao.issaved(p.getAq_lh_id());
+                String id = dao.issaved(p.getAq_lh_seqid());
                 if (id == null) {
                     dao.save(p, user.getId());
                 } else {
-                    dao.update(id, p);
+                    dao.update(id, p, user);
                 }
             }
             dao.close();
@@ -263,7 +264,9 @@ public class DataUtil {
 
     public static void insertUser(User user) {
         UserDao dao = new UserDao();
-        dao.addUser(user);
+        if (!dao.getUserIs(user.getUserName())) {
+            dao.addUser(user);
+        }
         dao.close();
     }
 

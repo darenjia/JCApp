@@ -25,8 +25,10 @@ public class ConstructionDetailView {
     private TextView mViewType;
     private TextView mViewManager;
     private TextView mViewUser;
+    private TextView mTitle;
     private Button mButtonCheck;
     private View resView;
+    private String title;
 
     private ConstructionDetailView(Context context) {
         this.context = context;
@@ -39,8 +41,9 @@ public class ConstructionDetailView {
         return view;
     }
 
-    public View setData(CheckPlan checkPlan, boolean flag, View.OnClickListener listener) {
+    public View setData(CheckPlan checkPlan, boolean flag, View.OnClickListener listener, String title) {
         this.checkPlan = checkPlan;
+        this.title = title;
         return getConstructionDetailView(flag, listener);
     }
 
@@ -54,6 +57,7 @@ public class ConstructionDetailView {
         mViewType.setText(checkPlan.getType());
         mViewManager.setText("");
         mViewUser.setText("");
+        mTitle.setText(title);
         if (flag) {
             mButtonCheck.setText("当前计划暂不可检查");
             mButtonCheck.setClickable(false);
@@ -68,6 +72,7 @@ public class ConstructionDetailView {
         resView = View.inflate(context, R.layout.constn_detail_view, null);
         mViewName = (TextView) resView.findViewById(R.id.construction_name);
         mViewId = (TextView) resView.findViewById(R.id.construction_id);
+        mTitle = (TextView) resView.findViewById(R.id.construction_title);
         mViewAddress = (TextView) resView.findViewById(R.id.construction_address);
         mViewArea = (TextView) resView.findViewById(R.id.construction_area);
         mViewType = (TextView) resView.findViewById(R.id.construction_type);

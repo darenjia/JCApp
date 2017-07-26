@@ -220,7 +220,9 @@ public class LoginActivity extends BaseActivity implements RequestListener {
         } else {
             User user = DataUtil.getUser(userName);
             if (user != null) {
+                LogUtil.logI(MD5Util.encode(password) + "  " + passWord);
                 if (MD5Util.encode(password).equals(passWord)) {
+                    saveInfo();
                     MainActivity.ComeToMainActivity(this, user);
                 } else {
                     mPassword.setError("密码错误");
@@ -242,9 +244,9 @@ public class LoginActivity extends BaseActivity implements RequestListener {
     protected void loadData() {
         String flag = (String) SPUtils.get(this, "isRemberPass", "false");
         isRemberPass = flag.equals("true");
+        String username = (String) SPUtils.get(this, "UserName", "");
+        passWord = (String) SPUtils.get(this, "PassWord", "");
         if (isRemberPass) {
-            String username = (String) SPUtils.get(this, "UserName", "");
-            passWord = (String) SPUtils.get(this, "PassWord", "");
             mUserName.setText(username);
 //            mPassword.setText(password);
             mRembPass.setChecked(true);
@@ -290,15 +292,14 @@ public class LoginActivity extends BaseActivity implements RequestListener {
 
     private void saveInfo() {
         boolean flag = mRembPass.isChecked();
-        if (flag) {
-            String username = mUserName.getText().toString();
-            String password = mPassword.getText().toString();
-            if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
-                SPUtils.put(this, "UserName", username);
-                SPUtils.put(this, "PassWord", MD5Util.encode(password));
-                SPUtils.put(this, "isRemberPass", "true");
-            }
+        String username = mUserName.getText().toString();
+        String password = mPassword.getText().toString();
+        if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
+            SPUtils.put(this, "UserName", username);
+            SPUtils.put(this, "PassWord", MD5Util.encode(password));
+            SPUtils.put(this, "isRemberPass", flag ? "true" : "false");
         }
+
     }
 
 }

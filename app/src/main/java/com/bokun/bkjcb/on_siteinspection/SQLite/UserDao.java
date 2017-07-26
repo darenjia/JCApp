@@ -51,6 +51,14 @@ public class UserDao {
         return user;
     }
 
+    public boolean getUserIs(String name) {
+        Cursor cursor = database.query("UserInfo", null, "name=?", new String[]{name}, null, null, null);
+        if (cursor.moveToNext()) {
+            return true;
+        }
+        return false;
+    }
+
     public void close() {
         if (database != null && database.isOpen()) {
             database.close();
