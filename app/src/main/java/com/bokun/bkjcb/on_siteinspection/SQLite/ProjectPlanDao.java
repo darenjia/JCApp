@@ -132,7 +132,6 @@ public class ProjectPlanDao {
         values.put("aq_lh_qxjd", result.getAq_lh_qxjd());
         values.put("aq_jctype", result.getAq_jctype());
         values.put("aq_sysid", result.getAq_sysid());
-        values.put("aq_jctz_zt", result.getAq_jctz_zt());
         values.put("AQ_JCTZ_sfjc", result.getAQ_JCTZ_sfjc());
         values.put("userId", user.getId());
         int flag = database.update("constructioninfo", values, "id = ? ", new String[]{id});
