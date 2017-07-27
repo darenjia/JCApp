@@ -62,6 +62,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
     private boolean isChecked;
     private PagerAdapter pagerAdapter;
     private AlertDialog dialog;
+    private int contentSize;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -175,6 +176,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        contentSize = checkItems.size();
         return checkItems;
     }
 
@@ -208,10 +210,10 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_submit_btn) {
-            if (viewPager.getCurrentItem() != 15) {
-                viewPager.setCurrentItem(15);
+            if (viewPager.getCurrentItem() != contentSize) {
+                viewPager.setCurrentItem(contentSize);
             } else {
-                ((LastFragment) fragments.get(15)).submit();
+                ((LastFragment) fragments.get(contentSize)).submit();
             }
         }
         return super.onOptionsItemSelected(item);
@@ -227,9 +229,9 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
             viewPager.arrowScroll(View.FOCUS_RIGHT);
             LogUtil.logI("click forward");
         } else if (id == page_num.getId()) {
-            String[] title = new String[16];
+            String[] title = new String[contentSize + 1];
             contents.toArray(title);
-            title[15] = "处理意见";
+            title[contentSize] = "处理意见";
             new AlertView(null, null, "取消", null,
                     title, this, AlertView.Style.ActionSheet,
                     new OnItemClickListener() {
@@ -335,7 +337,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                     fragment = lastFragment;
                 }
                 CheckResult result;
-                if (isChecked && results.size() == 16) {
+                if (isChecked && results.size() == contentSize + 1) {
                     result = results.get(i);
                 } else {
                     result = new CheckResult();
