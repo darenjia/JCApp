@@ -46,7 +46,7 @@ public class FileUtils {
         if (Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
             File parent = new File(SDPATH);
-            if (!parent.exists()){
+            if (!parent.exists()) {
                 parent.mkdirs();
             }
         }
@@ -114,6 +114,52 @@ public class FileUtils {
                     File file = new File(path);
                     if (file.exists()) {
                         file.delete();
+                    }
+                }
+            }
+        }).start();
+    }
+
+    public static void deleteFile(ArrayList<CheckResult> results, final ArrayList<CheckResult> backup) {
+        final ArrayList<CheckResult> checkResults = new ArrayList<>();
+        if (backup == null) {
+            deleteFile(results);
+            return;
+        }
+        checkResults.addAll(results);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<String> paths = new ArrayList<>();
+                ArrayList<String> oldpaths = new ArrayList<>();
+                for (CheckResult result : checkResults) {
+                    if (result.getImageUrls() != null && result.getImageUrls().size() != 0) {
+                        paths.addAll(result.getImageUrls());
+                    }
+                    if (result.getAudioUrls() != null && result.getAudioUrls().size() != 0) {
+                        paths.addAll(result.getAudioUrls());
+                    }
+                    if (result.getVideoUrls() != null && result.getVideoUrls().size() != 0) {
+                        paths.addAll(result.getVideoUrls());
+                    }
+                }
+                for (CheckResult result : backup) {
+                    if (result.getImageUrls() != null && result.getImageUrls().size() != 0) {
+                        oldpaths.addAll(result.getImageUrls());
+                    }
+                    if (result.getAudioUrls() != null && result.getAudioUrls().size() != 0) {
+                        oldpaths.addAll(result.getAudioUrls());
+                    }
+                    if (result.getVideoUrls() != null && result.getVideoUrls().size() != 0) {
+                        oldpaths.addAll(result.getVideoUrls());
+                    }
+                }
+                for (String path : paths) {
+                    if (!oldpaths.contains(path)) {
+                        File file = new File(path);
+                        if (file.exists()) {
+                            file.delete();
+                        }
                     }
                 }
             }

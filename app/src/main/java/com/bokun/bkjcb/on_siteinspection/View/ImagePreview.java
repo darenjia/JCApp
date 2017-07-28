@@ -59,9 +59,9 @@ public class ImagePreview implements View.OnClickListener {
         void onCancel();
     }
 
-    public ImagePreview(Context context,String type) {
+    public ImagePreview(Context context, String type) {
         this.context = context;
-        this.type =type;
+        this.type = type;
     }
 
     public View getImagePreviewView(List<String> imagePath) {
@@ -69,7 +69,7 @@ public class ImagePreview implements View.OnClickListener {
         this.files = imagePath;
         View view = initView();
         params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0,0,0,20);
+        params.setMargins(0, 0, 0, 20);
         LoadImageTask task = new LoadImageTask();
         task.execute(imagePath);
 //        initViewDate();
@@ -91,13 +91,13 @@ public class ImagePreview implements View.OnClickListener {
 
             @Override
             public Object instantiateItem(ViewGroup container, final int position) {
-                ImageView imageView ;
+                ImageView imageView;
                 if (type.equals("image")) {
-                    imageView = LocalTools.setImageView(context,params,null,list.get(position));
+                    imageView = LocalTools.setImageView(context, params, null, list.get(position));
                 } else if (type.equals("video")) {
-                    imageView = LocalTools.setImageView(context,params,new BitmapDrawable(list.get(position)),list.get(position));
+                    imageView = LocalTools.setImageView(context, params, new BitmapDrawable(list.get(position)), list.get(position));
                 } else {
-                    imageView = LocalTools.setImageView(context,params,null,null);
+                    imageView = LocalTools.setImageView(context, params, null, null);
                 }
                 container.addView(imageView);
                 imageView.setOnClickListener(new View.OnClickListener() {
@@ -107,6 +107,9 @@ public class ImagePreview implements View.OnClickListener {
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         String path = files.get(position);
                         File file = new File(path);
+                        if (!file.exists()) {
+                            Toast.makeText(context, "该照片不存在！", Toast.LENGTH_SHORT).show();
+                        }
                         LogUtil.logI("图片路径" + path);
                         Uri uri;
                         String type;

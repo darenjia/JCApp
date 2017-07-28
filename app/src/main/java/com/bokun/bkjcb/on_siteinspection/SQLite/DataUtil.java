@@ -242,6 +242,20 @@ public class DataUtil {
         return flag;
     }
 
+    public static boolean changeProjectState1(ProjectPlan plan) {
+        boolean flag = false;
+        ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
+        CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(JCApplication.getContext());
+        dao.update(plan.getAq_lh_id(), plan.getAq_jctz_zt());
+        String[] ids = plan.getAq_sysid().split(",");
+        for (String id : ids) {
+            flag = daolmpl.updateCheckPlanState(id, 2);
+        }
+        daolmpl.colseDateBase();
+        dao.close();
+        return flag;
+    }
+
     public static void deleteFinishedProjectPlan(User user) {
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(JCApplication.getContext());

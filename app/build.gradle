@@ -56,4 +56,5 @@ dependencies {
     compile files('libs/disklrucache-2.0.2.jar')
     compile files('libs/commons-net-3.0.1.jar')
     compile 'com.github.yalantis:ucrop:2.2.1'
+    compile 'com.facebook.stetho:stetho:1.5.0'
 }

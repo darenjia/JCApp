@@ -93,7 +93,7 @@ public class UpLoadChirldFragment extends BaseFragment {
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                     ProjectPlan plan = projectPlans.get(position);
                     plan.setAq_jctz_zt("等待上传");
-                    DataUtil.changeProjectState(plan);
+                    DataUtil.changeProjectState1(plan);
                     return true;
                 }
             });

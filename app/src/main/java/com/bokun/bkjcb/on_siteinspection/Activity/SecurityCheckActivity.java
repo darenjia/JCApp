@@ -63,6 +63,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
     private PagerAdapter pagerAdapter;
     private AlertDialog dialog;
     private int contentSize;
+    private ArrayList<CheckResult> backup;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -124,6 +125,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             results = DataUtil.readData(context, plan.getIdentifier());
+                            backup = new ArrayList<>(results);
                             initFragments();
                         }
                     })
@@ -271,6 +273,8 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         deleteGarbage();
+                        saveData(1,null);
+                        setResultData(1);
                         finish();
                     }
                 })
@@ -305,7 +309,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
 
     private void deleteGarbage() {
         if (results.size() > 0) {
-            FileUtils.deleteFile(results);
+            FileUtils.deleteFile(results, backup);
         }
     }
 

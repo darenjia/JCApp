@@ -328,7 +328,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         }
         ProjectPlan projectPlan = projectPlans.get(groupPosition);
         projectPlan.setAq_jctz_zt("等待上传");
-        DataUtil.changeProjectState(projectPlan);
+        DataUtil.changeProjectState1(projectPlan);
     }
 
     public void dateHasChange() {

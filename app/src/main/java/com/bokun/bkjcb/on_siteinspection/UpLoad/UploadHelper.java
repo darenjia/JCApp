@@ -44,6 +44,7 @@ public class UploadHelper {
                     uploadFile();
                 } else {
                     listener.onUpdate(0, 0, false);
+//                    listener.onUpdate(1, 1, true);
                     Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show();
                 }
             } else {
