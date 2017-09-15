@@ -34,10 +34,10 @@ public class DataUtil {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            daolmpl.colseDateBase();
+            daolmpl.closeDatabase();
             return false;
         }
-        daolmpl.colseDateBase();
+        daolmpl.closeDatabase();
         return true;
     }
 
@@ -50,7 +50,7 @@ public class DataUtil {
             return results;
         }
         results = daolmpl.queryCheckResult(Identifier);
-        daolmpl.colseDateBase();
+        daolmpl.closeDatabase();
         LogUtil.logI("查询所有该计划的结果" + "identity" + Identifier + " size:" + results.size());
         return results;
     }
@@ -65,7 +65,7 @@ public class DataUtil {
         ArrayList<CheckResult> results = daolmpl.queryCheckResult(Identifier);
         FileUtils.deleteFile(results);
         daolmpl.clean(Identifier);
-        daolmpl.colseDateBase();
+        daolmpl.closeDatabase();
     }
 
     public static void insertCheckPlans(Context context, ArrayList<CheckPlan> plans) {
@@ -75,6 +75,7 @@ public class DataUtil {
                 daolmpl.insertCheckPlan(plan);
             }
         }
+        daolmpl.colseDateBase();
     }
 
     public static void insertCheckPlan(Context context, CheckPlan plan) {
@@ -89,6 +90,7 @@ public class DataUtil {
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);
         CheckPlan plan = daolmpl.queryCheckPlan(indentifier);
         //LogUtil.logI("查询一条检查计划" + plan.getIdentifier() + " state:" + plan.getState());
+        daolmpl.colseDateBase();
         return plan;
     }
 
@@ -96,7 +98,7 @@ public class DataUtil {
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);
         ArrayList<CheckPlan> plans = daolmpl.queryCheckPlan();
         daolmpl.colseDateBase();
-        LogUtil.logI("查询所以检查计划" + plans.size());
+        LogUtil.logI("查询所有检查计划" + plans.size());
         return plans;
     }
 
@@ -210,10 +212,12 @@ public class DataUtil {
     }
 
     public static boolean saveProjectPlan(ArrayList<ProjectPlan> plans, User user) {
-
         if (plans.size() > 0) {
             ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
             for (ProjectPlan p : plans) {
+                if (p.getAQ_JCTZ_sfjc() == 1 || p.getAQ_JCTZ_sfjc() == 0) {
+                    continue;
+                }
                 String id = dao.issaved(p.getAq_lh_seqid());
                 if (id == null) {
                     dao.save(p, user.getId());

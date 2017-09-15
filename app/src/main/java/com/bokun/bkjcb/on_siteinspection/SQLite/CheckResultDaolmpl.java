@@ -93,7 +93,7 @@ public class CheckResultDaolmpl extends CheckResultDao {
     }
 
 
-    public void colseDateBase() {
+    public void closeDatabase() {
         database.close();
     }
 

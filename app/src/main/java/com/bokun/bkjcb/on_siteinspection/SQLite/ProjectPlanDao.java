@@ -106,7 +106,9 @@ public class ProjectPlanDao {
             result.setAq_lh_qxjd(cursor.getString(cursor.getColumnIndex("aq_lh_qxjd")));
             result.setAq_lh_jcrq(cursor.getString(cursor.getColumnIndex("aq_lh_jcrq")));
             result.setAQ_JCTZ_sfjc(cursor.getInt(cursor.getColumnIndex("AQ_JCTZ_sfjc")));
-            list.add(result);
+            if (result.getAQ_JCTZ_sfjc() == 2 || result.getAQ_JCTZ_sfjc() == 3) {
+                list.add(result);
+            }
         }
         return list;
     }

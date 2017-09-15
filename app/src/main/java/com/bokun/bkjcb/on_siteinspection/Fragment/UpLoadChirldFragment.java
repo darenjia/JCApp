@@ -18,14 +18,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bigkoo.alertview.AlertView;
+import com.bigkoo.alertview.OnItemClickListener;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.Notification.NotificationUtil;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.Service.ServiceUtil;
+import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
+import com.bokun.bkjcb.on_siteinspection.Utils.SPUtils;
 
 import java.util.ArrayList;
 
@@ -50,6 +54,7 @@ public class UpLoadChirldFragment extends BaseFragment {
     private NotificationUtil util;
     private int count = 0;
     private UpLoadFragment.OnDataChangeListener listener;
+    private Intent intent;
 
     @Override
     public View initView() {
@@ -193,16 +198,30 @@ public class UpLoadChirldFragment extends BaseFragment {
         }
     }
 
-    private void startUpload(ProjectPlan plan) {
+    private void startUpload(final ProjectPlan plan) {
+        //仅在wifi下上传
+        boolean isUpload = (boolean) SPUtils.get(getContext(), "setting", true);
         if (NetworkUtils.isEnable(getContext())) {
-            util = NotificationUtil.newInstance();
-
-            Intent intent = new Intent();
+            intent = new Intent();
             intent.setAction("android.intent.action.STARTUPLOAD");//你定义的service的action
             intent.setPackage(getContext().getPackageName());
             intent.putExtra("plan", plan.getAq_lh_id());
-            getContext().startService(intent);
-            openBroadCast();
+            if (!isUpload || NetworkUtils.getTypeName(getContext()) == Constants.NETWORK_WIFI) {
+                util = NotificationUtil.newInstance();
+                getContext().startService(intent);
+                openBroadCast();
+            } else {
+                new AlertView("提示", "当前网络为移动网络，该操作会消耗较多数据流量，是否继续操作？", "取消", new String[]{"确定"}, null, getContext(), AlertView.Style.Alert, new OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Object o, int position) {
+                        if (position == 0) {
+                            util = NotificationUtil.newInstance();
+                            getContext().startService(intent);
+                            openBroadCast();
+                        }
+                    }
+                }).setCancelable(true).show();
+            }
         } else {
             Snackbar.make(startAll, "无网络连接，请检查网络", Snackbar.LENGTH_LONG).setAction("设置", new View.OnClickListener() {
                 @Override

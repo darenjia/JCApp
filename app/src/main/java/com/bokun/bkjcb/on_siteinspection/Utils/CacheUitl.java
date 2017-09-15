@@ -17,18 +17,18 @@ import java.io.IOException;
 
 public class CacheUitl {
     private Context context;
-    private DiskLruCache cache;
+    public DiskLruCache cache;
     private final int valueCount = 1;
     private final long max_size = 50 * 1024 * 1024;
     private final String fileName = "jianchajihua";
 
     public CacheUitl() {
         this.context = JCApplication.getContext();
-        try {
-            cache = DiskLruCache.open(getDiskCacheDir(), getAppVersion(), valueCount, max_size);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    }
+
+    //主动抛出异常
+    public void getCache() throws IOException {
+        cache = DiskLruCache.open(getDiskCacheDir(), getAppVersion(), valueCount, max_size);
     }
 
     public File getDiskCacheDir() {
@@ -68,7 +68,7 @@ public class CacheUitl {
         String str = null;
         try {
             DiskLruCache.Snapshot snapshot = cache.get(key);
-            if (snapshot !=null){
+            if (snapshot != null) {
                 str = snapshot.getString(0);
             }
         } catch (IOException e) {

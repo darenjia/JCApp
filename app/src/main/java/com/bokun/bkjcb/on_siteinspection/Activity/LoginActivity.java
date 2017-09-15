@@ -31,6 +31,7 @@ import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.MD5Util;
+import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.SPUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 
@@ -219,7 +220,7 @@ public class LoginActivity extends BaseActivity implements RequestListener {
             focusView.requestFocus();
         } else {
             User user = DataUtil.getUser(userName);
-            if (user != null) {
+            if (!NetworkUtils.isEnable(this)&&user != null) {
                 LogUtil.logI(MD5Util.encode(password) + "  " + passWord);
                 if (MD5Util.encode(password).equals(passWord)) {
                     saveInfo();

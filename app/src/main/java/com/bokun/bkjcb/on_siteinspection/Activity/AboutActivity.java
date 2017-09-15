@@ -3,7 +3,6 @@ package com.bokun.bkjcb.on_siteinspection.Activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.Toolbar;
@@ -20,8 +19,10 @@ import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.SearchedWordDao;
 import com.bokun.bkjcb.on_siteinspection.Utils.CacheUitl;
+import com.bokun.bkjcb.on_siteinspection.Utils.SPUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 public class AboutActivity extends BaseActivity implements View.OnClickListener {
@@ -138,10 +139,16 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         switch (v.getId()) {
             case R.id.about_clean_cache:
                 CacheUitl cacheUitl = new CacheUitl();
-                cacheUitl.clean();
-                cacheUitl.close();
-                cache_size.setText("0B");
-                showToast("缓存已清空");
+                try {
+                    cacheUitl.getCache();
+                    cacheUitl.clean();
+                    cacheUitl.close();
+                } catch (IOException e) {
+                    cacheUitl.getDiskCacheDir().delete();
+                } finally {
+                    cache_size.setText("0B");
+                    showToast("缓存已清空");
+                }
                 break;
             case R.id.about_clean_search:
                 SearchedWordDao.clean();
@@ -191,19 +198,21 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
     }
 
     protected void record(boolean flag) {
-        SharedPreferences preferences = getSharedPreferences("setting", MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("auto", flag);
-        editor.apply();
+        SPUtils.put(this, "auto", flag);
     }
 
     protected boolean getRecord() {
-        SharedPreferences preferences = getSharedPreferences("setting", MODE_PRIVATE);
-        return preferences.getBoolean("auto", true);
+        return (boolean) SPUtils.get(this, "auto", true);
     }
 
     private String setSize() {
         CacheUitl cacheUitl = new CacheUitl();
+        try {
+            cacheUitl.getCache();
+        } catch (IOException e) {
+            cacheUitl.getDiskCacheDir().delete();
+            return 0 + "K";
+        }
         long size = cacheUitl.getSize();
         long sizeM = size / (1000 * 1000);
         long sizeK = size / 1000;

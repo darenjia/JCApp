@@ -34,6 +34,7 @@ import com.bokun.bkjcb.on_siteinspection.View.ConstructionDetailView;
 
 import org.ksoap2.serialization.SoapObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -63,6 +64,11 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = View.inflate(context, R.layout.content_plan, null);
         cacheUitl = new CacheUitl();
+        try {
+            cacheUitl.getCache();
+        } catch (IOException e) {
+            cacheUitl.getDiskCacheDir().delete();
+        }
         initPlanLayout(view);
         return view;
     }
@@ -193,7 +199,9 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
             if (projectPlans == null || planFlag) {//|| projectPlans.size() == 0
                 projectPlans = JsonParser.getProjectData(result.resData);
                 /*有个问题，如果返回数据的SysId发生变化，则此方法要改*/
-                cacheUitl.saveData(Constants.CAAHE_KEY, result.resData);
+                if (cacheUitl.cache != null && result.resData != null) {
+                    cacheUitl.saveData(Constants.CAAHE_KEY, result.resData);
+                }
                 boolean flag = DataUtil.saveProjectPlan(projectPlans, MainActivity.user);
                 if (flag) {
                     planFlag = false;
@@ -212,9 +220,14 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                 return;
             }
             LogUtil.logI("返回数据结果：" + result.resData);
-            String cacheStr = cacheUitl.getData(key);
+            String cacheStr = null;
+            if (cacheUitl.cache != null) {
+                cacheStr = cacheUitl.getData(key);
+            }
             if (cacheStr == null) {
-                cacheUitl.saveData(key, result.resData);
+                if (cacheUitl.cache != null) {
+                    cacheUitl.saveData(key, result.resData);
+                }
                 checkPlans = JsonParser.getJSONData(result.resData);
                 LogUtil.logI(checkPlans.size() + "");
                 DataUtil.insertCheckPlans(context, checkPlans);
@@ -249,7 +262,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     private void createDailog(final CheckPlan checkPlan, final int groupPosition, final int childPosition) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 //        projectPlans.get(1).setAQ_JCTZ_sfjc(2);
-        LogUtil.logI(projectPlans.get(groupPosition).getAQ_JCTZ_sfjc() + "");
+        LogUtil.logI(projectPlans.get(groupPosition).getAQ_JCTZ_sfjc() + "AQ_JCTZ_sfjc");
         boolean flag = projectPlans.get(groupPosition).getAQ_JCTZ_sfjc() == 1;
         ConstructionDetailView constructionDetailView = ConstructionDetailView.getConstructionView(context);
         View view = constructionDetailView.setData(checkPlan, flag, new View.OnClickListener() {
@@ -289,7 +302,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (cacheUitl != null) {
+        if (cacheUitl != null && cacheUitl.cache != null) {
             cacheUitl.close();
         }
     }
