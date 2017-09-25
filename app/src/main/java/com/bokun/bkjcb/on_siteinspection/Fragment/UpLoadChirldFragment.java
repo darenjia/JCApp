@@ -1,13 +1,19 @@
 package com.bokun.bkjcb.on_siteinspection.Fragment;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.TrafficStats;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -18,8 +24,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bigkoo.alertview.AlertView;
-import com.bigkoo.alertview.OnItemClickListener;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.Notification.NotificationUtil;
@@ -47,6 +51,7 @@ public class UpLoadChirldFragment extends BaseFragment {
     private ProjectPlan task;
     private boolean finished;
     private Button progress;
+    private TextView speed;
     private Button startAll;
     private BroadcastReceiver receiver;
     private LocalBroadcastManager manager;
@@ -55,6 +60,20 @@ public class UpLoadChirldFragment extends BaseFragment {
     private int count = 0;
     private UpLoadFragment.OnDataChangeListener listener;
     private Intent intent;
+    private GetURLSpeedThread speedThread;
+    private boolean isStop;
+
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 0) {
+                String spd = "正在上传\t\t" + msg.obj;
+                speed.setText(spd);
+            }
+        }
+    };
 
     @Override
     public View initView() {
@@ -142,6 +161,7 @@ public class UpLoadChirldFragment extends BaseFragment {
             if (position == 0 && projectPlan.getState_upload() == 1 || projectPlan.getState_upload() == 2) {
                 viewHolder.state.setText("正在上传");
                 progress = viewHolder.button;
+                speed = viewHolder.state;
                 if (task == null) {
                     task = projectPlan;
                     viewHolder.button.setText("0%");
@@ -211,16 +231,25 @@ public class UpLoadChirldFragment extends BaseFragment {
                 getContext().startService(intent);
                 openBroadCast();
             } else {
-                new AlertView("提示", "当前网络为移动网络，该操作会消耗较多数据流量，是否继续操作？", "取消", new String[]{"确定"}, null, getContext(), AlertView.Style.Alert, new OnItemClickListener() {
-                    @Override
-                    public void onItemClick(Object o, int position) {
-                        if (position == 0) {
-                            util = NotificationUtil.newInstance();
-                            getContext().startService(intent);
-                            openBroadCast();
-                        }
-                    }
-                }).setCancelable(true).show();
+                AlertDialog tipDialog = new AlertDialog.Builder(getContext())
+                        .setTitle("提示")
+                        .setMessage("当前网络为移动网络，该操作会消耗较多数据流量，是否继续操作？")
+                        .setPositiveButton("继续", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                util = NotificationUtil.newInstance();
+                                getContext().startService(intent);
+                                openBroadCast();
+                                dialog.dismiss();
+                            }
+                        }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).create();
+                tipDialog.setCanceledOnTouchOutside(false);
+                tipDialog.show();
             }
         } else {
             Snackbar.make(startAll, "无网络连接，请检查网络", Snackbar.LENGTH_LONG).setAction("设置", new View.OnClickListener() {
@@ -286,6 +315,9 @@ public class UpLoadChirldFragment extends BaseFragment {
     }
 
     private void openBroadCast() {
+        speedThread = new GetURLSpeedThread();
+        isStop = true;
+        speedThread.start();
         if (receiver != null) {
             return;
         }
@@ -312,6 +344,8 @@ public class UpLoadChirldFragment extends BaseFragment {
                         ProjectPlan projectPlan = projectPlans.get(0);
                         projectPlan.setAq_jctz_zt("上传完成");
                         DataUtil.changeProjectState(projectPlan);
+//                        speedThread.interrupt();
+                        isStop = false;
                         projectPlans.remove(0);
                         task = null;
                         LogUtil.logI("上传完成" + projectPlan.getAq_lh_jcmc());
@@ -376,5 +410,46 @@ public class UpLoadChirldFragment extends BaseFragment {
 
     public void setListenter(UpLoadFragment.OnDataChangeListener listener) {
         this.listener = listener;
+    }
+
+    class GetURLSpeedThread extends Thread {
+        String spd;
+
+        @Override
+        public void run() {
+            super.run();
+            while (isStop) {
+               /* if (this.isInterrupted()) {
+                    break;
+                }*/
+                long pre = TrafficStats.getTotalTxBytes();
+                try {
+                    Thread.sleep(1000);
+                    long speed = TrafficStats.getTotalTxBytes() - pre;
+                    long sizeM = speed / (1000 * 1000);
+                    long sizeK = speed / 1000;
+                    if (sizeM > 0.1) {
+                        spd = sizeM + "M/s";
+                    } else if (sizeK > 0.1) {
+                        spd = sizeK + "K/s";
+                    } else {
+                        spd = speed + "B/s";
+                    }
+                    LogUtil.logI(spd);
+                    Message message = new Message();
+                    message.obj = spd;
+                    message.what = 0;
+                    mHandler.sendMessage(message);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    break;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 }
