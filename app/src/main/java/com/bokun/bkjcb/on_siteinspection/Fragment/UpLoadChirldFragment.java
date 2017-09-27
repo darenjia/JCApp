@@ -69,8 +69,10 @@ public class UpLoadChirldFragment extends BaseFragment {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 0) {
-                String spd = "正在上传\t\t" + msg.obj;
-                speed.setText(spd);
+                if (isStop) {
+                    String spd = "正在上传\t\t" + msg.obj;
+                    speed.setText(spd);
+                }
             }
         }
     };
@@ -196,6 +198,7 @@ public class UpLoadChirldFragment extends BaseFragment {
                                 projectPlans.add(projectPlan);
                             }
                             stopUpload();
+                            isStop = false;
                             task = null;
                             notifyDataSetChanged();
                         }

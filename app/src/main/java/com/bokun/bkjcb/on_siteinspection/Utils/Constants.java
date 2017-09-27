@@ -83,6 +83,20 @@ public class Constants {
             "name varchar(20)," +
             "type int(1)" +
             ")";
+    public final static String CREATE_TEMP_TABLE="alter table finishedplan rename to _temp_finishedplan";
+    public final static String CREATE_NEW_FINISHED_PALN = "create table finishedplan(" +
+            "id Integer primary key," +
+            "SysId int(20)," +
+            "SysGcxxdjh int(20)," +
+            "FinishedTime char(20)," +
+            "Username char(10)," +
+            "AQ_LH_ID char(20)," +
+            "problems int(10)," +
+            "StrProblem text" +
+            ")";
+    public final static String INSERT_DATA_FINISHED_PALN="insert into finishedplan select *,0,'' from _temp_finishedplan";
+    public final static String DROP_TEMP="drop table _temp_finishedplan";
+
     public final static String GetXxclSc = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
             "<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\n" +
             "  <soap12:Body>\n" +
