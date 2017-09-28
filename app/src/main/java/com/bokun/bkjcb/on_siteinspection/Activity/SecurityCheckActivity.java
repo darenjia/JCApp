@@ -18,8 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bigkoo.alertview.AlertView;
-import com.bigkoo.alertview.OnItemClickListener;
 import com.bokun.bkjcb.on_siteinspection.Adapter.PagerAdapter;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckResult;
@@ -32,6 +30,7 @@ import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.FileUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
+import com.bokun.bkjcb.on_siteinspection.View.AlertGuidBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,7 +70,8 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
         plan = (CheckPlan) getIntent().getExtras().getSerializable("checkplan");
         setContentView(R.layout.activity_securitycheck);
         toolbar = (Toolbar) findViewById(R.id.toolbar_secAct);
-        toolbar.setTitle("安全检查");
+//        toolbar.setTitle("安全检查");
+        toolbar.setTitle("安全检查" + "(行业管理方面)");
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.back);
         Utils.initSystemBar(this, toolbar);
@@ -197,6 +197,12 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
         }
         LogUtil.logI("position:" + mMenu.hasVisibleItems());*/
         page_num.setText((position + 1) + "/" + fragments.size());
+        if (position < 15) {
+            toolbar.setTitle("安全检查" + "(行业管理方面)");
+        } else {
+            toolbar.setTitle("安全检查" + "(民防设施方面)");
+
+        }
     }
 
     @Override
@@ -231,7 +237,10 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
             viewPager.arrowScroll(View.FOCUS_RIGHT);
             LogUtil.logI("click forward");
         } else if (id == page_num.getId()) {
-            String[] title = new String[contentSize + 1];
+            List<String> strings = new ArrayList<>();
+            strings.addAll(contents);
+            strings.add("处理意见");
+           /* String[] title = new String[contentSize + 1];
             contents.toArray(title);
             title[contentSize] = "处理意见";
             new AlertView(null, null, "取消", null,
@@ -241,7 +250,13 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                         public void onItemClick(Object o, int position) {
                             viewPager.setCurrentItem(position, false);
                         }
-                    }).show();
+                    }).show();*/
+            new AlertGuidBuilder(strings, this, new AlertGuidBuilder.OnClickListener() {
+                @Override
+                public void onClick(int position) {
+                    viewPager.setCurrentItem(position, false);
+                }
+            }, viewPager.getCurrentItem()).builder();
         }
     }
 
@@ -273,7 +288,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         deleteGarbage();
-                        saveData(1,null);
+                        saveData(1, null);
                         setResultData(1);
                         finish();
                     }
