@@ -92,7 +92,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
             values.put("tel", plan.getTel());*/
             plan.setArea(cursor.getString(cursor.getColumnIndex("area")));
             plan.setAddress(cursor.getString(cursor.getColumnIndex("address")));
-            plan.setSysId(cursor.getInt(cursor.getColumnIndex("sysId")));
+//            plan.setSysId(cursor.getInt(cursor.getColumnIndex("sysId")));
             plan.setType(cursor.getString(cursor.getColumnIndex("type")));
             plan.setQuxian(cursor.getString(cursor.getColumnIndex("quxian")));
             plan.setManager(cursor.getString(cursor.getColumnIndex("manager")));

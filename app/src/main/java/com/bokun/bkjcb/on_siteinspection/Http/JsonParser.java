@@ -1,8 +1,11 @@
 package com.bokun.bkjcb.on_siteinspection.Http;
 
+import android.content.Context;
+
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
+import com.bokun.bkjcb.on_siteinspection.Domain.TableKeys;
 import com.bokun.bkjcb.on_siteinspection.Domain.User;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.google.gson.Gson;
@@ -14,6 +17,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.ksoap2.serialization.SoapObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 /**
@@ -93,9 +100,9 @@ public class JsonParser {
                     checkPlan.setIdentifier(0);
                 }
                 try {
-                    checkPlan.setSysId(con.getInt("SysId"));
+                    checkPlan.setSysID(con.getInt("SysId"));
                 } catch (JSONException e) {
-                    checkPlan.setSysId(0);
+                    checkPlan.setSysID(0);
                 }
 
                 try {
@@ -164,5 +171,37 @@ public class JsonParser {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static ArrayList<TableKeys> getKeysItems(Context context) {
+        ArrayList list = new ArrayList<>();
+        JSONObject object = null;
+        StringBuilder builder = new StringBuilder();
+        try {
+            InputStream inputStream = context.getAssets().open("TableDetail");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String str;
+            while ((str = reader.readLine()) != null) {
+                builder.append(str);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            object = new JSONObject(builder.toString());
+            JSONArray array = object.getJSONArray("items");
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject obj = array.optJSONObject(i);
+                TableKeys keys = new TableKeys();
+                keys.setId(Integer.parseInt(obj.getString("id")));
+                keys.setTitle(obj.getString("title"));
+                keys.setType(obj.getInt("type"));
+                keys.setUnit(obj.getString("unit"));
+                list.add(keys);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

@@ -64,8 +64,7 @@ public class InfoAdapter extends BaseAdapter {
 
         view = convertView;
         if (view == null) {
-            LayoutInflater inflater = LayoutInflater.from(context);
-            view = inflater.inflate(R.layout.info_child_view, null);
+            view = inflateView(R.layout.info_child_view);
             holder = new ViewHolder(view);
             view.setTag(holder);
         } else {
@@ -131,5 +130,10 @@ public class InfoAdapter extends BaseAdapter {
             layout.addView(view);
         }
 
+    }
+
+    private View inflateView(int layoutId) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        return inflater.inflate(layoutId, null);
     }
 }

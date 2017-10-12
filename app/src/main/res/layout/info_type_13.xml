@@ -4,16 +4,19 @@
     android:layout_height="wrap_content"
     android:paddingLeft="20dp">
     <CheckBox
+        android:id="@+id/type_zb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="周边地下室"
         android:textColor="@color/text_color"/>
     <CheckBox
+        android:id="@+id/type_dt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="地铁"
         android:textColor="@color/text_color"/>
     <TextView
+        android:id="@+id/tv_dt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="（站名：               ）"

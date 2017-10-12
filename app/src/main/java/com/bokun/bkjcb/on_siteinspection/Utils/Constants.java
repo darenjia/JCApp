@@ -83,7 +83,13 @@ public class Constants {
             "name varchar(20)," +
             "type int(1)" +
             ")";
-    public final static String CREATE_TEMP_TABLE="alter table finishedplan rename to _temp_finishedplan";
+    public final static String CREATE_TABLE_INFO = "create table infokey(" +
+            "id Integer primary key," +
+            "title varchar(20)," +
+            "type int(5)," +
+            "unit varchar(5)" +
+            ")";
+    public final static String CREATE_TEMP_TABLE = "alter table finishedplan rename to _temp_finishedplan";
     public final static String CREATE_NEW_FINISHED_PALN = "create table finishedplan(" +
             "id Integer primary key," +
             "SysId int(20)," +
@@ -94,8 +100,8 @@ public class Constants {
             "problems int(10)," +
             "StrProblem text" +
             ")";
-    public final static String INSERT_DATA_FINISHED_PALN="insert into finishedplan select *,0,'' from _temp_finishedplan";
-    public final static String DROP_TEMP="drop table _temp_finishedplan";
+    public final static String INSERT_DATA_FINISHED_PALN = "insert into finishedplan select *,0,'' from _temp_finishedplan";
+    public final static String DROP_TEMP = "drop table _temp_finishedplan";
 
     public final static String GetXxclSc = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
             "<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\n" +
@@ -130,7 +136,7 @@ public class Constants {
     * 测试IP地址
     * */
 //    public static final String HTTPURL = "http://192.168.100.211:8080/zgzxjkWebService.asmx";
-//    public static final String HTTPURL = "http://192.168.100.136:8080/zgzxjkWebService.asmx";
+//    public static final String HTTPURL = "http://101.231.52.50:8080/zgzxjkWebService.asmx";
 //    public static final String FTP_HOST_DEFAULT = "192.168.100.211";
 //    public static final int FTP_HOST_PORT = 21;
 //    public static final String FTP_USER_DEFAULT = "zgzx";
