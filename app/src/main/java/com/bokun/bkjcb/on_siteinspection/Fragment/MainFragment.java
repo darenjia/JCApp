@@ -71,6 +71,9 @@ public class MainFragment extends Fragment {
         }
     });
 
+    public void showView() {
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

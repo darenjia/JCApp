@@ -37,7 +37,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
         values.put("type", plan.getType());
         values.put("tel", plan.getTel());
         long i = db.insert("checkplan", null, values);
-        LogUtil.logI("插入plan" + i);
+//        LogUtil.logI("插入plan" + i);
     }
 
     @Override

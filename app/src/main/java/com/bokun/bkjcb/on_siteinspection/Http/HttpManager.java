@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
+import com.orhanobut.logger.Logger;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
@@ -16,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.SocketException;
@@ -162,6 +164,7 @@ public class HttpManager implements Runnable {
             String METHOD_NAME = requestVo.methodName;
             //String URL = "http://192.168.137.1:1856/zgzxjkWebService.asmx";
             String URL = Constants.HTTPURL;
+            Logger.i(URL);
             // 新建 SoapObject 对象
             SoapObject rpc = new SoapObject(NAMESPACE, METHOD_NAME);
             HashMap<String, String> map = requestVo.requestDataMap;
@@ -201,6 +204,8 @@ public class HttpManager implements Runnable {
         } catch (ProtocolException e) {
             listener.action(RequestListener.EVENT_GET_DATA_EEEOR, null);
         } catch (SocketTimeoutException e) {
+            listener.action(RequestListener.EVENT_GET_DATA_EEEOR, null);
+        } catch (ConnectException e) {
             listener.action(RequestListener.EVENT_GET_DATA_EEEOR, null);
         } catch (Exception e) {
             e.printStackTrace();

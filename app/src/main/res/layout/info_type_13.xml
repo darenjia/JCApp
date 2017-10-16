@@ -2,23 +2,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:paddingLeft="20dp">
+
     <CheckBox
-        android:id="@+id/type_zb"
+        android:id="@+id/type_13_zb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:text="周边地下室"
-        android:textColor="@color/text_color"/>
-    <CheckBox
-        android:id="@+id/type_dt"
+        android:textColor="@color/text_color" />
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="地铁"
-        android:textColor="@color/text_color"/>
-    <TextView
-        android:id="@+id/tv_dt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="（站名：               ）"
-        android:textColor="@color/text_color"/>
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/type_13_dt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:text="地铁"
+            android:textColor="@color/text_color" />
+
+        <TextView
+            android:id="@+id/tv_13_dt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="（站名：               ）"
+            android:textColor="@color/text_color" />
+    </LinearLayout>
+
 </LinearLayout>

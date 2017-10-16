@@ -3,23 +3,30 @@
     android:id="@+id/radio_group"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="false"
     android:paddingLeft="20dp">
 
     <RadioButton
+        android:id="@+id/type_5_hlt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:text="钢筋混凝土"
         android:textColor="@color/text_color" />
 
     <RadioButton
+        android:id="@+id/type_5_zh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:text="砖混"
         android:textColor="@color/text_color" />
 
     <RadioButton
+        android:id="@+id/type_5_qt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:text="其它"
         android:textColor="@color/text_color" />
 

@@ -3,23 +3,30 @@
     android:id="@+id/radio_group"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="false"
     android:paddingLeft="20dp">
 
     <RadioButton
+        android:id="@+id/type_9_yes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:text="是"
         android:textColor="@color/text_color" />
 
     <RadioButton
+        android:id="@+id/type_9_no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:text="否"
         android:textColor="@color/text_color" />
 
     <RadioButton
+        android:id="@+id/type_9_yl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:text="预留"
         android:textColor="@color/text_color" />
 </RadioGroup>

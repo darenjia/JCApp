@@ -2,6 +2,7 @@ package com.bokun.bkjcb.on_siteinspection.SQLite;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
@@ -25,8 +26,13 @@ public class PlanDao {
         database = util.getWritableDatabase();
     }
 
-    public void checkPlanInfoTable() throws SQLiteException {
-        database.execSQL("select count(id) from infokey");
+    public int checkPlanInfoTable() throws SQLiteException {
+        int flag = 0;
+        Cursor cursor = database.rawQuery("select count(id) from infokey", null);
+        if (cursor.moveToNext()) {
+            flag = cursor.getInt(0);
+        }
+        return flag;
     }
 
     public void createTable() {
@@ -46,10 +52,22 @@ public class PlanDao {
         values.put("title", keys.getTitle());
         values.put("type", keys.getType());
         values.put("unit", keys.getUnit());
+        values.put("typeid", keys.getId());
         flag = database.insert("infokey", "id", values);
         return flag > 0;
     }
-    public void close(){
+
+    public TableKeys query(int typeId) {
+        TableKeys keys = new TableKeys();
+        Cursor cursor = database.query("infokey", null, "typeid=?", new String[]{String.valueOf(typeId)}, null, null, null);
+        if (cursor.moveToNext()) {
+            keys.setTitle(cursor.getString(cursor.getColumnIndex("title")));
+            keys.setUnit(cursor.getString(cursor.getColumnIndex("unit")));
+        }
+        return keys;
+    }
+
+    public void close() {
         database.close();
     }
 }

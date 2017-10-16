@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.bokun.bkjcb.on_siteinspection.Activity.InfoActivity;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.R;
 
@@ -27,6 +28,7 @@ public class ConstructionDetailView {
     private TextView mViewUser;
     private TextView mTitle;
     private Button mButtonCheck;
+    private Button mButtonLook;
     private View resView;
     private String title;
 
@@ -65,6 +67,12 @@ public class ConstructionDetailView {
         } else {
             mButtonCheck.setOnClickListener(listener);
         }
+        mButtonLook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InfoActivity.ComeInfoActivity(context,checkPlan.getSysId());
+            }
+        });
         return resView;
     }
 
@@ -80,6 +88,7 @@ public class ConstructionDetailView {
         mViewManager = (TextView) resView.findViewById(R.id.construction_manager);
         mViewUser = (TextView) resView.findViewById(R.id.construction_user);
         mButtonCheck = (Button) resView.findViewById(R.id.btn_check);
+        mButtonLook = (Button) resView.findViewById(R.id.btn_detail);
     }
 
 }

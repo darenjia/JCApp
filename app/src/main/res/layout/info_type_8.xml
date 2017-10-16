@@ -3,17 +3,22 @@
     android:id="@+id/radio_group"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="false"
     android:paddingLeft="20dp">
 
     <RadioButton
+        android:id="@+id/type_8_dxs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:text="普通地下室"
         android:textColor="@color/text_color" />
 
     <RadioButton
+        android:id="@+id/type_8_mf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:text="民防工程"
         android:textColor="@color/text_color" />
 </RadioGroup>

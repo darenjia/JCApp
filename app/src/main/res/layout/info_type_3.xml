@@ -3,23 +3,30 @@
     android:id="@+id/radio_group"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="20dp">
+    android:paddingLeft="20dp"
+    android:clickable="false">
 
     <RadioButton
+        android:id="@+id/type_3_s"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="2.2M以下"
+        android:clickable="false"
         android:textColor="@color/text_color" />
 
     <RadioButton
+        android:id="@+id/type_3_m"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="2.2~2.8M"
+        android:clickable="false"
         android:textColor="@color/text_color" />
 
     <RadioButton
+        android:id="@+id/type_3_l"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="2.8M以上"
+        android:clickable="false"
         android:textColor="@color/text_color" />
 </RadioGroup>

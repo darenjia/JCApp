@@ -18,6 +18,7 @@ import com.bokun.bkjcb.on_siteinspection.Adapter.ExpandableListViewAdapter;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
+import com.bokun.bkjcb.on_siteinspection.Domain.TableData;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpManager;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpRequestVo;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
@@ -25,12 +26,14 @@ import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
+import com.bokun.bkjcb.on_siteinspection.SQLite.TableDataDao;
 import com.bokun.bkjcb.on_siteinspection.Utils.CacheUitl;
 import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.MD5Util;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 import com.bokun.bkjcb.on_siteinspection.View.ConstructionDetailView;
+import com.orhanobut.logger.Logger;
 
 import org.ksoap2.serialization.SoapObject;
 
@@ -56,7 +59,8 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     private String key = "sad1ee213124c1";
     private TextView errorView;
     private TextView nullView;
-    private boolean planFlag = true;//判断是否是获取工程还是计划
+    private boolean planFlag = true;//判断是获取工程还是计划
+    private StringBuilder sysIds;
 
     @Nullable
     @Override
@@ -79,8 +83,6 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorRecycler));
         errorView = (TextView) view.findViewById(R.id.error_view);
         nullView = (TextView) view.findViewById(R.id.null_view);
-        //HttpRequestVo requestVo = new HttpRequestVo(Constants.GetXxclScURL, Constants.GetXxclSc.replace("quxian", MainActivity.quxian));
-        //OkHttpManager manager = new OkHttpManager(context, this, requestVo);
         getDateFromNet();
         refreshLayout.setRefreshing(true);
 
@@ -107,8 +109,38 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         manager.postRequest();
     }
 
+    private void getTableDateFromNet() {
+        String sysids = getDataSysID();
+        Logger.i(sysids);
+        if (sysids.equals("")) {
+            return;
+        }
+        sysids = sysids.substring(0, sysids.length()-1);
+        HttpRequestVo requestVo = new HttpRequestVo();
+        requestVo.getRequestDataMap().put("quxian", JCApplication.user.getQuxian());
+        requestVo.getRequestDataMap().put("sysids", sysids);
+        requestVo.setMethodName("GetXxclSc1");
+        HttpManager manager = new HttpManager(context, new RequestListener() {
+            @Override
+            public void action(int i, Object object) {
+                JsonResult result = null;
+                if (object != null) {
+                    result = JsonParser.parseSoap((SoapObject) object);
+                    if (result.success) {
+                        TableData data = JsonParser.getDataItems((SoapObject) object);
+                        LogUtil.logI(data.getBiaogeInfo().size() + "");
+                        TableDataDao dao = new TableDataDao(context);
+                        dao.save(data);
+                        dao.close();
+                    }
+                }
+            }
+        }, requestVo);
+        manager.postRequest();
+    }
+
     private void getCheckPlanFromNet() {
-        StringBuilder sysIds = new StringBuilder();
+        sysIds = new StringBuilder();
         if (projectPlans != null && projectPlans.size() > 0) {
             for (int i = 0; i < projectPlans.size(); i++) {
                 String ids = projectPlans.get(i).getAq_sysid();
@@ -137,6 +169,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     protected void getDataSucceed(JsonResult object) {
         errorView.setVisibility(View.GONE);
         LogUtil.logI("获取数据成功");
+        getTableDateFromNet();
         setExpandableListView();
     }
 
@@ -358,5 +391,19 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
             constuctions.add(DataUtil.getCheckPlan(ids));
         }
         adapter.notifyDataSetChanged();
+    }
+
+    private String getDataSysID() {
+        StringBuilder builder = new StringBuilder();
+        TableDataDao dataDao = new TableDataDao(context);
+        String[] array = sysIds.toString().split(",");
+        for (int i = 0; i < array.length; i++) {
+            if (!dataDao.hasSaved(array[i])) {
+                builder.append(array[i]);
+                builder.append(",");
+            }
+        }
+        dataDao.close();
+        return builder.toString();
     }
 }

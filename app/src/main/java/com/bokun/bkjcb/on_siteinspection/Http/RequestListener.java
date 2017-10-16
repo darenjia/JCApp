@@ -1,7 +1,5 @@
 package com.bokun.bkjcb.on_siteinspection.Http;
 
-import java.util.Objects;
-
 /**
  * Created by BKJCB on 2017/3/16.
  */

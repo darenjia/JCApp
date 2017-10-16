@@ -3,41 +3,54 @@
     android:id="@+id/radio_group"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="false"
     android:paddingLeft="20dp">
 
     <RadioButton
+        android:id="@+id/type_10_zz"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:text="住宅"
         android:textColor="@color/text_color" />
 
     <RadioButton
+        android:id="@+id/type_10_yy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:text="医院"
         android:textColor="@color/text_color" />
 
     <RadioButton
+        android:id="@+id/type_10_xx"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:text="学校"
         android:textColor="@color/text_color" />
 
     <RadioButton
+        android:id="@+id/type_10_sy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:text="商业、办公楼"
         android:textColor="@color/text_color" />
 
     <RadioButton
+        android:id="@+id/type_10_ld"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:text="绿地、公园"
         android:textColor="@color/text_color" />
 
     <RadioButton
+        android:id="@+id/type_10_qt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="false"
         android:text="其他"
         android:textColor="@color/text_color" />
 </RadioGroup>

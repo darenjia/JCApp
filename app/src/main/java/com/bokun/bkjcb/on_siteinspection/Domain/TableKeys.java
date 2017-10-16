@@ -5,16 +5,16 @@ package com.bokun.bkjcb.on_siteinspection.Domain;
  */
 
 public class TableKeys {
-    private int id;
+    private String id;
     private String title;
     private int type;
     private String unit;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

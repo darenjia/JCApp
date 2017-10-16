@@ -19,29 +19,34 @@ public class LogUtil {
         LogUtil.isLog = isLog;
     }
 
-    public static void logD(String tag,String msg){
-        if (isLog){
-            Log.d(tag,msg);
+    public static void logD(String tag, String msg) {
+        if (isLog) {
+            Log.d(tag, msg);
         }
     }
-    public static void logE(String tag,String msg){
-        if (isLog){
-            Log.e(tag,msg);
+
+    public static void logE(String tag, String msg) {
+        if (isLog) {
+            Log.e(tag, msg);
         }
     }
-    public static void logV(String tag,String msg){
-        if (isLog){
-            Log.v(tag,msg);
+
+    public static void logV(String tag, String msg) {
+        if (isLog) {
+            Log.v(tag, msg);
         }
     }
-    public static void logI(String tag,String msg){
-        if (isLog){
-            Log.i(tag,msg);
+
+    public static void logI(String tag, String msg) {
+        if (isLog) {
+            Log.i(tag, msg);
         }
     }
-    public static void logI(String msg){
-        if (isLog){
+
+    public static void logI(String msg) {
+        if (isLog) {
             Log.i(AUTHOR,msg);
+//            Logger.i(msg);
         }
     }
 

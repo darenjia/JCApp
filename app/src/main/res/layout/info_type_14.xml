@@ -2,22 +2,75 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:paddingLeft="20dp">
-    <CheckBox
-        android:id="@+id/table_title"
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/type_14_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="false"
+            android:text="周边地下室"
+            android:textColor="@color/text_color" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:padding="10dp"
+            android:text="建筑面积"
+            android:textColor="@color/text_color" />
+
+        <TextView
+            android:id="@+id/type_14_area"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text=" 242 "
+            android:textColor="@color/text_color" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".2"
+            android:padding="10dp"
+            android:text=" ㎡ "
+            android:textColor="@color/text_color" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/type_14_cw"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="周边地下室"
-        android:textColor="@color/text_color"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="建筑面积"
-        android:layout_marginLeft="20dp"
-        android:textColor="@color/text_color"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=" 242 ㎡"
-        android:textColor="@color/text_color"/>
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:padding="10dp"
+            android:text="车位数"
+            android:textColor="@color/text_color" />
+
+        <TextView
+            android:id="@+id/type_14_cws"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:gravity="center_horizontal"
+            android:text=" 242 "
+            android:textColor="@color/text_color" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text=" 个 "
+            android:textColor="@color/text_color" />
+    </LinearLayout>
 </LinearLayout>
