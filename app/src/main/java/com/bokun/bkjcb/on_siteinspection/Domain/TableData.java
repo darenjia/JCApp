@@ -212,10 +212,10 @@ public class TableData {
         private String ScJbJdxz;
         private String ScJbBz;
         private String ScXzJcnf;
-        private int ScXzJzmj;
+        private String ScXzJzmj;
         private String ScXzSjyt;
-        private int ScXzMfjzmj;
-        private double ScXzMzsd;
+        private String ScXzMfjzmj;
+        private String ScXzMzsd;
         private int ScXzKbs;
         private int ScXzDxcs;
         private int ScXzJgys;
@@ -312,11 +312,11 @@ public class TableData {
             ScXzJcnf = scXzJcnf;
         }
 
-        public int getScXzJzmj() {
+        public String getScXzJzmj() {
             return ScXzJzmj;
         }
 
-        public void setScXzJzmj(int scXzJzmj) {
+        public void setScXzJzmj(String scXzJzmj) {
             ScXzJzmj = scXzJzmj;
         }
 
@@ -328,19 +328,19 @@ public class TableData {
             ScXzSjyt = scXzSjyt;
         }
 
-        public int getScXzMfjzmj() {
+        public String getScXzMfjzmj() {
             return ScXzMfjzmj;
         }
 
-        public void setScXzMfjzmj(int scXzMfjzmj) {
+        public void setScXzMfjzmj(String scXzMfjzmj) {
             ScXzMfjzmj = scXzMfjzmj;
         }
 
-        public double getScXzMzsd() {
+        public String getScXzMzsd() {
             return ScXzMzsd;
         }
 
-        public void setScXzMzsd(double scXzMzsd) {
+        public void setScXzMzsd(String scXzMzsd) {
             ScXzMzsd = scXzMzsd;
         }
 
@@ -804,7 +804,7 @@ public class TableData {
 
         private int SysId;
         private String SyScSsmc;
-        private int SyScJzmj;
+        private String SyScJzmj;
         private int SyScCws;
         private String SyScQtyt;
 
@@ -824,11 +824,11 @@ public class TableData {
             this.SyScSsmc = SyScSsmc;
         }
 
-        public int getSyScJzmj() {
+        public String getSyScJzmj() {
             return SyScJzmj;
         }
 
-        public void setSyScJzmj(int SyScJzmj) {
+        public void setSyScJzmj(String SyScJzmj) {
             this.SyScJzmj = SyScJzmj;
         }
 

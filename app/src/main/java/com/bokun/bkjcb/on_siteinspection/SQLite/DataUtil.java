@@ -263,7 +263,8 @@ public class DataUtil {
     public static void deleteFinishedProjectPlan(User user) {
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(JCApplication.getContext());
-        CheckResultDao daoR = new CheckResultDaolmpl(JCApplication.getContext());
+        TableDataDao dataDao = new TableDataDao(JCApplication.getContext());
+        CheckResultDaolmpl daoR = new CheckResultDaolmpl(JCApplication.getContext());
         ArrayList<ProjectPlan> projectPlans;
         ArrayList<CheckResult> checkResults = new ArrayList<>();
         projectPlans = dao.query("上传完成", user.getId());
@@ -272,12 +273,18 @@ public class DataUtil {
             String[] strings = p.getAq_sysid().split(",");
             for (String s : strings) {
                 checkPlans.add(daolmpl.queryCheckPlan(s));
+//                daolmpl.delete(s);
+                dataDao.delete(s);
             }
+            dao.delete(p.getAq_lh_id());
         }
         for (CheckPlan c : checkPlans) {
             checkResults.addAll(daoR.queryCheckResult(c.getIdentifier()));
+//            cleanData(JCApplication.getContext(), c.getIdentifier());
+            daoR.clean(c.getIdentifier());
         }
         FileUtils.deleteFile(checkResults);
+
     }
 
     public static void insertUser(User user) {

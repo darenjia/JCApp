@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
-import com.orhanobut.logger.Logger;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
@@ -164,7 +163,7 @@ public class HttpManager implements Runnable {
             String METHOD_NAME = requestVo.methodName;
             //String URL = "http://192.168.137.1:1856/zgzxjkWebService.asmx";
             String URL = Constants.HTTPURL;
-            Logger.i(URL);
+//            Logger.i(URL);
             // 新建 SoapObject 对象
             SoapObject rpc = new SoapObject(NAMESPACE, METHOD_NAME);
             HashMap<String, String> map = requestVo.requestDataMap;

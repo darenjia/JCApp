@@ -13,7 +13,7 @@ public class SearchedWordDao {
     private SQLiteDatabase database;
     private static SearchedWordDao search;
 
-    public SearchedWordDao(Context context) {
+    private SearchedWordDao(Context context) {
         SQLiteOpenUtil util = new SQLiteOpenUtil(context);
         database = util.getWritableDatabase();
     }

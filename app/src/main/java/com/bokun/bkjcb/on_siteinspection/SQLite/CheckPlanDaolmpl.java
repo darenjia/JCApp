@@ -224,6 +224,11 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
         return isSuccess != 0;
     }
 
+    @Override
+    public void delete(String sysID) {
+        db.delete("checkplan", "sysId=?", new String[]{sysID});
+    }
+
     public boolean updateCheckPlanState(String id, int newstate) {
         int state = queryCheckPlanState(Integer.valueOf(id));
         if (state == -1) {
@@ -237,7 +242,9 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
     }
 
     public void colseDateBase() {
-        db.close();
+        if (db.isOpen()) {
+            db.close();
+        }
     }
 
 }

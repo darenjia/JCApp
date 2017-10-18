@@ -50,6 +50,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="false"
-        android:text="其他"
+        android:text="其它"
         android:textColor="@color/text_color" />
 </RadioGroup>

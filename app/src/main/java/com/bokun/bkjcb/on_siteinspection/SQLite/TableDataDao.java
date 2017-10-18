@@ -43,6 +43,7 @@ public class TableDataDao {
         for (TableData.ShengChan2 shengChan2 : tableData.getShengchan02()) {
             saveShengChan(shengChan2);
         }
+        close();
     }
 
     public TableData query(String sysId) {
@@ -53,9 +54,18 @@ public class TableDataDao {
         data.setScShiyongdw(queryDW(sysId));
         data.setShengchan01(querySC1(sysId));
         data.setShengchan02(querySC2(sysId));
+        close();
         return data;
     }
 
+    public void delete(String sysId){
+        database.delete("shengchan01","SysId=?",new String[]{sysId});
+        database.delete("shengchan02","SysId=?",new String[]{sysId});
+        database.delete("jinggao","SysId=?",new String[]{sysId});
+        database.delete("biaogeinfo","SysId=?",new String[]{sysId});
+        database.delete("shiyongyt","SysId=?",new String[]{sysId});
+        database.delete("shiyongdw","SysId=?",new String[]{sysId});
+    }
     public boolean hasSaved(String sysId) {
         Cursor cursor = database.query("shengchan01", new String[]{"id"}, "SysId=?", new String[]{sysId}, null, null, null);
         while (cursor.moveToNext()) {
@@ -215,7 +225,7 @@ public class TableDataDao {
             result = new TableData.ShiYongYongTu();
             result.setSysId(cursor.getInt(cursor.getColumnIndex("SysId")));
             result.setSyScSsmc(cursor.getString(cursor.getColumnIndex("SyScSsmc")));
-            result.setSyScJzmj(cursor.getInt(cursor.getColumnIndex("SyScJzmj")));
+            result.setSyScJzmj(cursor.getString(cursor.getColumnIndex("SyScJzmj")));
             result.setSyScCws(cursor.getInt(cursor.getColumnIndex("SyScCws")));
             result.setSyScQtyt(cursor.getString(cursor.getColumnIndex("SyScQtyt")));
             list.add(result);
@@ -260,10 +270,10 @@ public class TableDataDao {
             result.setScJbJdxz(cursor.getString(cursor.getColumnIndex("ScJbJdxz")));
             result.setScJbBz(cursor.getString(cursor.getColumnIndex("ScJbBz")));
             result.setScXzJcnf(cursor.getString(cursor.getColumnIndex("ScXzJcnf")));
-            result.setScXzJzmj(cursor.getInt(cursor.getColumnIndex("ScXzJzmj")));
+            result.setScXzJzmj(cursor.getString(cursor.getColumnIndex("ScXzJzmj")));
             result.setScXzSjyt(cursor.getString(cursor.getColumnIndex("ScXzSjyt")));
-            result.setScXzMfjzmj(cursor.getInt(cursor.getColumnIndex("ScXzMfjzmj")));
-            result.setScXzMzsd(cursor.getInt(cursor.getColumnIndex("ScXzMzsd")));
+            result.setScXzMfjzmj(cursor.getString(cursor.getColumnIndex("ScXzMfjzmj")));
+            result.setScXzMzsd(cursor.getString(cursor.getColumnIndex("ScXzMzsd")));
             result.setScXzKbs(cursor.getInt(cursor.getColumnIndex("ScXzKbs")));
             result.setScXzDxcs(cursor.getInt(cursor.getColumnIndex("ScXzDxcs")));
             result.setScXzJgys(cursor.getInt(cursor.getColumnIndex("ScXzJgys")));
@@ -315,6 +325,8 @@ public class TableDataDao {
     }
 
     public void close() {
-        database.close();
+        if (database.isOpen()) {
+            database.close();
+        }
     }
 }

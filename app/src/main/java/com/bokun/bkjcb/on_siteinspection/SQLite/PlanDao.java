@@ -68,6 +68,8 @@ public class PlanDao {
     }
 
     public void close() {
-        database.close();
+        if (database.isOpen()) {
+            database.close();
+        }
     }
 }

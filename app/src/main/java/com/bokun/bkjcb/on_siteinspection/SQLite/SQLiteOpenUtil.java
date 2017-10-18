@@ -31,18 +31,18 @@ public class SQLiteOpenUtil extends SQLiteOpenHelper {
         db.execSQL(Constants.CREATE_CONSTRUCTION_TABLE);
 
         //新增7张表
-        db.execSQL(Constants.CREATE_TABLE_INFO);
+      /*  db.execSQL(Constants.CREATE_TABLE_INFO);
         db.execSQL(Constants.CREATE_TABLE_JINGGAO);
         db.execSQL(Constants.CREATE_TABLE_SHIYONGDW);
         db.execSQL(Constants.CREATE_TABLE_SHENGCHANG01);
         db.execSQL(Constants.CREATE_TABLE_SHENGCHANG02);
         db.execSQL(Constants.CREATE_TABLE_SHIYONGYT);
-        db.execSQL(Constants.CREATE_TABLE_BIAOGEINFO);
+        db.execSQL(Constants.CREATE_TABLE_BIAOGEINFO);*/
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        switch (oldVersion) {
+       /* switch (oldVersion) {
             case 2:
                 db.execSQL(Constants.CREATE_TABLE_INFO);
                 db.execSQL(Constants.CREATE_TABLE_JINGGAO);
@@ -52,6 +52,6 @@ public class SQLiteOpenUtil extends SQLiteOpenHelper {
                 db.execSQL(Constants.CREATE_TABLE_SHIYONGYT);
                 db.execSQL(Constants.CREATE_TABLE_BIAOGEINFO);
                 break;
-        }
+        }*/
     }
 }

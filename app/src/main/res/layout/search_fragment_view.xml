@@ -27,7 +27,7 @@
                     android:layout_height="48dp"
                     android:background="?android:attr/selectableItemBackground"
                     android:padding="12dp"
-                    android:src="@mipmap/ic_keyboard_voice" />
+                    android:src="@mipmap/ic_arrow_back" />
 
                 <EditText
                     android:id="@+id/edit_search"

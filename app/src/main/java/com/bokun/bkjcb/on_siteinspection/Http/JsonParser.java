@@ -12,6 +12,7 @@ import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.orhanobut.logger.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -220,8 +221,8 @@ public class JsonParser {
         }*/
         SoapObject soapObject = (SoapObject) object.getProperty("GetXxclSc1Result");
         String ss = soapObject.getPropertyAsString("data");
-//        Logger.i(ss);
-        LogUtil.logI(ss);
+        Logger.i(ss);
+//        LogUtil.logI(ss);
         TableData data;
         com.google.gson.JsonParser parser = new com.google.gson.JsonParser();
         JsonArray array = parser.parse(ss).getAsJsonArray();

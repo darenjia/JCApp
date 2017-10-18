@@ -3,6 +3,8 @@ package com.bokun.bkjcb.on_siteinspection.Utils;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -253,6 +255,19 @@ public class Utils {
     public static String getUserName() {
         String username = (String) SPUtils.get(JCApplication.getContext(), "UserName", "");
         return username;
+    }
+
+    public static String getVersion(Context context) {
+        PackageManager pm = context.getPackageManager();
+        PackageInfo info = null;
+        String version = null;
+        try {
+            info = pm.getPackageInfo(context.getPackageName(), 0);
+            version = info.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return version;
     }
 }
 

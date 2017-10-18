@@ -85,7 +85,13 @@ public class FinishedPlanDao {
         return true;
     }
 
+    public void deleteFinished(String SysID) {
+        database.delete("finishedplan", "SysId=?", new String[]{SysID});
+    }
+
     public void close() {
-        database.close();
+        if (database.isOpen()) {
+            database.close();
+        }
     }
 }

@@ -94,7 +94,9 @@ public class CheckResultDaolmpl extends CheckResultDao {
 
 
     public void closeDatabase() {
-        database.close();
+        if (database.isOpen()) {
+            database.close();
+        }
     }
 
 }

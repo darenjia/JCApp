@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
 import com.bokun.bkjcb.on_siteinspection.R;
+import com.github.zagum.expandicon.ExpandIconView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,9 +87,15 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         TextView title = (TextView) view.findViewById(R.id.group_title);
         TextView quxian = (TextView) view.findViewById(R.id.group_quxian);
         TextView time = (TextView) view.findViewById(R.id.group_time);
+        ExpandIconView icon = (ExpandIconView) view.findViewById(R.id.expand_icon);
         title.setText(plan_list.get(groupPosition).getAq_lh_jcmc());
         quxian.setText(plan_list.get(groupPosition).getAq_lh_qxjd());
         time.setText(plan_list.get(groupPosition).getAq_lh_jcrq());
+        if (isExpanded) {
+            icon.setState(ExpandIconView.LESS, false);
+        } else {
+            icon.setState(ExpandIconView.MORE, false);
+        }
         return view;
     }
 

@@ -2,20 +2,16 @@ package com.bokun.bkjcb.on_siteinspection.Activity;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteException;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -35,7 +31,6 @@ import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.SQLite.PlanDao;
-import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.MD5Util;
 import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
@@ -260,7 +255,7 @@ public class LoginActivity extends BaseActivity implements RequestListener {
 //            mPassword.setText(password);
             mRembPass.setChecked(true);
         }
-        changeIp(null);
+//        changeIp(null);
         //检查字典表是否存在，写入字典表内容
         checkTable();
     }
@@ -336,7 +331,7 @@ public class LoginActivity extends BaseActivity implements RequestListener {
 
     }
 
-    @Override
+   /* @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_info, menu);
         return true;
@@ -372,19 +367,19 @@ public class LoginActivity extends BaseActivity implements RequestListener {
             dialog.show();
         }
         return true;
-    }
+    }*/
 
-    private void changeIp(String address) {
-        String ip;
-        if (address == null) {
-            ip = (String) SPUtils.get(this, "IP", "");
-        } else {
-            ip = address;
-        }
-        if (ip.equals("")) {
-            ip = "101.231.52.50";
-        }
-        Constants.HTTPURL = Constants.HTTPURL_temple.replace("IP", ip);
-        Constants.FTP_HOST_DEFAULT = ip;
-    }
+//    private void changeIp(String address) {
+//        String ip;
+//        if (address == null) {
+//            ip = (String) SPUtils.get(this, "IP", "");
+//        } else {
+//            ip = address;
+//        }
+//        if (ip.equals("")) {
+//            ip = "101.231.52.50";
+//        }
+//        Constants.HTTPURL = Constants.HTTPURL_temple.replace("IP", ip);
+//        Constants.FTP_HOST_DEFAULT = ip;
+//    }
 }

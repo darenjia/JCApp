@@ -14,7 +14,6 @@ import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.PlanDao;
 import com.bokun.bkjcb.on_siteinspection.SQLite.TableDataDao;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 
@@ -56,7 +55,7 @@ public class InfoActivity extends BaseActivity {
     @Override
     protected void loadData() {
         id = getIntent().getStringExtra("ID");
-        new LoadData().execute();
+//        new LoadData().execute();
     }
 
 
@@ -78,7 +77,6 @@ public class InfoActivity extends BaseActivity {
                 InfoAdapter.TableContent content = list.get(i);
                 content.keys = planDao.query(content.type);
             }
-            dataDao.close();
             return null;
         }
 
@@ -123,17 +121,16 @@ public class InfoActivity extends BaseActivity {
         list.add(new InfoAdapter.TableContent(InfoAdapter.type_15, shengChan2.getScGlzLxdh(), 21));
         list.add(new InfoAdapter.TableContent(InfoAdapter.type_1, shengChan2.getScGlzLx(), 22));
         list.add(new InfoAdapter.TableContent(InfoAdapter.type_16, shengChan1.getScXzJcnf(), 23));
-        list.add(new InfoAdapter.TableContent(InfoAdapter.type_16, String.valueOf(shengChan1.getScXzJzmj()), 24));
+        list.add(new InfoAdapter.TableContent(InfoAdapter.type_16, shengChan1.getScXzJzmj(), 24));
         list.add(new InfoAdapter.TableContent(InfoAdapter.type_15, shengChan1.getScXzSjyt(), 25));
-        list.add(new InfoAdapter.TableContent(InfoAdapter.type_16, String.valueOf(shengChan1.getScXzMfjzmj()), 26));
-        list.add(new InfoAdapter.TableContent(InfoAdapter.type_16, String.valueOf(shengChan1.getScXzMzsd()), 27));
+        list.add(new InfoAdapter.TableContent(InfoAdapter.type_16, shengChan1.getScXzMfjzmj(), 26));
+        list.add(new InfoAdapter.TableContent(InfoAdapter.type_16, shengChan1.getScXzMzsd(), 27));
         list.add(new InfoAdapter.TableContent(InfoAdapter.type_16, String.valueOf(shengChan1.getScXzKbs()), 28));
         list.add(new InfoAdapter.TableContent(InfoAdapter.type_16, String.valueOf(shengChan1.getScXzDxcs()), 29));
         list.add(new InfoAdapter.TableContent(InfoAdapter.type_2, String.valueOf(shengChan1.getScXzJgys()), 30));
         ArrayList<TableData.JingGao> jingGaos = data.getJinggao();
         for (int i = 0; i < jingGaos.size(); i++) {
             TableData.JingGao jg = jingGaos.get(i);
-            Logger.i(jg.getScGgLcjg());
             list.add(new InfoAdapter.TableContent(InfoAdapter.type_3, jg.getScGgLcjg(), (87 + i)));
         }
         list.add(new InfoAdapter.TableContent(InfoAdapter.type_4, shengChan1.getScXzGcxs(), 32));
@@ -144,26 +141,31 @@ public class InfoActivity extends BaseActivity {
         list.add(new InfoAdapter.TableContent(InfoAdapter.type_9, String.valueOf(shengChan1.getScXzLtqtgc()), 37));
         list.add(new InfoAdapter.TableContent(InfoAdapter.type_13, String.valueOf(shengChan1.getScXzLtdxZb()), 39, shengChan1.getScXzLtdxDt()));
         list.add(new InfoAdapter.TableContent(InfoAdapter.type_10, shengChan1.getScXzDmjz(), 40, shengChan1.getScXzDmjzQt()));
-        list.add(new InfoAdapter.TableContent(InfoAdapter.type_0, "", 41));
         ArrayList<TableData.ShiYongDW> dws = data.getScShiyongdw();
-        for (int i = 0; i < dws.size(); i++) {
-            TableData.ShiYongDW dw = dws.get(i);
-            list.add(new InfoAdapter.TableContent(InfoAdapter.type_15, dw.getSydwMc(), 42));
-            list.add(new InfoAdapter.TableContent(InfoAdapter.type_15, dw.getSydwFddbr(), 43));
-            list.add(new InfoAdapter.TableContent(InfoAdapter.type_15, dw.getSydwLxr(), 44));
-            list.add(new InfoAdapter.TableContent(InfoAdapter.type_15, dw.getSydwLxdh(), 45));
-            list.add(new InfoAdapter.TableContent(InfoAdapter.type_1, dw.getSydwLx(), 46));
-            list.add(new InfoAdapter.TableContent(InfoAdapter.type_11, dw.getSydwSyfs(), 47));
-            list.add(new InfoAdapter.TableContent(InfoAdapter.type_12, String.valueOf(dw.getSydwGsdj()), 48));
-            list.add(new InfoAdapter.TableContent(InfoAdapter.type_12, String.valueOf(dw.getSydwZaxk()), 49));
-            list.add(new InfoAdapter.TableContent(InfoAdapter.type_12, String.valueOf(dw.getSydwWsxk()), 50));
-            list.add(new InfoAdapter.TableContent(InfoAdapter.type_12, String.valueOf(dw.getSydwXfxk()), 51));
+        if (dws.size() > 0) {
+            list.add(new InfoAdapter.TableContent(InfoAdapter.type_0, "", 41));
+
+            for (int i = 0; i < dws.size(); i++) {
+                TableData.ShiYongDW dw = dws.get(i);
+                list.add(new InfoAdapter.TableContent(InfoAdapter.type_15, dw.getSydwMc(), 42));
+                list.add(new InfoAdapter.TableContent(InfoAdapter.type_15, dw.getSydwFddbr(), 43));
+                list.add(new InfoAdapter.TableContent(InfoAdapter.type_15, dw.getSydwLxr(), 44));
+                list.add(new InfoAdapter.TableContent(InfoAdapter.type_15, dw.getSydwLxdh(), 45));
+                list.add(new InfoAdapter.TableContent(InfoAdapter.type_1, dw.getSydwLx(), 46));
+                list.add(new InfoAdapter.TableContent(InfoAdapter.type_11, dw.getSydwSyfs(), 47));
+                list.add(new InfoAdapter.TableContent(InfoAdapter.type_12, String.valueOf(dw.getSydwGsdj()), 48));
+                list.add(new InfoAdapter.TableContent(InfoAdapter.type_12, String.valueOf(dw.getSydwZaxk()), 49));
+                list.add(new InfoAdapter.TableContent(InfoAdapter.type_12, String.valueOf(dw.getSydwWsxk()), 50));
+                list.add(new InfoAdapter.TableContent(InfoAdapter.type_12, String.valueOf(dw.getSydwXfxk()), 51));
+            }
         }
-        list.add(new InfoAdapter.TableContent(InfoAdapter.type_0, "", 62));
         ArrayList<TableData.ShiYongYongTu> yongTus = data.getScShiyong();
-        for (int i = 0; i < yongTus.size(); i++) {
-            TableData.ShiYongYongTu yt = yongTus.get(i);
-            list.add(new InfoAdapter.TableContent(InfoAdapter.type_14, yt.getSyScSsmc(), 63, String.valueOf(yt.getSyScJzmj()), yt.getSyScQtyt(), yt.getSyScCws()));
+        if (yongTus.size() > 0) {
+            list.add(new InfoAdapter.TableContent(InfoAdapter.type_0, "", 62));
+            for (int i = 0; i < yongTus.size(); i++) {
+                TableData.ShiYongYongTu yt = yongTus.get(i);
+                list.add(new InfoAdapter.TableContent(InfoAdapter.type_14, yt.getSyScSsmc(), 63, yt.getSyScJzmj(), yt.getSyScQtyt(), yt.getSyScCws()));
+            }
         }
         TableData.BiaogeInfo info = data.getBiaogeInfo().get(0);
         list.add(new InfoAdapter.TableContent(InfoAdapter.type_15, shengChan1.getScJbBz(), 82));

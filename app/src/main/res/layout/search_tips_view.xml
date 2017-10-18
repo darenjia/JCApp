@@ -3,12 +3,13 @@
     android:id="@+id/child_title"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#f4eff0"
+    android:background="@color/colorAccent"
     android:foreground="?attr/selectableItemBackground"
     android:padding="10dp"
     android:paddingEnd="20dp"
     android:paddingLeft="40dp"
     android:paddingRight="20dp"
     android:paddingStart="40dp"
-    android:textColor="#595959"
-    android:textSize="15sp" />
+    android:textColor="#fffefe"
+    android:textSize="16sp"
+    android:text="444444"/>

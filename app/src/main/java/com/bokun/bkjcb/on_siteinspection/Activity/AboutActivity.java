@@ -110,7 +110,6 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
                 finish();
             }
         });
-        version.setOnClickListener(this);
         intr.setOnClickListener(this);
         clean_search.setOnClickListener(this);
         clean_cache.setOnClickListener(this);
@@ -127,6 +126,10 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
                 showToast("设置已生效");
             }
         });
+        String versionStr = Utils.getVersion(this);
+        if (versionStr != null) {
+            version.setText("V"+versionStr + "\t地下空间检查");
+        }
     }
 
     @Override

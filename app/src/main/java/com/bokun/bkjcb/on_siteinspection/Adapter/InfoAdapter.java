@@ -225,7 +225,7 @@ public class InfoAdapter extends BaseAdapter {
                 if (content.value != null) {
                     if (content.value.equals("自用")) {
                         group11.check(R.id.type_11_ziy);
-                    } else if (content.value.equals("租用")) {
+                    } else if (content.value.equals("出租")) {
                         group11.check(R.id.type_11_zuy);
                     }
                 }
@@ -234,9 +234,9 @@ public class InfoAdapter extends BaseAdapter {
             case type_12:
                 RadioGroup group12 = (RadioGroup) inflateView(R.layout.info_type_12);
                 if (content.value != null) {
-                    if (content.value.equals("有")) {
+                    if (content.value.equals("1")) {
                         group12.check(R.id.type_12_is);
-                    } else if (content.value.equals("无")) {
+                    } else if (content.value.equals("0")) {
                         group12.check(R.id.type_12_none);
                     }
                 }
@@ -248,12 +248,13 @@ public class InfoAdapter extends BaseAdapter {
                 CheckBox dt = (CheckBox) child1.findViewById(R.id.type_13_dt);
                 TextView dtName = (TextView) child1.findViewById(R.id.tv_13_dt);
                 if (content.value != null) {
-                    if (content.value.equals("0")) {
+                    if (content.value.equals("1")) {
                         zb.setChecked(true);
-                    } else if (content.value.equals("1")) {
-                        dt.setChecked(true);
-                        dtName.setText("（站名:" + content.other + "）");
                     }
+                }
+                if (content.other!=null) {
+                    dt.setChecked(true);
+                    dtName.setText("（站名:" + content.other + "）");
                 }
                 holder.setView(content.keys.getTitle(), child1);
                 break;

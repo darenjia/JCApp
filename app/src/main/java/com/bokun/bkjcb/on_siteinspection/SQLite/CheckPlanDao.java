@@ -28,4 +28,6 @@ public abstract class CheckPlanDao {
     public abstract ArrayList<CheckPlan> queryCanUpLoadCheckPlan();
 
     public abstract boolean updateCheckPlanState(CheckPlan plan);
+
+    public abstract void delete(String sysID);
 }

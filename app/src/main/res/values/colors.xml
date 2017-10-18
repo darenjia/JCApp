@@ -32,6 +32,7 @@
     <color name="blue_low">#50afe6</color>
     <color name="accent">#BDBDBD</color>
     <color name="text_color">#6D6D6D</color>
+    <color name="text_color1">#5c5c5c</color>
     <color name="white">#FEFEFE</color>
     <color name="white_off">#BDBDBD</color>
     <color name="black">#000000</color>

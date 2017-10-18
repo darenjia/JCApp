@@ -148,7 +148,13 @@ public class ProjectPlanDao {
         return null;
     }
 
+    public void delete(String id) {
+        database.delete("constructioninfo", "aq_lh_id=?", new String[]{id});
+    }
+
     public void close() {
-        database.close();
+        if (database.isOpen()) {
+            database.close();
+        }
     }
 }

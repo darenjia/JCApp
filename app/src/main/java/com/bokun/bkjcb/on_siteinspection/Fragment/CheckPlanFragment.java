@@ -115,7 +115,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         if (sysids.equals("")) {
             return;
         }
-        sysids = sysids.substring(0, sysids.length()-1);
+        sysids = sysids.substring(0, sysids.length() - 1);
         HttpRequestVo requestVo = new HttpRequestVo();
         requestVo.getRequestDataMap().put("quxian", JCApplication.user.getQuxian());
         requestVo.getRequestDataMap().put("sysids", sysids);
@@ -131,7 +131,6 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                         LogUtil.logI(data.getBiaogeInfo().size() + "");
                         TableDataDao dao = new TableDataDao(context);
                         dao.save(data);
-                        dao.close();
                     }
                 }
             }
@@ -169,7 +168,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     protected void getDataSucceed(JsonResult object) {
         errorView.setVisibility(View.GONE);
         LogUtil.logI("获取数据成功");
-        getTableDateFromNet();
+//        getTableDateFromNet();
         setExpandableListView();
     }
 
@@ -209,6 +208,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         listview.setIndicatorBounds(left, right);
         adapter = new ExpandableListViewAdapter(context, projectPlans, constuctions);
         listview.setAdapter(adapter);
+        listview.setGroupIndicator(null);
         listview.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
@@ -252,7 +252,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                 }
                 return;
             }
-            LogUtil.logI("返回数据结果：" + result.resData);
+            Logger.i("返回数据结果：" + result.resData);
             String cacheStr = null;
             if (cacheUitl.cache != null) {
                 cacheStr = cacheUitl.getData(key);
@@ -262,12 +262,12 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                     cacheUitl.saveData(key, result.resData);
                 }
                 checkPlans = JsonParser.getJSONData(result.resData);
-                LogUtil.logI(checkPlans.size() + "");
+                Logger.i(checkPlans.size() + "");
                 DataUtil.insertCheckPlans(context, checkPlans);
             } else {
                 if (!cacheStr.equals(result.resData)) {
                     checkPlans = JsonParser.getJSONData(result.resData);
-                    LogUtil.logI(checkPlans.size() + "");
+                    Logger.i(checkPlans.size() + "");
                     DataUtil.insertCheckPlans(context, checkPlans);
                 }
             }
@@ -295,7 +295,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     private void createDailog(final CheckPlan checkPlan, final int groupPosition, final int childPosition) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 //        projectPlans.get(1).setAQ_JCTZ_sfjc(2);
-        LogUtil.logI(projectPlans.get(groupPosition).getAQ_JCTZ_sfjc() + "AQ_JCTZ_sfjc");
+//        LogUtil.logI(projectPlans.get(groupPosition).getAQ_JCTZ_sfjc() + "AQ_JCTZ_sfjc");
         boolean flag = projectPlans.get(groupPosition).getAQ_JCTZ_sfjc() == 1;
         ConstructionDetailView constructionDetailView = ConstructionDetailView.getConstructionView(context);
         View view = constructionDetailView.setData(checkPlan, flag, new View.OnClickListener() {

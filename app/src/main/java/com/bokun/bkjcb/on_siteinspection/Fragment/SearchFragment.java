@@ -134,7 +134,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
                     stringAdapter.getFilter().filter(txt);
                 } else {
                     stringAdapter.initData();
-                    clearSearch.setImageResource(R.mipmap.ic_keyboard_voice);
+                    clearSearch.setImageResource(R.mipmap.ic_arrow_back);
                     IsAdapterEmpty();
                 }
             }

@@ -338,6 +338,7 @@ public class UpLoadChirldFragment extends BaseFragment {
                     projectPlans.remove(0);
                     projectPlans.add(projectPlan);
                     task = null;
+                    isStop = false;
                     adapter.notifyDataSetChanged();
                     return;
                 }

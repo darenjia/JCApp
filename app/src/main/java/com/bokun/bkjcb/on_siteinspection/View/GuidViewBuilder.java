@@ -54,7 +54,8 @@ public class GuidViewBuilder {
             bitmap = BitmapFactory.decodeStream(context.getAssets().open(imgName));
             imageView.setImageBitmap(bitmap);
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            imageView.setVisibility(View.GONE);
         }
         return view;
     }
