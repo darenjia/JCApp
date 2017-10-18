@@ -263,7 +263,6 @@ public class DataUtil {
     public static void deleteFinishedProjectPlan(User user) {
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(JCApplication.getContext());
-        TableDataDao dataDao = new TableDataDao(JCApplication.getContext());
         CheckResultDaolmpl daoR = new CheckResultDaolmpl(JCApplication.getContext());
         ArrayList<ProjectPlan> projectPlans;
         ArrayList<CheckResult> checkResults = new ArrayList<>();
@@ -274,7 +273,6 @@ public class DataUtil {
             for (String s : strings) {
                 checkPlans.add(daolmpl.queryCheckPlan(s));
 //                daolmpl.delete(s);
-                dataDao.delete(s);
             }
             dao.delete(p.getAq_lh_id());
         }

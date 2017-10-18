@@ -3,7 +3,6 @@ package com.bokun.bkjcb.on_siteinspection.Activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteException;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
@@ -30,7 +29,6 @@ import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
-import com.bokun.bkjcb.on_siteinspection.SQLite.PlanDao;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.MD5Util;
 import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
@@ -256,8 +254,6 @@ public class LoginActivity extends BaseActivity implements RequestListener {
             mRembPass.setChecked(true);
         }
 //        changeIp(null);
-        //检查字典表是否存在，写入字典表内容
-        checkTable();
     }
 
     @Override
@@ -306,28 +302,6 @@ public class LoginActivity extends BaseActivity implements RequestListener {
             SPUtils.put(this, "PassWord", MD5Util.encode(password));
             SPUtils.put(this, "isRemberPass", flag ? "true" : "false");
         }
-
-    }
-
-    private void checkTable() {
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                PlanDao dao = new PlanDao(context);
-                try {
-                    if (dao.checkPlanInfoTable() == 0) {
-                        dao.saveTableKey();
-                        dao.close();
-                    }
-                } catch (SQLiteException e) {
-                    e.printStackTrace();
-                    dao.createTable();
-                    dao.saveTableKey();
-                    dao.close();
-                }
-            }
-        }).start();
 
     }
 
