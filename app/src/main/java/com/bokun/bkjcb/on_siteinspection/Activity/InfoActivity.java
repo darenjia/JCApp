@@ -44,6 +44,7 @@ public class InfoActivity extends BaseActivity {
                 finish();
             }
         });
+        //mmp
     }
 
     @Override
