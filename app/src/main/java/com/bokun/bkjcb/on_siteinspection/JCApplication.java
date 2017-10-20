@@ -26,7 +26,7 @@ public class JCApplication extends Application {
                 new LogBuilder()
                         .showMethodLink(true)
                         .showThreadInfo(true)
-                        .globalTag("Deng")
+                        .globalTag("dengshuai")
                         .methodOffset(0)
                         .logPriority(BuildConfig.DEBUG ? Log.VERBOSE : Log.ASSERT)
                         .build()

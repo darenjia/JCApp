@@ -80,10 +80,13 @@ public class FtpUtils {
      * @param listener    监听器
      * @throws IOException
      */
-    public void uploadMultiFile(HashMap<Integer, ArrayList<String>> pathMap, String remotePath,
-                                UploadProgressListener listener) throws IOException {
+    public boolean uploadMultiFile(HashMap<Integer, ArrayList<String>> pathMap, String remotePath,
+                                   UploadProgressListener listener) throws IOException {
         // 上传之前初始化
-        this.uploadBeforeOperate(remotePath, listener);
+        boolean isConnection = this.uploadBeforeOperate(remotePath, listener);
+        if (!isConnection) {
+            return false;
+        }
         String childPath;
         boolean flag;
         long currentSize = 0;
@@ -119,6 +122,7 @@ public class FtpUtils {
                     e.printStackTrace();
                     listener.onUploadProgress(Constants.FTP_UPLOAD_FAIL, 0, 0,
                             singleFile);
+                    return false;
                 }
                 flag = uploadingSingle(singleFile, listener);
                 if (flag) {
@@ -128,6 +132,8 @@ public class FtpUtils {
                 } else {
                     listener.onUploadProgress(Constants.FTP_UPLOAD_FAIL, 0, 0,
                             singleFile);
+                    this.uploadAfterOperate(listener);
+                    return false;
                 }
             }
             //回到上一级目录
@@ -138,6 +144,8 @@ public class FtpUtils {
 
         // 上传完成之后关闭连接
         this.uploadAfterOperate(listener);
+        return true;
+
     }
 
     /**
@@ -176,8 +184,8 @@ public class FtpUtils {
      * @param listener   监听器
      * @throws IOException
      */
-    private void uploadBeforeOperate(String remotePath,
-                                     UploadProgressListener listener) throws IOException {
+    private boolean uploadBeforeOperate(String remotePath,
+                                        UploadProgressListener listener) throws IOException {
 
         // 打开FTP服务
         try {
@@ -187,7 +195,7 @@ public class FtpUtils {
         } catch (IOException e1) {
             e1.printStackTrace();
             listener.onUploadProgress(Constants.FTP_CONNECT_FAIL, 0, 0, null);
-            return;
+            return false;
         }
 
         // 设置模式
@@ -197,6 +205,7 @@ public class FtpUtils {
         ftpClient.makeDirectory(remotePath);
         // 改变FTP目录
         ftpClient.changeWorkingDirectory(remotePath);
+        return true;
     }
 
     /**

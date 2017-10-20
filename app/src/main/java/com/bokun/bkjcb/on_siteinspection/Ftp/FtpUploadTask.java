@@ -16,29 +16,39 @@ import java.util.List;
  * Created by DengShuai on 2017/6/6.
  */
 
-public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
+public class FtpUploadTask extends AsyncTask<Object, Integer, Boolean> {
 
     private FtpUploadTask mUploadPicAsyncTask;
-    private FtpUploadTask mUploadFailAsyncTask;
+    //    private FtpUploadTask mUploadFailAsyncTask;
     private List<File> fileList;
     private HashMap<Integer, ArrayList<String>> pathMap;
     private String folderPath;
-    private List<File> fileUploadFailList = new ArrayList<>();
+    //    private List<File> fileUploadFailList = new ArrayList<>();
     private UploadHelper.OnFinishedListener finishedListener;
     private FtpUtils ftpUtils;
 
-    public FtpUploadTask(HashMap<Integer, ArrayList<String>> pathMap, String folderPath, UploadHelper.OnFinishedListener listener) {
+    private FtpUploadTask(HashMap<Integer, ArrayList<String>> pathMap, String folderPath, UploadHelper.OnFinishedListener listener) {
         this.pathMap = pathMap;
         this.folderPath = folderPath;
         this.finishedListener = listener;
     }
 
+    public FtpUploadTask() {
+
+    }
+
+    public FtpUploadTask newInstance(HashMap<Integer, ArrayList<String>> pathMap, String folderPath, UploadHelper.OnFinishedListener listener) {
+        mUploadPicAsyncTask = new FtpUploadTask(pathMap, folderPath, listener);
+        return mUploadPicAsyncTask;
+    }
+
     @Override
-    protected Object doInBackground(final Object... params) {
+    protected Boolean doInBackground(final Object... params) {
+        boolean success = false;
         try {
             //多文件上传
             ftpUtils = new FtpUtils();
-            ftpUtils.uploadMultiFile(pathMap, folderPath, new FtpUtils.UploadProgressListener() {
+            success = ftpUtils.uploadMultiFile(pathMap, folderPath, new FtpUtils.UploadProgressListener() {
                 //上传进度
                 int result = 0;
 
@@ -47,14 +57,14 @@ public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
                     LogUtil.logI("onUploadProgress: " + currentStep);
                     if (currentStep.equals(Constants.FTP_CONNECT_FAIL)) {
                         //连接失败，取消任务
-                        if (mUploadFailAsyncTask != null && mUploadFailAsyncTask.getStatus() == Status.RUNNING) {
+                       /* if (mUploadFailAsyncTask != null && mUploadFailAsyncTask.getStatus() == Status.RUNNING) {
                             mUploadFailAsyncTask.cancel(true);
-                        }
+                        }*/
                         if (mUploadPicAsyncTask != null && mUploadPicAsyncTask.getStatus() == Status.RUNNING) {
                             mUploadPicAsyncTask.cancel(true);
                         }
-                        finishedListener.failed();
-                        LogUtil.logI("onUploadProgress: " + "FTP_CONNECT_FAIL");
+//                        finishedListener.failed();
+                        LogUtil.logI("onUploadProgress: " + "FTP_CONNECT_FAIL" + (mUploadPicAsyncTask == null));
                     } else {
                         if (currentStep.equals(Constants.FTP_UPLOAD_SUCCESS)) {
                             if (uploadSize == size) {
@@ -65,7 +75,10 @@ public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
                             float num = (float) uploadSize / (float) fize;
                             result = (int) (num * 100);
                         } else if (currentStep.equals(Constants.FTP_UPLOAD_FAIL)) {
-                            fileUploadFailList.add(file);
+//                            fileUploadFailList.add(file);
+                            if (mUploadPicAsyncTask != null && mUploadPicAsyncTask.getStatus() == Status.RUNNING) {
+                                mUploadPicAsyncTask.cancel(true);
+                            }
                             return;
                         }
                         if (file != null) {
@@ -81,15 +94,16 @@ public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
             // TODO Auto-generated catch block
             e.printStackTrace();
             finishedListener.failed();
-        } finally {
+            return false;
+        } /*finally {
             if (fileUploadFailList != null && fileUploadFailList.size() > 0) {
                 //处理上传失败
                 for (File file : fileUploadFailList) {
                     LogUtil.logI("onUploadProgress: " + file.getPath());
                 }
-                if (mUploadFailAsyncTask != null && mUploadFailAsyncTask.getStatus() == Status.RUNNING) {
+               *//* if (mUploadFailAsyncTask != null && mUploadFailAsyncTask.getStatus() == Status.RUNNING) {
                     mUploadFailAsyncTask.cancel(true);
-                }
+                }*//*
                 if (mUploadPicAsyncTask != null && mUploadPicAsyncTask.getStatus() == Status.RUNNING) {
                     mUploadPicAsyncTask.cancel(true);
                 }
@@ -99,8 +113,9 @@ public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
                 return fileUploadFailList;
             } else {
                 return null;
-            }
-        }
+            }}*/
+
+        return success;
     }
 
     @Override
@@ -122,23 +137,27 @@ public class FtpUploadTask extends AsyncTask<Object, Integer, Object> {
     }
 
     @Override
-    protected void onPostExecute(Object preAlarmMap) {
-        LogUtil.logI("Jason", "onPostExecute: " + "完成");
+    protected void onPostExecute(Boolean success) {
+        LogUtil.logI("onPostExecute: " + "完成");
         //上传完成后，讲任务对象置空
-        if (mUploadFailAsyncTask != null && mUploadFailAsyncTask.getStatus() == Status.FINISHED) {
+       /* if (mUploadFailAsyncTask != null && mUploadFailAsyncTask.getStatus() == Status.FINISHED) {
             mUploadFailAsyncTask = null;
-        }
+        }*/
         if (mUploadPicAsyncTask != null && mUploadPicAsyncTask.getStatus() == Status.FINISHED) {
             mUploadPicAsyncTask = null;
         }
         if (finishedListener != null) {
-            finishedListener.updateProgress();
-            finishedListener.finish();
+            if (success) {
+                finishedListener.updateProgress();
+                finishedListener.finish();
+            } else {
+                finishedListener.failed();
+            }
         }
     }
 
     @Override
-    protected void onCancelled(Object o) {
+    protected void onCancelled(Boolean o) {
         super.onCancelled(o);
        /* ArrayList<File> fileUploadFailList = (ArrayList<File>) o;
         if (fileUploadFailList != null && fileUploadFailList.size() > 0) {

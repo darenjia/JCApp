@@ -5,14 +5,14 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ListView;
 
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
+import com.github.chrisbanes.photoview.PhotoView;
 
 public class InfoActivity extends BaseActivity {
 
-    private ListView listView;
+    private PhotoView photoView;
     private Toolbar toolbar;
     private String id;
 
@@ -24,7 +24,7 @@ public class InfoActivity extends BaseActivity {
     @Override
     protected void findView() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        listView = (ListView) findViewById(R.id.info_list);
+        photoView = (PhotoView) findViewById(R.id.photoview);
         toolbar.setTitle("基本信息登记表");
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.back);
@@ -48,6 +48,8 @@ public class InfoActivity extends BaseActivity {
     protected void loadData() {
         id = getIntent().getStringExtra("ID");
 //        new LoadData().execute();
+        photoView.setImageResource(R.drawable.up);
+//        photoView.setImageBitmap();
     }
 
 

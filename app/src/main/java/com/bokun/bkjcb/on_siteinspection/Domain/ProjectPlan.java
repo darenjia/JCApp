@@ -1,5 +1,7 @@
 package com.bokun.bkjcb.on_siteinspection.Domain;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.JsonElement;
 
 import java.io.Serializable;
@@ -8,7 +10,7 @@ import java.io.Serializable;
  * Created by DengShuai on 2017/6/2.
  */
 
-public class ProjectPlan implements Serializable {
+public class ProjectPlan implements Serializable, Comparable<ProjectPlan> {
     private int aq_lh_yyh;
     private int aq_lh_seqid;
     private String aq_lh_id;
@@ -135,5 +137,10 @@ public class ProjectPlan implements Serializable {
 
     public void setState_upload(int state_upload) {
         this.state_upload = state_upload;
+    }
+
+    @Override
+    public int compareTo(@NonNull ProjectPlan o) {
+        return this.getState_upload() > o.getState_upload() ? 1 : -1;
     }
 }

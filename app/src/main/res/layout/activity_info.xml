@@ -19,8 +19,9 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </android.support.design.widget.AppBarLayout>
 
-    <ListView
-        android:id="@+id/info_list"
+    <com.github.chrisbanes.photoview.PhotoView
+        android:id="@+id/photoview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:scaleType="centerInside" />
 </LinearLayout>

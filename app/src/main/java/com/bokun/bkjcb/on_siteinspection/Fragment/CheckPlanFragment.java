@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bokun.bkjcb.on_siteinspection.Activity.MainActivity;
 import com.bokun.bkjcb.on_siteinspection.Activity.SecurityCheckActivity;
@@ -270,6 +271,11 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.btn_check) {
+                    ProjectPlan projectPlan = DataUtil.queryProjectPlanById(projectPlans.get(groupPosition).getAq_lh_id());
+                    if (projectPlan.getAq_jctz_zt().equals("正在上传")) {
+                        Toast.makeText(context, "该计划正在上传，无法修改", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("checkplan", checkPlan);
                     bundle.putInt("groupPosition", groupPosition);
@@ -324,31 +330,38 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         int state = data.getExtras().getInt("state");
         LogUtil.logI("计划状态题改变，刷新列表数据" + state);
         constuctions.get(groupPosition).get(childPosition).setState(state);
-        if (state == 2) {
-            checkState(groupPosition);
-        }
+        checkState(groupPosition);
         adapter.notifyDataSetChanged();
         listview.collapseGroup(groupPosition);
         listview.expandGroup(groupPosition);
     }
 
     private void checkState(int groupPosition) {
+        String state = "等待上传";
         for (CheckPlan plan : constuctions.get(groupPosition)) {
             if (plan.getState() == 2) {
                 continue;
             } else {
-                return;
+                state = "需办事项";
+                break;
             }
         }
         ProjectPlan projectPlan = projectPlans.get(groupPosition);
-        projectPlan.setAq_jctz_zt("等待上传");
-        DataUtil.changeProjectState1(projectPlan);
+        projectPlan.setAq_jctz_zt(state);
+        if (state.equals("等待上传")){
+            DataUtil.changeProjectState1(projectPlan);
+        }
     }
 
     public void dateHasChange() {
         projectPlans.clear();
         projectPlans.addAll(DataUtil.queryProjectPlan("上传完成", MainActivity.user.getId()));
         //projectPlans.addAll(DataUtil.queryProjectPlan("需办事项"));
+
+        if (projectPlans.size() == 0) {
+            nullView.setVisibility(View.VISIBLE);
+            return;
+        }
         constuctions.clear();
         for (ProjectPlan plan : projectPlans) {
             String sysIDs = plan.getAq_sysid();
@@ -358,7 +371,13 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
             }
             constuctions.add(DataUtil.getCheckPlan(ids));
         }
-        adapter.notifyDataSetChanged();
+//        adapter.notifyDataSetChanged();
+        adapter = new ExpandableListViewAdapter(context, projectPlans, constuctions);
+        listview.setAdapter(adapter);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 }

@@ -94,7 +94,7 @@ public class UploadHelper {
         jsons = new ArrayList<>();
         remotePaths = new ArrayList<>();
         String s = projectPlan.getAq_sysid();
-        LogUtil.logI(projectPlan.getAq_lh_jcmc() + " 任务开始："+s);
+        LogUtil.logI(projectPlan.getAq_lh_jcmc() + " 任务开始：" + s);
         projectId = String.valueOf(projectPlan.getAq_lh_seqid());
         String[] strings = s.split(",");
         for (String str : strings) {
@@ -144,8 +144,8 @@ public class UploadHelper {
         }, request);
         manager.postRequest();
         //测试
-       /* prePareFile();
-        uploadFile();*/
+//        prePareFile();
+//        uploadFile();
     }
 
     private void prePareFile() {
@@ -184,10 +184,10 @@ public class UploadHelper {
             sendData();
             return;
         }
-        String path = "downpdf/" + projectId + "/" + remotePaths.get(flag);
-//        String path = "Test/" + projectId + "/" + remotePaths.get(flag);
+//        String path = "downpdf/" + projectId + "/" + remotePaths.get(flag);
+        String path = "Test/" + projectId + "/" + remotePaths.get(flag);
 
-        task = new FtpUploadTask(pathMap, path, new OnFinishedListener() {
+        task = new FtpUploadTask().newInstance(pathMap, path, new OnFinishedListener() {
             @Override
             public void finish() {
                 // listener.onUpdate((flag + 1), size, true);

@@ -14,6 +14,7 @@ import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.UpLoad.UIProgressListener;
 import com.bokun.bkjcb.on_siteinspection.UpLoad.UploadHelper;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,7 @@ public class UploadService extends Service {
     UploadHelper helper;
     ArrayList<CheckPlan> checkPlans;
     private NotificationUtil util;
+    private ProjectPlan projectPlan;
 
     @Nullable
     @Override
@@ -53,7 +55,7 @@ public class UploadService extends Service {
             return flags;
         }
         String id = intent.getStringExtra("plan");
-        ProjectPlan projectPlan = DataUtil.queryProjectPlanById(id);
+        projectPlan = DataUtil.queryProjectPlanById(id);
         UIProgressListener listener = new UIProgressListener() {
             @Override
             public void onUIProgress(long currentBytes, long contentLength, boolean done) {
@@ -77,6 +79,15 @@ public class UploadService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (projectPlan != null) {
+            Logger.i("上传服务结束");
+            projectPlan = DataUtil.queryProjectPlanById(projectPlan.getAq_lh_id());
+            if (projectPlan.getAq_jctz_zt().equals("正在上传")) {
+                Logger.i("修改未完成任务状态");
+                projectPlan.setAq_jctz_zt("等待上传");
+                DataUtil.updateProjectState(projectPlan);
+            }
+        }
         if (helper != null) {
             helper.onStop();
         }

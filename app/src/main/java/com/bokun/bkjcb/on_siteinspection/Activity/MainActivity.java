@@ -2,6 +2,7 @@ package com.bokun.bkjcb.on_siteinspection.Activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -12,6 +13,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.User;
 import com.bokun.bkjcb.on_siteinspection.Fragment.CheckPlanFragment;
 import com.bokun.bkjcb.on_siteinspection.Fragment.MapFragment;
@@ -29,10 +32,12 @@ import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
+import com.bokun.bkjcb.on_siteinspection.Service.ServiceUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.AppManager;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.SPUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -55,6 +60,7 @@ public class MainActivity extends BaseActivity
     private Fragment currentFragment;
     private boolean opened = false;
     private int count = 0;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +79,8 @@ public class MainActivity extends BaseActivity
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         View headerLayout = navigationView.inflateHeaderView(R.layout.nav_header_main);
         userImg = (ImageView) headerLayout.findViewById(R.id.user_img);
         userMessage = (TextView) headerLayout.findViewById(R.id.user_message);
@@ -136,6 +141,16 @@ public class MainActivity extends BaseActivity
         userMessage.setText("区县:" + user.getQuxian());
         userName.setText(user.getRealName());
         loadView("检查计划", "first");
+
+        if (!ServiceUtil.isServiceRunning("com.bokun.bkjcb.on_siteinspection.Service.UploadService")) {
+            ArrayList<ProjectPlan> pre_plans_uploading = DataUtil.getProjectByState("正在上传", JCApplication.user);
+            if (pre_plans_uploading.size() > 0) {
+                for (int i = 0; i < pre_plans_uploading.size(); i++) {
+                    pre_plans_uploading.get(i).setAq_jctz_zt("等待上传");
+                    DataUtil.updateProjectState(pre_plans_uploading.get(i));
+                }
+            }
+        }
     }
 
     @Override
@@ -150,8 +165,38 @@ public class MainActivity extends BaseActivity
         } else if (opened && currentFragment != fragment) {
             loadView("检查计划", "first");
         } else {
-            super.onBackPressed();
+
+            if (ServiceUtil.isServiceRunning("com.bokun.bkjcb.on_siteinspection.Service.UploadService")) {
+                exitCheck();
+                       /* .setNegativeButton("退出", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent();
+                                intent.setAction("android.intent.action.STARTUPLOAD");//你定义的service的action
+                                intent.setPackage(getPackageName());
+                                MainActivity.this.stopService(intent);
+                                dialog.dismiss();
+                                loadView("上传进度", "forth");
+                            }
+                        })*/
+
+            } else {
+                super.onBackPressed();
+            }
+//            super.onBackPressed();
         }
+    }
+
+    private void exitCheck() {
+        new AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setMessage("有上传任务正在进行，请停止任务后再退出程序？")
+                .setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create().show();
     }
 
     @Override
@@ -195,7 +240,11 @@ public class MainActivity extends BaseActivity
         } else if (id == R.id.nav_app_introduce) {
             AboutActivity.toAboutActiivty(this);
         } else if (id == R.id.nav_exit) {
-            AppManager.getAppManager().finishAllActivity();
+            if (ServiceUtil.isServiceRunning("com.bokun.bkjcb.on_siteinspection.Service.UploadService")) {
+                exitCheck();
+            } else {
+                AppManager.getAppManager().finishAllActivity();
+            }
 //            AppManager.getAppManager().AppExit(this);
         } else if (id == R.id.nav_logout) {
             LoginActivity.comeToLoginActivity(this);
@@ -206,6 +255,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void loadView(String title, String key) {
+        setLeftChecked(key);
         toolbar.setTitle(title);
         if (menu != null) {
             menu.setGroupVisible(R.id.menu_map, false);
@@ -237,6 +287,23 @@ public class MainActivity extends BaseActivity
             transaction.show(currentFragment);
         }
         transaction.commit();
+    }
+
+    private void setLeftChecked(String key) {
+        switch (key) {
+            case "first":
+                navigationView.setCheckedItem(R.id.nav_check_plan);
+                break;
+            case "second":
+                navigationView.setCheckedItem(R.id.nav_info_check);
+                break;
+            case "third":
+                navigationView.setCheckedItem(R.id.nav_map);
+                break;
+            case "forth":
+                navigationView.setCheckedItem(R.id.nav_update_result);
+                break;
+        }
     }
 
     private void hideAllFragment() {
@@ -294,5 +361,10 @@ public class MainActivity extends BaseActivity
         if (fragment != null) {
             fragment.dateHasChange();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

@@ -224,10 +224,10 @@ public class Constants {
 
     public static final String HTTPURL = "http://101.231.52.50:8080/zgzxjkWebService.asmx";
 //    public static final String HTTPURL = "http://192.168.137.1:1856/zgzxjkWebService.asmx";
-//    public static final String FTP_HOST_DEFAULT = "101.231.52.50";
-//    public static final int FTP_HOST_PORT = 18000;
-//    public static final String FTP_USER_DEFAULT = "zgzx1";
-//    public static final String FTP_PASSWORD_DEFAULT = "zgzx";
+    public static final String FTP_HOST_DEFAULT = "101.231.52.50";
+    public static final int FTP_HOST_PORT = 18000;
+    public static final String FTP_USER_DEFAULT = "zgzx1";
+    public static final String FTP_PASSWORD_DEFAULT = "zgzx";
 
 
     /*
@@ -236,10 +236,10 @@ public class Constants {
    /* public static  String HTTPURL = "http://IP:8080/zgzxjkWebService.asmx";
     //    public static  String HTTPURL = "http://IP:1856/zgzxjkWebService.asmx";
     public static String HTTPURL_temple = "http://IP:8080/zgzxjkWebService.asmx";*/
-    public static String FTP_HOST_DEFAULT = "192.168.137.1";
+  /*  public static String FTP_HOST_DEFAULT = "192.168.137.1";
     public static final int FTP_HOST_PORT = 21;
     public static final String FTP_USER_DEFAULT = "hqh";
-    public static final String FTP_PASSWORD_DEFAULT = "123456";
+    public static final String FTP_PASSWORD_DEFAULT = "123456";*/
 
     /**
      * ftp状态
