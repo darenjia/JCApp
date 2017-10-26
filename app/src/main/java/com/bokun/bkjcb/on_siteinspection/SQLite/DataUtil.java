@@ -10,6 +10,7 @@ import com.bokun.bkjcb.on_siteinspection.Domain.User;
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.Utils.FileUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,8 +72,12 @@ public class DataUtil {
     public static void insertCheckPlans(Context context, ArrayList<CheckPlan> plans) {
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);
         for (CheckPlan plan : plans) {
-            if (!daolmpl.queryCheckPlanIsNull(plan.getIdentifier())) {
+            int state = daolmpl.queryCheckPlanIsNull(plan.getIdentifier());
+            if (state == -1) {
                 daolmpl.insertCheckPlan(plan);
+                Logger.i(plan.getName());
+            } else if (state == 0) {
+                daolmpl.updateCheckPlan(plan);
             }
         }
         daolmpl.colseDateBase();
@@ -80,9 +85,12 @@ public class DataUtil {
 
     public static void insertCheckPlan(Context context, CheckPlan plan) {
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);
-        if (!daolmpl.queryCheckPlanIsNull(plan.getIdentifier())) {
+        int state = daolmpl.queryCheckPlanIsNull(plan.getIdentifier());
+        if (state == -1) {
             daolmpl.insertCheckPlan(plan);
             // LogUtil.logI("加入一条检查计划" + plan.getIdentifier());
+        } else if (state == 0) {
+            daolmpl.updateCheckPlan(plan);
         }
     }
 
@@ -259,6 +267,7 @@ public class DataUtil {
         dao.close();
         return flag;
     }
+
     public static boolean updateProjectState(ProjectPlan plan) {
         boolean flag = false;
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
@@ -297,6 +306,8 @@ public class DataUtil {
         UserDao dao = new UserDao();
         if (!dao.getUserIs(user.getUserName())) {
             dao.addUser(user);
+        } else {
+            user.setId(dao.getUser(user.getUserName()).getId());
         }
         dao.close();
     }
@@ -306,5 +317,10 @@ public class DataUtil {
         User user = dao.getUser(name);
         dao.close();
         return user;
+    }
+
+    public static String queryFileUrl(String id) {
+        CheckPlanDaolmpl dao = new CheckPlanDaolmpl(JCApplication.getContext());
+        return dao.queryCheckPlanFileUrl(id);
     }
 }

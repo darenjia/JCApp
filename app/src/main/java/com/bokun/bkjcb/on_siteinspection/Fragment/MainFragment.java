@@ -61,7 +61,7 @@ public class MainFragment extends Fragment {
                     }
                     break;
             }
-            if (msg.obj == null) {
+            if (msg.obj == null || !((JsonResult) msg.obj).success) {
                 getDataFailed();
             }
             if (refreshLayout != null) {

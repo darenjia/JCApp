@@ -19,9 +19,15 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </android.support.design.widget.AppBarLayout>
 
-    <com.github.chrisbanes.photoview.PhotoView
+   <!-- <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/photoview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerInside" />
+        android:scaleType="centerInside"
+        android:visibility="gone" />-->
+
+    <com.github.barteksc.pdfviewer.PDFView
+        android:id="@+id/pdfView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>

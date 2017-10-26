@@ -58,7 +58,8 @@ public class Constants {
             "type varchar(20)," +
             "tel varchar(20)," +
             "manager varchar(50)," +
-            "user varchar(30)" +
+            "user varchar(30)," +
+            "url varchar(50)" +
             ")";
     public final static String CREATE_FINISHED_PALN = "create table finishedplan(" +
             "id Integer primary key," +
@@ -186,19 +187,23 @@ public class Constants {
             "SyScCws int(5)" +
             ")";
 
-    public final static String CREATE_TEMP_TABLE = "alter table finishedplan rename to _temp_finishedplan";
-    public final static String CREATE_NEW_FINISHED_PALN = "create table finishedplan(" +
-            "id Integer primary key," +
-            "SysId int(20)," +
-            "SysGcxxdjh int(20)," +
-            "FinishedTime char(20)," +
-            "Username char(10)," +
-            "AQ_LH_ID char(20)," +
-            "problems int(10)," +
-            "StrProblem text" +
+    public final static String CREATE_TEMP_TABLE = "alter table checkplan rename to _temp_checkplan";
+    public final static String CREATE_NEW_CHECKPALN = "create table checkplan(" +
+            "identifier Integer primary key," +
+            "sysId int(12)," +
+            "name char(30)," +
+            "state int(1)," +
+            "address varchar(50)," +
+            "quxian varchar(10)," +
+            "area varchar(20)," +
+            "type varchar(20)," +
+            "tel varchar(20)," +
+            "manager varchar(50)," +
+            "user varchar(30)," +
+            "url varchar(50)" +
             ")";
-    public final static String INSERT_DATA_FINISHED_PALN = "insert into finishedplan select *,0,'' from _temp_finishedplan";
-    public final static String DROP_TEMP = "drop table _temp_finishedplan";
+    public final static String INSERT_DATA_CHECKPLAN = "insert into checkplan select *,'' from _temp_checkplan";
+    public final static String DROP_TEMP = "drop table _temp_checkplan";
 
     public final static String GetXxclSc = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
             "<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\n" +
@@ -223,11 +228,12 @@ public class Constants {
     * */
 
     public static final String HTTPURL = "http://101.231.52.50:8080/zgzxjkWebService.asmx";
-//    public static final String HTTPURL = "http://192.168.137.1:1856/zgzxjkWebService.asmx";
+    //        public static final String HTTPURL = "http://192.168.100.136:8080/zgzxjkWebService.asmx";
     public static final String FTP_HOST_DEFAULT = "101.231.52.50";
     public static final int FTP_HOST_PORT = 18000;
     public static final String FTP_USER_DEFAULT = "zgzx1";
     public static final String FTP_PASSWORD_DEFAULT = "zgzx";
+    public static final String URL = "http://101.231.52.50:8080/downpdf/Temp/";
 
 
     /*
@@ -264,5 +270,6 @@ public class Constants {
     public static final String FTP_GETALLPICPATH_FAIL = "ftp获取所有图片路径失败";
 
     public static final String CAAHE_KEY = "projectkey22335151";
+    public static final String FILE_PATH = "/CheckApp/file";
 
 }

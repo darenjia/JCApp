@@ -39,7 +39,7 @@ public class UploadHelper {
         public void handleMessage(Message msg) {
             if (msg.what == RequestListener.EVENT_GET_DATA_SUCCESS) {
                 JsonResult result = (JsonResult) msg.obj;
-                if (result.success) {
+                if (result.success||(result.message.startsWith("Duplicate")&&result.message.endsWith("\'AQ_ID\'"))) {
                     prePareFile();
                     uploadFile();
                 } else {
@@ -142,7 +142,7 @@ public class UploadHelper {
 //                }
             }
         }, request);
-        manager.postRequest();
+//        manager.postRequest();
         //测试
 //        prePareFile();
 //        uploadFile();

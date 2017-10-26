@@ -1,10 +1,17 @@
 package com.bokun.bkjcb.on_siteinspection.Fragment;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +26,7 @@ import com.bokun.bkjcb.on_siteinspection.Adapter.ExpandableListViewAdapter;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
+import com.bokun.bkjcb.on_siteinspection.Download.DownloadManager;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpManager;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpRequestVo;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
@@ -36,6 +44,7 @@ import com.orhanobut.logger.Logger;
 
 import org.ksoap2.serialization.SoapObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -60,6 +69,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     private TextView nullView;
     private boolean planFlag = true;//判断是获取工程还是计划
     private StringBuilder sysIds;
+    private ArrayList<String> paths;
 
     @Nullable
     @Override
@@ -100,6 +110,8 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     }
 
     private void getDateFromNet() {
+        Logger.i(System.currentTimeMillis() + "");
+
         HttpRequestVo requestVo = new HttpRequestVo();
         requestVo.getRequestDataMap().put("quxian", JCApplication.user.getQuxian());
         requestVo.getRequestDataMap().put("user", Utils.getUserName());
@@ -109,6 +121,8 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     }
 
     private void getCheckPlanFromNet() {
+        Logger.i(System.currentTimeMillis() + "");
+
         sysIds = new StringBuilder();
         if (projectPlans != null && projectPlans.size() > 0) {
             for (int i = 0; i < projectPlans.size(); i++) {
@@ -139,6 +153,27 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         errorView.setVisibility(View.GONE);
         LogUtil.logI("获取数据成功");
         setExpandableListView();
+        paths = new ArrayList<>();
+        for (int i = 0; i < checkPlans.size(); i++) {
+            paths.add(checkPlans.get(i).getUrl());
+        }
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission_group.STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            File file = new File(Environment.getExternalStorageDirectory() + Constants.FILE_PATH);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            new Thread(new DownloadManager(paths)).start();
+        } else {
+            Snackbar.make(getView(), R.string.mis_error_no_permission_sdcard, Snackbar.LENGTH_LONG).setAction("设置", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+                    intent.setData(uri);
+                    getActivity().startActivity(intent);
+                }
+            }).show();
+        }
     }
 
     @Override
@@ -151,15 +186,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         if (projectPlans == null) {
 //            errorView.setVisibility(View.VISIBLE);
         }
-        constuctions = new ArrayList<>();
-        for (ProjectPlan plan : projectPlans) {
-            String sysIDs = plan.getAq_sysid();
-            String[] ids = {};
-            if (sysIDs != null) {
-                ids = sysIDs.split(",");
-            }
-            constuctions.add(DataUtil.getCheckPlan(ids));
-        }
+        setConstuctions();
         setExpandableListView();
 
     }
@@ -195,6 +222,8 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
     @Override
     public void action(int i, Object object) {
+        Logger.i(System.currentTimeMillis() + "");
+
         JsonResult result = null;
         if (object != null) {
             result = JsonParser.parseSoap((SoapObject) object);
@@ -240,16 +269,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                     DataUtil.insertCheckPlans(context, checkPlans);
                 }
             }
-
-            constuctions = new ArrayList<>();
-            for (ProjectPlan plan : projectPlans) {
-                String sysIDs = plan.getAq_sysid();
-                String[] ids = {};
-                if (sysIDs != null) {
-                    ids = sysIDs.split(",");
-                }
-                constuctions.add(DataUtil.getCheckPlan(ids));
-            }
+            setConstuctions();
         } else {
             LogUtil.logI((object == null) + "");
             i = RequestListener.EVENT_NOT_NETWORD;
@@ -259,6 +279,22 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         msg.what = i;
         msg.obj = result;
         mHandler.sendMessage(msg);
+    }
+
+    private void setConstuctions() {
+        if (constuctions == null) {
+            constuctions = new ArrayList<>();
+        } else {
+            constuctions.clear();
+        }
+        for (ProjectPlan plan : projectPlans) {
+            String sysIDs = plan.getAq_sysid();
+            String[] ids = {};
+            if (sysIDs != null) {
+                ids = sysIDs.split(",");
+            }
+            constuctions.add(DataUtil.getCheckPlan(ids));
+        }
     }
 
     private void createDailog(final CheckPlan checkPlan, final int groupPosition, final int childPosition) {
@@ -348,9 +384,11 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         }
         ProjectPlan projectPlan = projectPlans.get(groupPosition);
         projectPlan.setAq_jctz_zt(state);
-        if (state.equals("等待上传")){
+        /*if (state.equals("等待上传")){
             DataUtil.changeProjectState1(projectPlan);
-        }
+        }*/
+        //只要修改就该保存状态
+        DataUtil.changeProjectState1(projectPlan);
     }
 
     public void dateHasChange() {
@@ -362,15 +400,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
             nullView.setVisibility(View.VISIBLE);
             return;
         }
-        constuctions.clear();
-        for (ProjectPlan plan : projectPlans) {
-            String sysIDs = plan.getAq_sysid();
-            String[] ids = {};
-            if (sysIDs != null) {
-                ids = sysIDs.split(",");
-            }
-            constuctions.add(DataUtil.getCheckPlan(ids));
-        }
+        setConstuctions();
 //        adapter.notifyDataSetChanged();
         adapter = new ExpandableListViewAdapter(context, projectPlans, constuctions);
         listview.setAdapter(adapter);

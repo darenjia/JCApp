@@ -26,6 +26,7 @@ public class CheckPlan implements Serializable {
     private String manager;
     private String user;
     private String quxian;
+    private String url; //登记表地址
 
     public String getQuxian() {
         return quxian;
@@ -126,5 +127,13 @@ public class CheckPlan implements Serializable {
 
     public void setState_upload(int state_upload) {
         this.state_upload = state_upload;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

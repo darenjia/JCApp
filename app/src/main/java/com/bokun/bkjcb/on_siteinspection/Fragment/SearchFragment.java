@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bokun.bkjcb.on_siteinspection.Activity.InfoActivity;
 import com.bokun.bkjcb.on_siteinspection.Adapter.StringAdapter;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
@@ -149,6 +150,13 @@ public class SearchFragment extends MainFragment implements RequestListener {
                     ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(edit_text_search, InputMethodManager.SHOW_IMPLICIT);
                     IsAdapterEmpty();
                 }
+            }
+        });
+        listContainer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CheckPlan plan = checkPlans.get(position);
+                InfoActivity.ComeInfoActivity(context, plan.getUrl());
             }
         });
 
@@ -284,11 +292,11 @@ public class SearchFragment extends MainFragment implements RequestListener {
     }
 
     private int getColor(int state) {
-        if (state == 1){
+        if (state == 1) {
             return getResources().getColor(R.color.holo_orange_light);
-        }else if (state ==2){
+        } else if (state == 2) {
             return getResources().getColor(R.color.holo_blue_bright);
-        }else if (state ==3){
+        } else if (state == 3) {
             return getResources().getColor(R.color.holo_green_light);
         }
         return getResources().getColor(R.color.text_color);

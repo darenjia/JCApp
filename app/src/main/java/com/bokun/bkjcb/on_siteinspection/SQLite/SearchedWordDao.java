@@ -34,6 +34,11 @@ public class SearchedWordDao {
         search.database.execSQL("insert into searchhistory (name,type) values('" + string + "'," + type + ")");
         search.database.close();
     }
+    public static void delete(Context context, String string) {
+        search = new SearchedWordDao(context);
+        search.database.execSQL("delete from searchhistory where name = '" + string + "'");
+        search.database.close();
+    }
 
     public static void clean() {
         search = new SearchedWordDao(JCApplication.getContext());

@@ -125,6 +125,12 @@ public class JsonParser {
                 } catch (JSONException e) {
                     checkPlan.setQuxian("");
                 }
+                try {
+                    checkPlan.setUrl(con.getString("URLPDF"));
+                } catch (JSONException e) {
+                    checkPlan.setQuxian("");
+                }
+
                 results.add(checkPlan);
             }
         } catch (Exception e) {

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 
@@ -36,6 +37,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
         values.put("user", plan.getUser());
         values.put("type", plan.getType());
         values.put("tel", plan.getTel());
+        values.put("url", plan.getUrl());
         long i = db.insert("checkplan", null, values);
 //        LogUtil.logI("插入plan" + i);
     }
@@ -47,9 +49,10 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
             return false;
         }
         ContentValues values = new ContentValues();
-        values.put("name", plan.getName());
-        values.put("state", plan.getState());
-        int isSuccess = db.update("checkplan", values, "indentifier = ?", new String[]{String.valueOf(plan.getIdentifier())});
+       /* values.put("name", plan.getName());
+        values.put("state", plan.getState());*/
+        values.put("url", plan.getUrl());
+        int isSuccess = db.update("checkplan", values, "identifier = ?", new String[]{String.valueOf(plan.getIdentifier())});
 
         return isSuccess != 0;
     }
@@ -80,23 +83,13 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
             plan.setName(cursor.getString(cursor.getColumnIndex("name")));
             plan.setState(cursor.getInt(cursor.getColumnIndex("state")));
             plan.setSysId(cursor.getInt(cursor.getColumnIndex("sysId")));
-           /* values.put("sysId", plan.getSysId());
-            values.put("name", plan.getName());
-            values.put("state", plan.getState());
-            values.put("address", plan.getAddress());
-            values.put("quxian", plan.getQuxian());
-            values.put("area", plan.getArea());
-            values.put("manager", plan.getManager());
-            values.put("user", plan.getUser());
-            values.put("type", plan.getType());
-            values.put("tel", plan.getTel());*/
             plan.setArea(cursor.getString(cursor.getColumnIndex("area")));
             plan.setAddress(cursor.getString(cursor.getColumnIndex("address")));
-//            plan.setSysId(cursor.getInt(cursor.getColumnIndex("sysId")));
             plan.setType(cursor.getString(cursor.getColumnIndex("type")));
             plan.setQuxian(cursor.getString(cursor.getColumnIndex("quxian")));
             plan.setManager(cursor.getString(cursor.getColumnIndex("manager")));
             plan.setUser(cursor.getString(cursor.getColumnIndex("user")));
+            plan.setUrl(cursor.getString(cursor.getColumnIndex("url")));
         }
         cursor.close();
         //LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
@@ -104,11 +97,19 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
     }
 
     @Override
-    public boolean queryCheckPlanIsNull(int identifier) {
+    public int queryCheckPlanIsNull(int identifier) {
         Cursor cursor = db.query("checkplan", null, "identifier=?", new String[]{String.valueOf(identifier)}, null, null, null);
-        boolean isNull = cursor.moveToNext();
+        String fileName = null;
+        if (cursor.moveToNext()) {
+            fileName = cursor.getString(cursor.getColumnIndex("url"));
+        } else {
+            return -1;//数据库未记录，重新插入
+        }
+        if (fileName == null || fileName.equals("")) {
+            return 0;//数据库已有记录，文件地址为空，更新信息
+        }
         cursor.close();
-        return isNull;
+        return 1;//不用处理
     }
 
     @Override
@@ -128,6 +129,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
             plan.setQuxian(cursor.getString(cursor.getColumnIndex("quxian")));
             plan.setManager(cursor.getString(cursor.getColumnIndex("manager")));
             plan.setUser(cursor.getString(cursor.getColumnIndex("user")));
+            plan.setUrl(cursor.getString(cursor.getColumnIndex("url")));
             list.add(plan);
         }
         //LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
@@ -151,6 +153,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
             plan.setQuxian(cursor.getString(cursor.getColumnIndex("quxian")));
             plan.setManager(cursor.getString(cursor.getColumnIndex("manager")));
             plan.setUser(cursor.getString(cursor.getColumnIndex("user")));
+            plan.setUrl(cursor.getString(cursor.getColumnIndex("url")));
             list.add(plan);
         }
         //LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
@@ -202,13 +205,23 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
         CheckPlan plan = null;
         int i = 0;
         Cursor cursor = db.query("checkplan", new String[]{"state"}, "identifier=?", new String[]{String.valueOf(identifier)}, null, null, null);
-        LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
         while (cursor.moveToNext()) {
-            LogUtil.logI("查询计划状态");
+            Logger.i("查询计划状态");
             i = cursor.getInt(cursor.getColumnIndex("state"));
         }
         cursor.close();
         return i;
+    }
+
+    public String queryCheckPlanFileUrl(String sysId) {
+        String url = null;
+        Cursor cursor = db.query("checkplan", new String[]{"url"}, "sysId=?", new String[]{sysId}, null, null, null);
+        while (cursor.moveToNext()) {
+            url = cursor.getString(cursor.getColumnIndex("url"));
+        }
+        cursor.close();
+        colseDateBase();
+        return url;
     }
 
     @Override

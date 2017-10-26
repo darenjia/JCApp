@@ -26,7 +26,9 @@ import com.bokun.bkjcb.on_siteinspection.JCApplication;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -268,6 +270,28 @@ public class Utils {
             e.printStackTrace();
         }
         return version;
+    }
+
+    public static boolean saveFile(InputStream in, File file) {
+//        File file = new File(path, fileName);
+        try {
+            FileOutputStream stream = new FileOutputStream(file);
+            int length;
+            byte[] buffer = new byte[4 * 1024];
+            while ((length = in.read(buffer)) != -1) {
+                stream.write(buffer, 0, length);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    public static String getFileName(String url){
+        return url.substring(url.lastIndexOf("/"));
     }
 }
 

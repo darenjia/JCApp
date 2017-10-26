@@ -163,10 +163,10 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
 
     private void checkSDPremission() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission_group.STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            path = Environment.getExternalStorageDirectory() + "/Bokun";
+            path = Environment.getExternalStorageDirectory() + "/CheckApp";
             File file = new File(path);
             if (!file.exists()) {
-                file.mkdirs();
+                file.mkdir();
             }
         } else {
             creatSnackBar(R.string.mis_error_no_permission_sdcard);

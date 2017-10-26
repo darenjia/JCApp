@@ -70,7 +70,7 @@ public class ConstructionDetailView {
         mButtonLook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InfoActivity.ComeInfoActivity(context,checkPlan.getSysId());
+                InfoActivity.ComeInfoActivity(context,checkPlan.getUrl());
             }
         });
         return resView;

@@ -8,13 +8,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 
 /**
- * Created by BKJCB on 2017/3/20.
+ * Created by DengShuai on 2017/3/20.
+ * Description : 数据库打开工具类
  */
 
 public class SQLiteOpenUtil extends SQLiteOpenHelper {
 
     public SQLiteOpenUtil(Context context) {
-        super(context, "User.db", null, 3);
+        super(context, "User.db", null, 4);
     }
 
     public SQLiteOpenUtil(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler) {
@@ -34,5 +35,13 @@ public class SQLiteOpenUtil extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        switch (oldVersion) {
+            case 3:
+                db.execSQL(Constants.CREATE_TEMP_TABLE);
+                db.execSQL(Constants.CREATE_NEW_CHECKPALN);
+                db.execSQL(Constants.INSERT_DATA_CHECKPLAN);
+                db.execSQL(Constants.DROP_TEMP);
+                break;
+        }
     }
 }

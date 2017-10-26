@@ -7,9 +7,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bokun.bkjcb.on_siteinspection.R;
+import com.bokun.bkjcb.on_siteinspection.SQLite.SearchedWordDao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,14 +50,35 @@ public class StringAdapter extends BaseAdapter implements Filterable {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        TextView textView;
+        ViewHolder viewHolder;
+        final String tip = strings.get(position);
         if (convertView == null) {
-            textView = (TextView) View.inflate(context, R.layout.search_tips_view, null);
+            convertView = View.inflate(context, R.layout.search_tip_view, null);
+            viewHolder = new ViewHolder(convertView);
+            convertView.setTag(viewHolder);
         } else {
-            textView = (TextView) convertView;
+            viewHolder = (ViewHolder) convertView.getTag();
         }
-        textView.setText(strings.get(position));
-        return textView;
+        viewHolder.word.setText(tip);
+        viewHolder.close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SearchedWordDao.delete(context, tip);
+                strings.remove(tip);
+                notifyDataSetChanged();
+            }
+        });
+        return convertView;
+    }
+
+    static class ViewHolder {
+        TextView word;
+        ImageView close;
+
+        ViewHolder(View view) {
+            word = (TextView) view.findViewById(R.id.child_title);
+            close = (ImageView) view.findViewById(R.id.child_del);
+        }
     }
 
     public void add(String string) {
