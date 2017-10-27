@@ -10,6 +10,7 @@ import com.bokun.bkjcb.on_siteinspection.Domain.User;
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.Utils.FileUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
+import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
@@ -72,11 +73,14 @@ public class DataUtil {
     public static void insertCheckPlans(Context context, ArrayList<CheckPlan> plans) {
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);
         for (CheckPlan plan : plans) {
-            int state = daolmpl.queryCheckPlanIsNull(plan.getIdentifier());
-            if (state == -1) {
+            String state = daolmpl.queryCheckPlanIsNull(plan.getIdentifier());
+            if (state == null) {
                 daolmpl.insertCheckPlan(plan);
-                Logger.i(plan.getName());
-            } else if (state == 0) {
+                Logger.i("新增计划"+plan.getName());
+            } else if (state.equals("")) {
+                daolmpl.updateCheckPlan(plan);
+            } else {
+                Utils.deleteFile(state);
                 daolmpl.updateCheckPlan(plan);
             }
         }
@@ -85,11 +89,11 @@ public class DataUtil {
 
     public static void insertCheckPlan(Context context, CheckPlan plan) {
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);
-        int state = daolmpl.queryCheckPlanIsNull(plan.getIdentifier());
-        if (state == -1) {
+        String state = daolmpl.queryCheckPlanIsNull(plan.getIdentifier());
+        if (state == null) {
             daolmpl.insertCheckPlan(plan);
             // LogUtil.logI("加入一条检查计划" + plan.getIdentifier());
-        } else if (state == 0) {
+        } else if (state.equals("")) {
             daolmpl.updateCheckPlan(plan);
         }
     }

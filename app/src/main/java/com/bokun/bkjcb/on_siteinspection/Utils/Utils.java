@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.media.MediaMetadataRetriever;
 import android.media.ThumbnailUtils;
 import android.os.Build;
+import android.os.Environment;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -23,6 +24,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
+import com.orhanobut.logger.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -290,8 +292,18 @@ public class Utils {
         }
         return true;
     }
-    public static String getFileName(String url){
+
+    public static String getFileName(String url) {
         return url.substring(url.lastIndexOf("/"));
+    }
+
+    public static boolean deleteFile(String fileName) {
+        Logger.i("删除文件：" + fileName);
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH, fileName);
+        if (file.exists()) {
+            return file.delete();
+        }
+        return true;
     }
 }
 

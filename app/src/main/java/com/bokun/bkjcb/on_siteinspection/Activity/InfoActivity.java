@@ -76,7 +76,7 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
             Toast.makeText(this, "该工程暂无信息登记表！", Toast.LENGTH_SHORT).show();
             return;
         }
-        Logger.i(fileName);
+        Logger.i("打开pdf文件：" + fileName);
         setPDFView();
     }
 
@@ -102,6 +102,7 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
 
     @Override
     public void onError(Throwable throwable) {
+        Logger.i("error" + fileName);
         if (loadData == null) {
             if (NetworkUtils.isEnable(this)) {
                 loadData = new LoadData();

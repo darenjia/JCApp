@@ -17,7 +17,7 @@ public abstract class CheckPlanDao {
 
     public abstract CheckPlan queryCheckPlan(String sysID);
 
-    public abstract int queryCheckPlanIsNull(int identifier);
+    public abstract String queryCheckPlanIsNull(int identifier);
 
     public abstract ArrayList<CheckPlan> queryCheckPlan();
 

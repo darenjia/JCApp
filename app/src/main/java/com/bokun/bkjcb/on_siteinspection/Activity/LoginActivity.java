@@ -253,8 +253,8 @@ public class LoginActivity extends BaseActivity implements RequestListener {
 //            mPassword.setText(password);
             mRembPass.setChecked(true);
         }
-        mUserName.setText("ljl_qs");
-        mPassword.setText("000000");
+//        mUserName.setText("ljl_qs");
+//        mPassword.setText("000000");
 //        changeIp(null);
     }
 

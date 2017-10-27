@@ -97,21 +97,20 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
     }
 
     @Override
-    public int queryCheckPlanIsNull(int identifier) {
+    public String queryCheckPlanIsNull(int identifier) {
         Cursor cursor = db.query("checkplan", null, "identifier=?", new String[]{String.valueOf(identifier)}, null, null, null);
         String fileName = null;
         if (cursor.moveToNext()) {
             fileName = cursor.getString(cursor.getColumnIndex("url"));
         } else {
-            return -1;//数据库未记录，重新插入
+            return null;//数据库未记录，重新插入
         }
         if (fileName == null || fileName.equals("")) {
-            return 0;//数据库已有记录，文件地址为空，更新信息
+            return "";//数据库已有记录，文件地址为空，更新信息
         }
         cursor.close();
-        return 1;//不用处理
+        return fileName;//不用处理
     }
-
     @Override
     public ArrayList<CheckPlan> queryCheckPlan() {
         ArrayList<CheckPlan> list = new ArrayList<>();

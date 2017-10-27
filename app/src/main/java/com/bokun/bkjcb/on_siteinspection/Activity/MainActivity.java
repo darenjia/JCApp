@@ -196,7 +196,20 @@ public class MainActivity extends BaseActivity
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
-                }).create().show();
+                })
+                .setNegativeButton("退出", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent();
+                        intent.setAction("android.intent.action.STARTUPLOAD");//你定义的service的action
+                        intent.setPackage(getPackageName());
+                        MainActivity.this.stopService(intent);
+                        dialog.dismiss();
+                        finish();
+                    }
+                })
+                .create()
+                .show();
     }
 
     @Override

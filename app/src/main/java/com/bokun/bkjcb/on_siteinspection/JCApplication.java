@@ -28,7 +28,8 @@ public class JCApplication extends Application {
                         .showThreadInfo(true)
                         .globalTag("dengshuai")
                         .methodOffset(0)
-                        .logPriority(BuildConfig.DEBUG ? Log.VERBOSE : Log.ASSERT)
+//                        .logPriority(BuildConfig.DEBUG ? Log.VERBOSE : Log.ASSERT)
+                        .logPriority(Log.VERBOSE)
                         .build()
         );
     }
