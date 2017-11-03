@@ -29,6 +29,7 @@ import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
+import com.bokun.bkjcb.on_siteinspection.Utils.CheckUpUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.MD5Util;
 import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
@@ -253,6 +254,7 @@ public class LoginActivity extends BaseActivity implements RequestListener {
 //            mPassword.setText(password);
             mRembPass.setChecked(true);
         }
+        new CheckUpUtil(this).checkUpadte(false, false);
 //        mUserName.setText("ljl_qs");
 //        mPassword.setText("000000");
 //        changeIp(null);

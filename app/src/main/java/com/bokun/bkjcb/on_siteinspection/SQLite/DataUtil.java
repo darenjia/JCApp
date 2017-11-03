@@ -11,7 +11,7 @@ import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.Utils.FileUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
-import com.orhanobut.logger.Logger;
+import com.elvishew.xlog.XLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +76,7 @@ public class DataUtil {
             String state = daolmpl.queryCheckPlanIsNull(plan.getIdentifier());
             if (state == null) {
                 daolmpl.insertCheckPlan(plan);
-                Logger.i("新增计划"+plan.getName());
+                XLog.i("新增计划"+plan.getName());
             } else if (state.equals("")) {
                 daolmpl.updateCheckPlan(plan);
             } else {
@@ -261,13 +261,13 @@ public class DataUtil {
     public static boolean changeProjectState1(ProjectPlan plan) {
         boolean flag = false;
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
-        CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(JCApplication.getContext());
+//        CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(JCApplication.getContext());
         dao.update(plan.getAq_lh_id(), plan.getAq_jctz_zt());
-        String[] ids = plan.getAq_sysid().split(",");
+       /* String[] ids = plan.getAq_sysid().split(",");
         for (String id : ids) {
             flag = daolmpl.updateCheckPlanState(id, 2);
         }
-        daolmpl.colseDateBase();
+        daolmpl.colseDateBase();*/
         dao.close();
         return flag;
     }

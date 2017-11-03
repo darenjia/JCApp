@@ -14,7 +14,7 @@ import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.UpLoad.UIProgressListener;
 import com.bokun.bkjcb.on_siteinspection.UpLoad.UploadHelper;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
-import com.orhanobut.logger.Logger;
+import com.elvishew.xlog.XLog;
 
 import java.util.ArrayList;
 
@@ -80,10 +80,10 @@ public class UploadService extends Service {
     public void onDestroy() {
         super.onDestroy();
         if (projectPlan != null) {
-            Logger.i("上传服务结束");
+            XLog.i("上传服务结束");
             projectPlan = DataUtil.queryProjectPlanById(projectPlan.getAq_lh_id());
             if (projectPlan.getAq_jctz_zt().equals("正在上传")) {
-                Logger.i("修改未完成任务状态");
+                XLog.i("修改未完成任务状态");
                 projectPlan.setAq_jctz_zt("等待上传");
                 DataUtil.updateProjectState(projectPlan);
             }

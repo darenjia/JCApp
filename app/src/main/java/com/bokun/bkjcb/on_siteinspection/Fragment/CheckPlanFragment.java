@@ -40,7 +40,7 @@ import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.MD5Util;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 import com.bokun.bkjcb.on_siteinspection.View.ConstructionDetailView;
-import com.orhanobut.logger.Logger;
+import com.elvishew.xlog.XLog;
 
 import org.ksoap2.serialization.SoapObject;
 
@@ -110,8 +110,6 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     }
 
     private void getDateFromNet() {
-        Logger.i(System.currentTimeMillis() + "");
-
         HttpRequestVo requestVo = new HttpRequestVo();
         requestVo.getRequestDataMap().put("quxian", JCApplication.user.getQuxian());
         requestVo.getRequestDataMap().put("user", Utils.getUserName());
@@ -121,8 +119,6 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     }
 
     private void getCheckPlanFromNet() {
-        Logger.i(System.currentTimeMillis() + "");
-
         sysIds = new StringBuilder();
         if (projectPlans != null && projectPlans.size() > 0) {
             for (int i = 0; i < projectPlans.size(); i++) {
@@ -198,10 +194,6 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         } else {
             nullView.setVisibility(View.GONE);
         }
-        int width = Utils.getWindowWidthOrHeight(context, "Width");
-        int left = width - (width / 10);
-        int right = width - (width / 10) + (width / 20);
-        listview.setIndicatorBounds(left, right);
         adapter = new ExpandableListViewAdapter(context, projectPlans, constuctions);
         listview.setAdapter(adapter);
         listview.setGroupIndicator(null);
@@ -222,8 +214,6 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
     @Override
     public void action(int i, Object object) {
-        Logger.i(System.currentTimeMillis() + "");
-
         JsonResult result = null;
         if (object != null) {
             result = JsonParser.parseSoap((SoapObject) object);
@@ -250,7 +240,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                 }
                 return;
             }
-            Logger.i("返回数据结果：" + result.resData);
+            XLog.i("返回数据结果：" + result.resData);
             String cacheStr = null;
             if (cacheUitl.cache != null) {
                 cacheStr = cacheUitl.getData(key);
@@ -260,12 +250,12 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                     cacheUitl.saveData(key, result.resData);
                 }
                 checkPlans = JsonParser.getJSONData(result.resData);
-                Logger.i(checkPlans.size() + "");
+                XLog.i(checkPlans.size() + "");
                 DataUtil.insertCheckPlans(context, checkPlans);
             } else {
                 if (!cacheStr.equals(result.resData)) {
                     checkPlans = JsonParser.getJSONData(result.resData);
-                    Logger.i(checkPlans.size() + "");
+                    XLog.i(checkPlans.size() + "");
                     DataUtil.insertCheckPlans(context, checkPlans);
                 }
             }
@@ -384,11 +374,11 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         }
         ProjectPlan projectPlan = projectPlans.get(groupPosition);
         projectPlan.setAq_jctz_zt(state);
-        /*if (state.equals("等待上传")){
+        if (state.equals("等待上传")) {
             DataUtil.changeProjectState1(projectPlan);
-        }*/
+        }
         //只要修改就该保存状态
-        DataUtil.changeProjectState1(projectPlan);
+//        DataUtil.changeProjectState1(projectPlan);
     }
 
     public void dateHasChange() {
@@ -398,6 +388,9 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
         if (projectPlans.size() == 0) {
             nullView.setVisibility(View.VISIBLE);
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
             return;
         }
         setConstuctions();

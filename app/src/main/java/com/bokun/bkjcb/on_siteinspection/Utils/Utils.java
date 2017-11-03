@@ -24,7 +24,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
-import com.orhanobut.logger.Logger;
+import com.elvishew.xlog.XLog;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,6 +38,8 @@ import java.io.InputStream;
  */
 
 public class Utils {
+
+    private String version;
 
     public static Bitmap compressBitmap(String path) {
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -298,12 +300,25 @@ public class Utils {
     }
 
     public static boolean deleteFile(String fileName) {
-        Logger.i("删除文件：" + fileName);
+        XLog.i("删除文件：" + fileName);
         File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH, fileName);
         if (file.exists()) {
             return file.delete();
         }
         return true;
+    }
+
+    public String getLocalVersion(Context context) {
+        String version = "";
+        PackageManager pm = context.getPackageManager();
+        try {
+            PackageInfo info = pm.getPackageInfo(context.getPackageName(), 0);
+            version = info.versionName;
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return version;
     }
 }
 

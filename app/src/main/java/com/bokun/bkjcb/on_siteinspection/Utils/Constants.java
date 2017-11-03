@@ -228,25 +228,27 @@ public class Constants {
     * */
 
     public static final String HTTPURL = "http://101.231.52.50:8080/zgzxjkWebService.asmx";
-    //        public static final String HTTPURL = "http://192.168.100.136:8080/zgzxjkWebService.asmx";
     public static final String FTP_HOST_DEFAULT = "101.231.52.50";
     public static final int FTP_HOST_PORT = 18000;
     public static final String FTP_USER_DEFAULT = "zgzx1";
     public static final String FTP_PASSWORD_DEFAULT = "zgzx";
     public static final String URL = "http://101.231.52.50:8080/downpdf/Temp/";
+//    public static final String URL_CHECK = "http://192.168.100.211:8080/zgzxjkWebService.asmx";
+    public static final String URL_SOFT = "http://101.231.52.50:8081/Aqgl/xiazaiapp";
 
 
     /*
     * 测试IP地址
     * */
-   /* public static  String HTTPURL = "http://IP:8080/zgzxjkWebService.asmx";
+//    public static String HTTPURL = "http://192.168.100.136:8080/zgzxjkWebService.asmx";
     //    public static  String HTTPURL = "http://IP:1856/zgzxjkWebService.asmx";
-    public static String HTTPURL_temple = "http://IP:8080/zgzxjkWebService.asmx";*/
-  /*  public static String FTP_HOST_DEFAULT = "192.168.137.1";
-    public static final int FTP_HOST_PORT = 21;
-    public static final String FTP_USER_DEFAULT = "hqh";
-    public static final String FTP_PASSWORD_DEFAULT = "123456";*/
-
+  /*  public static String FTP_HOST_DEFAULT = "192.168.100.136";
+    public static final int FTP_HOST_PORT = 18000;
+    public static final String FTP_USER_DEFAULT = "zgzx1";
+    public static final String FTP_PASSWORD_DEFAULT = "zgzx";*/
+//    public static final String URL = "http://192.168.100.136:8080/downpdf/Temp/";
+//    public static final String URL_CHECK = "http://192.168.100.211:8080/zgzxjkWebService.asmx";
+//    public static final String URL_SOFT = "http://101.231.52.50:8081/Aqgl/xiazaiapp";
     /**
      * ftp状态
      */
@@ -271,5 +273,6 @@ public class Constants {
 
     public static final String CAAHE_KEY = "projectkey22335151";
     public static final String FILE_PATH = "/CheckApp/file";
+
 
 }

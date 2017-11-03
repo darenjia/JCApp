@@ -142,7 +142,7 @@ public class UploadHelper {
 //                }
             }
         }, request);
-//        manager.postRequest();
+        manager.postRequest();
         //测试
 //        prePareFile();
 //        uploadFile();
@@ -184,8 +184,8 @@ public class UploadHelper {
             sendData();
             return;
         }
-//        String path = "downpdf/" + projectId + "/" + remotePaths.get(flag);
-        String path = "Test/" + projectId + "/" + remotePaths.get(flag);
+        String path = "downpdf/" + projectId + "/" + remotePaths.get(flag);
+//        String path = "Test/" + projectId + "/" + remotePaths.get(flag);
 
         task = new FtpUploadTask().newInstance(pathMap, path, new OnFinishedListener() {
             @Override

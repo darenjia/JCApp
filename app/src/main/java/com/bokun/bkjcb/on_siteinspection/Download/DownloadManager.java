@@ -4,7 +4,7 @@ import android.os.Environment;
 
 import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
-import com.orhanobut.logger.Logger;
+import com.elvishew.xlog.XLog;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class DownloadManager implements Runnable {
                 e.printStackTrace();
             }
         }
-        Logger.i("pdf全部下载完毕");
+        XLog.i("pdf全部下载完毕");
     }
 
 

@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
-import com.orhanobut.logger.Logger;
+import com.elvishew.xlog.XLog;
 
 import java.util.ArrayList;
 
@@ -205,7 +205,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
         int i = 0;
         Cursor cursor = db.query("checkplan", new String[]{"state"}, "identifier=?", new String[]{String.valueOf(identifier)}, null, null, null);
         while (cursor.moveToNext()) {
-            Logger.i("查询计划状态");
+            XLog.i("查询计划状态");
             i = cursor.getInt(cursor.getColumnIndex("state"));
         }
         cursor.close();

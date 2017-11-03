@@ -34,7 +34,7 @@ import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.SPUtils;
-import com.orhanobut.logger.Logger;
+import com.elvishew.xlog.XLog;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -363,7 +363,7 @@ public class UpLoadChirldFragment extends BaseFragment {
 
         @Override
         protected void onPostExecute(Object o) {
-            Logger.i("重新查找了数据");
+            XLog.i("重新查找了数据");
             if (adapter == null) {
                 adapter = new ListAdapter(plans_upload, false);
                 listView.setAdapter(adapter);
@@ -381,7 +381,7 @@ public class UpLoadChirldFragment extends BaseFragment {
 
     @Override
     public void onStart() {
-        Logger.i("onStart,重新查询等待开始的计划");
+        XLog.i("onStart,重新查询等待开始的计划");
         if (plans_upload == null) {
             loadTask = new LoadData();
             loadTask.execute();
@@ -411,7 +411,7 @@ public class UpLoadChirldFragment extends BaseFragment {
                 if (flag == -1) {
                     Toast.makeText(context, "上传失败,稍后重试！", Toast.LENGTH_SHORT).show();
                     ProjectPlan projectPlan = plans_uploading.get(0);
-                    Logger.i(projectPlan.getState_upload() + "" + projectPlan.getAq_lh_jcrq());
+                    XLog.i(projectPlan.getState_upload() + "" + projectPlan.getAq_lh_jcrq());
                     projectPlan.setState_upload(3);
                     plans_uploading.remove(projectPlan);
                     plans_upload.add(projectPlan);
@@ -554,7 +554,7 @@ public class UpLoadChirldFragment extends BaseFragment {
     @Override
     public void onStop() {
         super.onStop();
-        Logger.i("上传界面已停止");
+        XLog.i("上传界面已停止");
     }
 
     private void updateCount() {

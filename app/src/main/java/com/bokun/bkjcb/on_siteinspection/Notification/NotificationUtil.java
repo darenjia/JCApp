@@ -40,7 +40,7 @@ public class NotificationUtil {
 
     public void Notify(int count, int progress) {
         builder.setSmallIcon(R.mipmap.check_app);
-        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.check_app);
+        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.upload);
         builder.setLargeIcon(largeIcon);
         builder.setContentText("已完成" + count + "个");
         builder.setAutoCancel(true);
