@@ -256,11 +256,12 @@ public class MainActivity extends BaseActivity
             if (ServiceUtil.isServiceRunning("com.bokun.bkjcb.on_siteinspection.Service.UploadService")) {
                 exitCheck();
             } else {
-                AppManager.getAppManager().finishAllActivity();
+//                AppManager.getAppManager().finishAllActivity();
+                AppManager.getAppManager().AppExit(this);
             }
-//            AppManager.getAppManager().AppExit(this);
         } else if (id == R.id.nav_logout) {
             LoginActivity.comeToLoginActivity(this);
+            finish();
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
@@ -351,8 +352,22 @@ public class MainActivity extends BaseActivity
         super.onStop();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (currentFragment == viewMap.get("third")) {
+            toolbar.getMenu().setGroupVisible(R.id.menu_map, true);
+        } else {
+            toolbar.getMenu().setGroupVisible(R.id.menu_map, false);
+        }
+    }
+
     public void showMenu(boolean is) {
-        menu.setGroupVisible(R.id.menu_map, is);
+       /* if (menu != null) {
+            menu.setGroupVisible(R.id.menu_map, is);
+        } else {
+            toolbar.getMenu().setGroupVisible(R.id.menu_map, is);
+        }*/
     }
 
     @Override

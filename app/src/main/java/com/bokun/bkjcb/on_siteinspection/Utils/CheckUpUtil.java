@@ -1,10 +1,10 @@
 package com.bokun.bkjcb.on_siteinspection.Utils;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
+import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.elvishew.xlog.XLog;
 
 import org.ksoap2.SoapEnvelope;
@@ -30,18 +30,18 @@ import ezy.boost.update.UpdateManager;
 
 public class CheckUpUtil {
     private Context context;
-    private String mCheckUrl = Constants.URL;
+    private String mCheckUrl = JCApplication.isDebug() ? Constants.URL_CHECK : Constants.HTTPURL;
     private String mUpdateUrl = Constants.URL_SOFT;
 
     public CheckUpUtil(Context context) {
         this.context = context;
     }
 
-    public void checkUpadte(boolean isManual,boolean isAutoInstall) {
+    public void checkUpadte(boolean isManual, boolean isAutoInstall) {
         UpdateManager.setDebuggable(true);
         UpdateManager.setWifiOnly(false);
 //        UpdateManager.check(context);
-        check(isManual, true, false, false, false, 998,isAutoInstall);
+        check(isManual, true, false, false, false, 998, isAutoInstall);
     }
 
     void check(boolean isManual, boolean hasUpdate, final boolean isForce, final boolean isSilent, final boolean isIgnorable, final int
@@ -67,7 +67,7 @@ public class CheckUpUtil {
                         connection.disconnect();
                     }
                 }*/
-                Log.i("Deng", "url:" + url);
+                LogUtil.logI("Deng", "url:" + url);
                 HttpTransportSE ht;
                 try {
                     String NAMESPACE = "http://zgzxjk/";
@@ -124,7 +124,7 @@ public class CheckUpUtil {
                 info.isForce = isForce;
                 info.isIgnorable = isIgnorable;
                 info.isSilent = isSilent;
-                info.isAutoInstall=isAutoInstall;
+                info.isAutoInstall = isAutoInstall;
                 return info;
             }
         }).check();

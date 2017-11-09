@@ -64,4 +64,8 @@ public class JCApplication extends Application {
     public static Context getContext() {
         return context;
     }
+
+    public static boolean isDebug() {
+        return true;
+    }
 }

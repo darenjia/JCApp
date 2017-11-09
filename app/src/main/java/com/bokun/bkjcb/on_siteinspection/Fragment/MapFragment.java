@@ -180,13 +180,13 @@ public class MapFragment extends MainFragment implements LocationSource {
     public void onStop() {
         super.onStop();
         getContext().unregisterReceiver(reciver);
-        LogUtil.logI("onStop");
+//        LogUtil.logI("onStop");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LogUtil.logI("onDestory");
+//        LogUtil.logI("onDestory");
         mLocationClient.onDestroy();//销毁定位客户端，同时销毁本地定位服务。
         mapView.onDestroy();
     }
@@ -198,7 +198,7 @@ public class MapFragment extends MainFragment implements LocationSource {
     public void onResume() {
         super.onResume();
         mapView.onResume();
-        LogUtil.logI("onResume");
+//        LogUtil.logI("onResume");
         ((MainActivity) getContext()).showMenu(true);
     }
 

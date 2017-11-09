@@ -402,5 +402,6 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     @Override
     public void onResume() {
         super.onResume();
+        ((MainActivity) getContext()).showMenu(false);
     }
 }

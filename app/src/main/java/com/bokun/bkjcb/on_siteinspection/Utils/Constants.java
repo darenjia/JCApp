@@ -205,24 +205,6 @@ public class Constants {
     public final static String INSERT_DATA_CHECKPLAN = "insert into checkplan select *,'' from _temp_checkplan";
     public final static String DROP_TEMP = "drop table _temp_checkplan";
 
-    public final static String GetXxclSc = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-            "<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\n" +
-            "  <soap12:Body>\n" +
-            "    <GetXxclSc xmlns=\"http://zgzxjk/\">\n" +
-            "      <quxian>quxian</quxian>\n" +
-            "    </GetXxclSc>\n" +
-            "  </soap12:Body>\n" +
-            "</soap12:Envelope>";
-    public final static String GetUser = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-            "<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">\n" +
-            "  <soap12:Body>\n" +
-            "    <GetUser xmlns=\"http://zgzxjk/\">\n" +
-            "      <user>UserName</user>\n" +
-            "      <password>UserPwd</password>\n" +
-            "    </GetUser>\n" +
-            "  </soap12:Body>\n" +
-            "</soap12:Envelope>";
-
     /*
     *正式IP地址
     * */
@@ -233,21 +215,19 @@ public class Constants {
     public static final String FTP_USER_DEFAULT = "zgzx1";
     public static final String FTP_PASSWORD_DEFAULT = "zgzx";
     public static final String URL = "http://101.231.52.50:8080/downpdf/Temp/";
-//    public static final String URL_CHECK = "http://192.168.100.211:8080/zgzxjkWebService.asmx";
     public static final String URL_SOFT = "http://101.231.52.50:8081/Aqgl/xiazaiapp";
 
 
     /*
     * 测试IP地址
     * */
-//    public static String HTTPURL = "http://192.168.100.136:8080/zgzxjkWebService.asmx";
-    //    public static  String HTTPURL = "http://IP:1856/zgzxjkWebService.asmx";
-  /*  public static String FTP_HOST_DEFAULT = "192.168.100.136";
-    public static final int FTP_HOST_PORT = 18000;
-    public static final String FTP_USER_DEFAULT = "zgzx1";
-    public static final String FTP_PASSWORD_DEFAULT = "zgzx";*/
-//    public static final String URL = "http://192.168.100.136:8080/downpdf/Temp/";
-//    public static final String URL_CHECK = "http://192.168.100.211:8080/zgzxjkWebService.asmx";
+    public static String TEST_HTTPURL = "http://192.168.100.136:8080/zgzxjkWebService.asmx";
+    /*  public static String FTP_HOST_DEFAULT = "192.168.100.136";
+      public static final int FTP_HOST_PORT = 18000;
+      public static final String FTP_USER_DEFAULT = "zgzx1";
+      public static final String FTP_PASSWORD_DEFAULT = "zgzx";*/
+    public static final String TEST_URL = "http://192.168.100.136:8080/downpdf/Temp/";
+    public static final String URL_CHECK = "http://192.168.100.211:8080/zgzxjkWebService.asmx";
 //    public static final String URL_SOFT = "http://101.231.52.50:8081/Aqgl/xiazaiapp";
     /**
      * ftp状态

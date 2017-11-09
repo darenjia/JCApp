@@ -2,7 +2,9 @@ package com.bokun.bkjcb.on_siteinspection.Download;
 
 import android.os.Environment;
 
+import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
+import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 import com.elvishew.xlog.XLog;
 
@@ -37,7 +39,9 @@ public class DownloadManager implements Runnable {
                 continue;
             }
             try {
-                url = new URL(Constants.URL + fileName);
+                String str = JCApplication.isDebug() ? Constants.TEST_URL : Constants.URL;
+                LogUtil.logI("Deng",str);
+                url = new URL(str + fileName);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream inputStream = urlConnection.getInputStream();
                 Utils.saveFile(inputStream, file);

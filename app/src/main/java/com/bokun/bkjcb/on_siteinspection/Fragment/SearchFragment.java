@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bokun.bkjcb.on_siteinspection.Activity.InfoActivity;
+import com.bokun.bkjcb.on_siteinspection.Activity.MainActivity;
 import com.bokun.bkjcb.on_siteinspection.Adapter.StringAdapter;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
@@ -103,6 +104,12 @@ public class SearchFragment extends MainFragment implements RequestListener {
     @Override
     protected void getDataSucceed(JsonResult object) {
         super.getDataSucceed(object);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) getContext()).showMenu(false);
     }
 
     private void InitiateSearch() {

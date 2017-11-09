@@ -253,7 +253,7 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
         private TextView audio_title;
 
         public ViewHolder() {
-            LogUtil.logI("new ViewHolder");
+//            LogUtil.logI("new ViewHolder");
             initWidgets();
         }
 
@@ -366,7 +366,7 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             if (file != null) {
              /*获取当前系统的android版本号*/
-                LogUtil.logI("currentapiVersion====>" + currentapiVersion);
+//                LogUtil.logI("currentapiVersion====>" + currentapiVersion);
                 if (currentapiVersion < 24) {
                     uri = Uri.fromFile(file);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);

@@ -200,18 +200,21 @@ public class LoginActivity extends BaseActivity implements RequestListener {
 
         // Check for a valid password, if the user entered one.
         if (TextUtils.isEmpty(password) || !isPasswordValid(password)) {
-            mPassword.setError(getString(R.string.error_invalid_password));
+//            mPassword.setError(getString(R.string.error_invalid_password));
+            setError(mPassword,getString(R.string.error_invalid_password));
             focusView = mPassword;
             cancel = true;
         }
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(userName)) {
-            mUserName.setError(getString(R.string.error_field_required));
+//            mUserName.setError(getString(R.string.error_field_required));
+            setError(mUserName,getString(R.string.error_field_required));
             focusView = mUserName;
             cancel = true;
         } else if (!isUserNameValid(userName)) {
-            mUserName.setError(getString(R.string.error_invalid_username));
+//            mUserName.setError(getString(R.string.error_invalid_username));
+            setError(mUserName,getString(R.string.error_invalid_username));
             focusView = mUserName;
             cancel = true;
         }
@@ -219,7 +222,11 @@ public class LoginActivity extends BaseActivity implements RequestListener {
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.g
-            focusView.requestFocus();
+           /* try{
+                focusView.requestFocus();
+            }catch (ClassCastException ignored){
+
+            }*/
         } else {
             User user = DataUtil.getUser(userName);
             if (!NetworkUtils.isEnable(this) && user != null) {
@@ -228,7 +235,7 @@ public class LoginActivity extends BaseActivity implements RequestListener {
                     saveInfo();
                     MainActivity.ComeToMainActivity(this, user);
                 } else {
-                    mPassword.setError("密码错误");
+                    setError(mPassword,"密码错误");
                 }
             } else {
                 HttpRequestVo request = new HttpRequestVo();
@@ -240,6 +247,16 @@ public class LoginActivity extends BaseActivity implements RequestListener {
                 mLoginView.setVisibility(View.VISIBLE);
                 mCardView.setVisibility(View.GONE);
             }
+        }
+    }
+
+    private void setError(EditText view,String message) {
+        try{
+            view.setError(message);
+            view.requestFocus();
+        }catch (ClassCastException ignored){
+            view.setError(null);
+            Snackbar.make(mCardView,message, Snackbar.LENGTH_LONG).show();
         }
     }
 

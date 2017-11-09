@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.bokun.bkjcb.on_siteinspection.Activity.MainActivity;
 import com.bokun.bkjcb.on_siteinspection.R;
 
 import java.util.ArrayList;
@@ -68,6 +69,12 @@ public class UpLoadFragment extends MainFragment {
 
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) getContext()).showMenu(false);
     }
 
     class PagerAdapter extends FragmentPagerAdapter {

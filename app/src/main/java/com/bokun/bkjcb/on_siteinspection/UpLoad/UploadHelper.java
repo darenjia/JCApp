@@ -17,6 +17,7 @@ import com.bokun.bkjcb.on_siteinspection.Http.HttpManager;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpRequestVo;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
+import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.google.gson.Gson;
@@ -39,7 +40,7 @@ public class UploadHelper {
         public void handleMessage(Message msg) {
             if (msg.what == RequestListener.EVENT_GET_DATA_SUCCESS) {
                 JsonResult result = (JsonResult) msg.obj;
-                if (result.success||(result.message.startsWith("Duplicate")&&result.message.endsWith("\'AQ_ID\'"))) {
+                if (result.success || (result.message.startsWith("Duplicate") && result.message.endsWith("\'AQ_ID\'"))) {
                     prePareFile();
                     uploadFile();
                 } else {
@@ -184,8 +185,12 @@ public class UploadHelper {
             sendData();
             return;
         }
-        String path = "downpdf/" + projectId + "/" + remotePaths.get(flag);
-//        String path = "Test/" + projectId + "/" + remotePaths.get(flag);
+        String path;
+        if (JCApplication.isDebug()) {
+            path = "Test/" + projectId + "/" + remotePaths.get(flag);
+        } else {
+            path = "downpdf/" + projectId + "/" + remotePaths.get(flag);
+        }
 
         task = new FtpUploadTask().newInstance(pathMap, path, new OnFinishedListener() {
             @Override

@@ -24,7 +24,6 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
-import com.elvishew.xlog.XLog;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -300,7 +299,7 @@ public class Utils {
     }
 
     public static boolean deleteFile(String fileName) {
-        XLog.i("删除文件：" + fileName);
+        LogUtil.logI("删除文件：" + fileName);
         File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.FILE_PATH, fileName);
         if (file.exists()) {
             return file.delete();
