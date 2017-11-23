@@ -31,7 +31,7 @@ public class ProjectPlanDao {
         values.put("aq_lh_allbj", result.getAq_lh_allbj());
         values.put("aq_lh_jcmc", result.getAq_lh_jcmc());
         values.put("aq_lh_szqx", result.getAq_lh_szqx());
-        values.put("aq_lh_jchy", result.getAq_lh_jchy().toString());
+//        values.put("aq_lh_jchy", result.getAq_lh_jchy().toString());
         values.put("aq_lh_qxjd", result.getAq_lh_qxjd());
         values.put("aq_jctype", result.getAq_jctype());
         values.put("aq_sysid", result.getAq_sysid());
@@ -53,7 +53,7 @@ public class ProjectPlanDao {
             result.setAq_jctz_zt(cursor.getString(cursor.getColumnIndex("aq_jctz_zt")));
             result.setAq_sysid(cursor.getString(cursor.getColumnIndex("aq_sysid")));
             result.setAq_lh_seqid(cursor.getInt(cursor.getColumnIndex("aq_lh_seqid")));
-            result.setAq_lh_qxjd(cursor.getString(cursor.getColumnIndex("aq_lh_qxjd")));
+            result.setAq_lh_szqx(cursor.getString(cursor.getColumnIndex("aq_lh_szqx")));
             result.setAQ_JCTZ_sfjc(cursor.getInt(cursor.getColumnIndex("AQ_JCTZ_sfjc")));
             list.add(result);
         }
@@ -85,7 +85,7 @@ public class ProjectPlanDao {
             result.setAq_lh_jcmc(cursor.getString(cursor.getColumnIndex("aq_lh_jcmc")));
             result.setAq_jctz_zt(cursor.getString(cursor.getColumnIndex("aq_jctz_zt")));
             result.setAq_sysid(cursor.getString(cursor.getColumnIndex("aq_sysid")));
-            result.setAq_lh_qxjd(cursor.getString(cursor.getColumnIndex("aq_lh_qxjd")));
+            result.setAq_lh_szqx(cursor.getString(cursor.getColumnIndex("aq_lh_szqx")));
             result.setAq_lh_jcrq(cursor.getString(cursor.getColumnIndex("aq_lh_jcrq")));
             result.setAQ_JCTZ_sfjc(cursor.getInt(cursor.getColumnIndex("AQ_JCTZ_sfjc")));
             list.add(result);
@@ -103,7 +103,7 @@ public class ProjectPlanDao {
             result.setAq_lh_jcmc(cursor.getString(cursor.getColumnIndex("aq_lh_jcmc")));
             result.setAq_jctz_zt(cursor.getString(cursor.getColumnIndex("aq_jctz_zt")));
             result.setAq_sysid(cursor.getString(cursor.getColumnIndex("aq_sysid")));
-            result.setAq_lh_qxjd(cursor.getString(cursor.getColumnIndex("aq_lh_qxjd")));
+            result.setAq_lh_szqx(cursor.getString(cursor.getColumnIndex("aq_lh_szqx")));
             result.setAq_lh_jcrq(cursor.getString(cursor.getColumnIndex("aq_lh_jcrq")));
             result.setAQ_JCTZ_sfjc(cursor.getInt(cursor.getColumnIndex("AQ_JCTZ_sfjc")));
             if (result.getAQ_JCTZ_sfjc() == 2 || result.getAQ_JCTZ_sfjc() == 3) {
@@ -130,7 +130,7 @@ public class ProjectPlanDao {
         values.put("aq_lh_allbj", result.getAq_lh_allbj());
         values.put("aq_lh_jcmc", result.getAq_lh_jcmc());
         values.put("aq_lh_szqx", result.getAq_lh_szqx());
-        values.put("aq_lh_jchy", result.getAq_lh_jchy().toString());
+//        values.put("aq_lh_jchy", result.getAq_lh_jchy().toString());
         values.put("aq_lh_qxjd", result.getAq_lh_qxjd());
         values.put("aq_jctype", result.getAq_jctype());
         values.put("aq_sysid", result.getAq_sysid());

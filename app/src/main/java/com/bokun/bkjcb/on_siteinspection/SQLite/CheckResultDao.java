@@ -13,11 +13,13 @@ public abstract class CheckResultDao {
 
     public abstract ArrayList<CheckResult> queryCheckResult(int Identifier);
 
-    public abstract boolean queryById(int id);
+    public abstract ArrayList<CheckResult> queryCheckResult(int Identifier,String aq_lh_id);
+
+    public abstract boolean queryById(int id,String aq_lh_id);
 
     public abstract boolean updateCheckResult(CheckResult result);
 
-    public abstract void clean(int id);
+    public abstract void clean(int id,String aq_lh_id);
 
     public abstract void changeCheckResult(CheckResult result);
 }

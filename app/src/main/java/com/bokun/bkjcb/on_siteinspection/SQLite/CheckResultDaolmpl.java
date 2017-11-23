@@ -16,6 +16,7 @@ import java.util.ArrayList;
  */
 
 public class CheckResultDaolmpl extends CheckResultDao {
+
     private SQLiteDatabase database;
 
     public CheckResultDaolmpl(Context context) {
@@ -28,6 +29,7 @@ public class CheckResultDaolmpl extends CheckResultDao {
 //      database.execSQL("insert into checkresult values(null,2133,12312,1,'sadasdas','dasdas','wad','sad')");
         ContentValues values = new ContentValues();
         values.put("identifier", result.getIdentifier());
+        values.put("aq_lh_id", result.getAq_lh_id());
         values.put("num", result.getNum());
         values.put("checkresult", result.getResult());
         values.put("comment", result.getComment());
@@ -40,13 +42,19 @@ public class CheckResultDaolmpl extends CheckResultDao {
 
     @Override
     public ArrayList<CheckResult> queryCheckResult(int Identifier) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<CheckResult> queryCheckResult(int Identifier,String aq_lh_id) {
         ArrayList<CheckResult> list = new ArrayList<>();
         CheckResult result;
-        Cursor cursor = database.query("checkresult", null, "identifier = ?", new String[]{String.valueOf(Identifier)}, null, null, "num ASC");
+        Cursor cursor = database.query("checkresult", null, "identifier = ? and aq_lh_id = ?", new String[]{String.valueOf(Identifier),aq_lh_id}, null, null, "num ASC");
         while (cursor.moveToNext()) {
             result = new CheckResult();
             result.setId(cursor.getInt(cursor.getColumnIndex("id")));
             result.setIdentifier(cursor.getInt(cursor.getColumnIndex("identifier")));
+            result.setAq_lh_id(cursor.getString(cursor.getColumnIndex("aq_lh_id")));
             result.setNum(cursor.getInt(cursor.getColumnIndex("num")));
             result.setComment(cursor.getString(cursor.getColumnIndex("comment")));
             result.setResult(cursor.getInt(cursor.getColumnIndex("checkresult")));
@@ -60,8 +68,8 @@ public class CheckResultDaolmpl extends CheckResultDao {
     }
 
     @Override
-    public boolean queryById(int Identifier) {
-        Cursor cursor = database.query("checkresult", null, "identifier = ?", new String[]{String.valueOf(Identifier)}, null, null, "num ASC");
+    public boolean queryById(int Identifier,String aq_lh_id) {
+        Cursor cursor = database.query("checkresult", null, "identifier = ? and aq_lh_id = ?", new String[]{String.valueOf(Identifier),aq_lh_id}, null, null, "num ASC");
         while (cursor.moveToNext()) {
             return true;
         }
@@ -72,6 +80,7 @@ public class CheckResultDaolmpl extends CheckResultDao {
     public boolean updateCheckResult(CheckResult result) {
         ContentValues values = new ContentValues();
         values.put("identifier", result.getIdentifier());
+        values.put("aq_lh_id", result.getAq_lh_id());
         values.put("num", result.getNum());
         values.put("checkresult", result.getResult());
         values.put("comment", result.getComment());
@@ -88,8 +97,8 @@ public class CheckResultDaolmpl extends CheckResultDao {
     }
 
     @Override
-    public void clean(int id) {
-        database.delete("checkresult", "identifier=?", new String[]{String.valueOf(id)});
+    public void clean(int id,String aq_lh_id) {
+        database.delete("checkresult", "identifier=? and aq_lh_id = ?", new String[]{String.valueOf(id),aq_lh_id});
     }
 
 

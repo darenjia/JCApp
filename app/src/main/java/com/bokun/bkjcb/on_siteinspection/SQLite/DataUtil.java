@@ -28,7 +28,7 @@ public class DataUtil {
         try {
             for (int i = 0; i < results.size(); i++) {
                 result = results.get(i);
-                if (result.getId() != -1 && daolmpl.queryById(result.getIdentifier())) {
+                if (result.getId() != -1 && daolmpl.queryById(result.getIdentifier(), result.getAq_lh_id())) {
                     daolmpl.updateCheckResult(result);
                 } else {
                     daolmpl.insertCheckResult(result);
@@ -43,7 +43,7 @@ public class DataUtil {
         return true;
     }
 
-    public static ArrayList<CheckResult> readData(Context context, int Identifier) {
+    public static ArrayList<CheckResult> readData(Context context, int Identifier,String aq_lh_id) {
         CheckResultDaolmpl daolmpl = new CheckResultDaolmpl(context);
         CheckPlanDaolmpl planDaolmpl = new CheckPlanDaolmpl(context);
         ArrayList<CheckResult> results = new ArrayList<>();
@@ -51,7 +51,7 @@ public class DataUtil {
             planDaolmpl.colseDateBase();
             return results;
         }
-        results = daolmpl.queryCheckResult(Identifier);
+        results = daolmpl.queryCheckResult(Identifier,aq_lh_id);
         daolmpl.closeDatabase();
         LogUtil.logI("查询所有该计划的结果" + "identity" + Identifier + " size:" + results.size());
         return results;
@@ -66,7 +66,9 @@ public class DataUtil {
         }
         ArrayList<CheckResult> results = daolmpl.queryCheckResult(Identifier);
         FileUtils.deleteFile(results);
-        daolmpl.clean(Identifier);
+        if (results.size() > 0) {
+            daolmpl.clean(Identifier, results.get(0).getAq_lh_id());
+        }
         daolmpl.closeDatabase();
     }
 
@@ -76,7 +78,7 @@ public class DataUtil {
             String state = daolmpl.queryCheckPlanIsNull(plan.getIdentifier());
             if (state == null) {
                 daolmpl.insertCheckPlan(plan);
-                XLog.i("新增计划"+plan.getName());
+                XLog.i("新增计划" + plan.getName());
             } else if (state.equals("")) {
                 daolmpl.updateCheckPlan(plan);
             } else {
@@ -244,6 +246,22 @@ public class DataUtil {
         return true;
     }
 
+    public static boolean saveProjectPlan(ProjectPlan plan, User user) {
+        if (plan != null) {
+            ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
+            String id = dao.issaved(plan.getAq_lh_seqid());
+            if (id == null) {
+                dao.save(plan, user.getId());
+            } else {
+                dao.update(id, plan, user);
+            }
+            dao.close();
+        } else {
+            return false;
+        }
+        return true;
+    }
+
     public static boolean changeProjectState(ProjectPlan plan) {
         boolean flag = false;
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
@@ -300,7 +318,9 @@ public class DataUtil {
         for (CheckPlan c : checkPlans) {
             checkResults.addAll(daoR.queryCheckResult(c.getIdentifier()));
 //            cleanData(JCApplication.getContext(), c.getIdentifier());
-            daoR.clean(c.getIdentifier());
+            if (checkResults.size() > 0) {
+                daoR.clean(c.getIdentifier(), checkResults.get(0).getAq_lh_id());
+            }
         }
         FileUtils.deleteFile(checkResults);
 

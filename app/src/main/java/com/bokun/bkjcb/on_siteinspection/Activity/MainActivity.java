@@ -243,7 +243,7 @@ public class MainActivity extends BaseActivity
         if (id == R.id.nav_check_plan) {
             loadView("检查计划", "first");
         } else if (id == R.id.nav_info_check) {
-            loadView("工程信息查询", "second");
+            loadView("临时检查", "second");
         } else if (id == R.id.nav_map) {
             loadView("地图", "third");
         } /*else if (id == R.id.nav_details) {

@@ -89,7 +89,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         TextView time = (TextView) view.findViewById(R.id.group_time);
         ExpandIconView icon = (ExpandIconView) view.findViewById(R.id.expand_icon);
         title.setText(plan_list.get(groupPosition).getAq_lh_jcmc());
-        quxian.setText(plan_list.get(groupPosition).getAq_lh_qxjd());
+        quxian.setText(plan_list.get(groupPosition).getAq_lh_szqx());
         time.setText(plan_list.get(groupPosition).getAq_lh_jcrq());
         if (isExpanded) {
             icon.setState(ExpandIconView.LESS, false);

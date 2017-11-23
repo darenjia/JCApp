@@ -1,7 +1,7 @@
 package com.bokun.bkjcb.on_siteinspection.Activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -63,11 +63,15 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
     private AlertDialog dialog;
     private int contentSize;
     private ArrayList<CheckResult> backup;
+    private boolean isTemp;
+    private String aq_lh_id;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void initView() {
-        plan = (CheckPlan) getIntent().getExtras().getSerializable("checkplan");
+        plan = (CheckPlan) getIntent().getSerializableExtra("checkplan");
+        isTemp = getIntent().getBooleanExtra("isTemp", false);
+        aq_lh_id = getIntent().getStringExtra("aq_lh_id");
         setContentView(R.layout.activity_securitycheck);
         toolbar = (Toolbar) findViewById(R.id.toolbar_secAct);
 //        toolbar.setTitle("安全检查");
@@ -84,12 +88,9 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
         btn_next = (ImageView) findViewById(R.id.btn_next);
         page_num = (TextView) findViewById(R.id.txt_page);
 
-        /*
-        * 判断改检查是否检查*/
+             /*判断该检查是否检查*/
         isChecked = DataUtil.queryCheckPlanState(this, plan.getIdentifier()) != 0;
-//        viewPager.setCurrentItem(13);
-//        FragmentAdapter adapter = new FragmentAdapter(context, getCheckItems());
-//        viewPager.setAdapter(adapter);
+
     }
 
     private void initFragments() {
@@ -124,7 +125,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                     .setPositiveButton("继续检查", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            results = DataUtil.readData(context, plan.getIdentifier());
+                            results = DataUtil.readData(context, plan.getIdentifier(),aq_lh_id);
                             backup = new ArrayList<>(results);
                             initFragments();
                         }
@@ -148,10 +149,12 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
         }
     }
 
-    public static void ComeToSecurityCheckActivity(Context Context, Bundle bundle) {
+    public static void ComeToSecurityCheckActivity(Activity Context, CheckPlan plan, boolean isTemp,String aqId) {
         Intent intent = new Intent(Context, SecurityCheckActivity.class);
-        intent.putExtras(bundle);
-        Context.startActivity(intent);
+        intent.putExtra("checkplan", plan);
+        intent.putExtra("isTemp", isTemp);
+        intent.putExtra("aq_lh_id", aqId);
+        Context.startActivityForResult(intent,0);
     }
 
     public List<String> getCheckItems() {
@@ -232,10 +235,10 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
         int id = v.getId();
         if (id == btn_forward.getId()) {
             viewPager.arrowScroll(View.FOCUS_LEFT);
-            LogUtil.logI("click forward");
+//            LogUtil.logI("click forward");
         } else if (id == btn_next.getId()) {
             viewPager.arrowScroll(View.FOCUS_RIGHT);
-            LogUtil.logI("click forward");
+//            LogUtil.logI("click forward");
         } else if (id == page_num.getId()) {
             List<String> strings = new ArrayList<>();
             strings.addAll(contents);
@@ -297,14 +300,18 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
     }
 
     private void setResultData(int state) {
-        Intent old = getIntent();
-        Intent intent = new Intent();
-        Bundle bundle = new Bundle();
-        bundle.putInt("groupPosition", old.getExtras().getInt("groupPosition"));
-        bundle.putInt("childPosition", old.getExtras().getInt("childPosition"));
-        bundle.putInt("state", state);
-        intent.putExtras(bundle);
-        setResult(CheckPlanFragment.DATA_CHANGED, intent);
+        if (!isTemp) {
+            Intent old = getIntent();
+            Intent intent = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putInt("groupPosition", old.getExtras().getInt("groupPosition"));
+            bundle.putInt("childPosition", old.getExtras().getInt("childPosition"));
+            bundle.putInt("state", state);
+            intent.putExtras(bundle);
+            setResult(CheckPlanFragment.DATA_CHANGED, intent);
+        } else {
+            setResult(state);
+        }
     }
 
     private boolean saveData(int state, String time) {
@@ -315,7 +322,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
             finishedPlan.setUsername(Utils.getUserName());
             finishedPlan.setSysID(plan.getSysId());
             finishedPlan.setSysGcxxdjh(plan.getIdentifier());
-            finishedPlan.setAQ_LH_ID(getIntent().getStringExtra("aq_lh_id"));
+            finishedPlan.setAQ_LH_ID(aq_lh_id);
             DataUtil.saveFinishedPlan(finishedPlan);
         }
         DataUtil.updateCheckPlanState(this, plan);
@@ -361,6 +368,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                 } else {
                     result = new CheckResult();
                     result.setIdentifier(plan.getIdentifier());
+                    result.setAq_lh_id(aq_lh_id);
                     result.setNum(i + 1);
                     results.add(result);
                 }

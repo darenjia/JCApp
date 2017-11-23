@@ -15,7 +15,7 @@ import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 public class SQLiteOpenUtil extends SQLiteOpenHelper {
 
     public SQLiteOpenUtil(Context context) {
-        super(context, "User.db", null, 4);
+        super(context, "User.db", null, 5);
     }
 
     public SQLiteOpenUtil(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler) {
@@ -41,6 +41,12 @@ public class SQLiteOpenUtil extends SQLiteOpenHelper {
                 db.execSQL(Constants.CREATE_NEW_CHECKPALN);
                 db.execSQL(Constants.INSERT_DATA_CHECKPLAN);
                 db.execSQL(Constants.DROP_TEMP);
+//                break;
+            case 4:
+                db.execSQL(Constants.CREATE_TEMP_CHECK_RESULT);
+                db.execSQL(Constants.CREATE_NEW_CHECK_RESULT);
+                db.execSQL(Constants.INSERT_DATA_CHECK_RESULT);
+                db.execSQL(Constants.DROP_TEMP_CHECK_RESULT);
                 break;
         }
     }

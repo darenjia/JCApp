@@ -1,8 +1,16 @@
 package com.bokun.bkjcb.on_siteinspection.Fragment;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.Environment;
 import android.os.Message;
+import android.provider.Settings;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,6 +22,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,14 +36,21 @@ import com.bokun.bkjcb.on_siteinspection.Activity.MainActivity;
 import com.bokun.bkjcb.on_siteinspection.Adapter.StringAdapter;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
+import com.bokun.bkjcb.on_siteinspection.Download.DownloadManager;
+import com.bokun.bkjcb.on_siteinspection.Http.HttpManager;
+import com.bokun.bkjcb.on_siteinspection.Http.HttpRequestVo;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.SQLite.SearchedWordDao;
+import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
+import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
+import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
 
 import org.ksoap2.serialization.SoapObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -58,6 +74,8 @@ public class SearchFragment extends MainFragment implements RequestListener {
     private ArrayList<CheckPlan> checkPlans;
     private LinearLayout linearLayout;
     private ResultAdapter resultAdapter;
+    private boolean isFromNet = false;
+    private Button local_search;
 
     @Override
     protected View initView(LayoutInflater inflater) {
@@ -72,6 +90,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
         listView = (ListView) view.findViewById(R.id.listView);
         listContainer = (ListView) view.findViewById(R.id.listContainer);
         error_tip = (RelativeLayout) view.findViewById(R.id.error_tip);
+        local_search = (Button) view.findViewById(R.id.btn_sea_local);
         marker_progress = (ProgressBar) view.findViewById(R.id.marker_progress);
         linearLayout = (LinearLayout) view.findViewById(R.id.nav_view);
         set = new HashSet<>();
@@ -97,13 +116,37 @@ public class SearchFragment extends MainFragment implements RequestListener {
     @Override
     protected void getDataFailed() {
         super.getDataFailed();
+        LogUtil.logI("查询获取数据失败");
         view_search.setVisibility(View.GONE);
         error_tip.setVisibility(View.VISIBLE);
     }
 
     @Override
     protected void getDataSucceed(JsonResult object) {
-        super.getDataSucceed(object);
+        view_search.setVisibility(View.GONE);
+        LogUtil.logI("获取数据成功");
+        setResultList(checkPlans);
+        ArrayList<String> paths = new ArrayList<>();
+        for (int i = 0; i < checkPlans.size(); i++) {
+            paths.add(checkPlans.get(i).getUrl());
+        }
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission_group.STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            File file = new File(Environment.getExternalStorageDirectory() + Constants.FILE_PATH);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            new Thread(new DownloadManager(paths)).start();
+        } else {
+            Snackbar.make(getView(), R.string.mis_error_no_permission_sdcard, Snackbar.LENGTH_LONG).setAction("设置", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+                    intent.setData(uri);
+                    getActivity().startActivity(intent);
+                }
+            }).show();
+        }
     }
 
     @Override
@@ -163,7 +206,15 @@ public class SearchFragment extends MainFragment implements RequestListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 CheckPlan plan = checkPlans.get(position);
-                InfoActivity.ComeInfoActivity(context, plan.getUrl());
+                InfoActivity.ComeInfoActivity(context, plan, isFromNet);
+            }
+        });
+        local_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                isFromNet = false;
+                isFromNet = true;
+                setResultList(DataUtil.queryCheckPlan(edit_text_search.getText().toString()));
             }
         });
 
@@ -239,20 +290,30 @@ public class SearchFragment extends MainFragment implements RequestListener {
 
     private void search(String item, int page_num) {
         view_search.setVisibility(View.VISIBLE);
-        /*HttpRequestVo requestVo = new HttpRequestVo();
-        requestVo.getRequestDataMap().put("", "");
-        requestVo.setMethodName("GetXxclSc");
-        HttpManager manager = new HttpManager(context, this, requestVo);
-        //manager.postRequest();
-        mHandler.sendEmptyMessageDelayed(9, 2000);*/
+        if (NetworkUtils.isEnable(context)) {
+            HttpRequestVo requestVo = new HttpRequestVo();
+            requestVo.getRequestDataMap().put("", "");
+            requestVo.setMethodName("GetXxclSc");
+            HttpManager manager = new HttpManager(context, this, requestVo);
+//            manager.postRequest();
+            mHandler.sendEmptyMessageDelayed(4, 2000);
+            isFromNet = true;
+        } else {
+            isFromNet = false;
+            setResultList(DataUtil.queryCheckPlan(item));
+        }
+    }
+
+    private void setResultList(ArrayList<CheckPlan> list) {
         checkPlans.clear();
-        checkPlans.addAll(DataUtil.queryCheckPlan(item));
+        checkPlans.addAll(list);
         view_search.setVisibility(View.GONE);
         if (checkPlans.size() == 0) {
             error_tip.setVisibility(View.VISIBLE);
+            result_view.setVisibility(View.GONE);
         } else {
             error_tip.setVisibility(View.GONE);
-            listContainer.setVisibility(View.VISIBLE);
+            result_view.setVisibility(View.VISIBLE);
             resultAdapter.notifyDataSetChanged();
         }
     }

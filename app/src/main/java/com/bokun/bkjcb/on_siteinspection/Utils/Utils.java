@@ -31,6 +31,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by BKJCB on 2017/3/24.
@@ -318,6 +321,12 @@ public class Utils {
             e.printStackTrace();
         }
         return version;
+    }
+    /*
+    * 获取当前日期*/
+    public static String getDate(String template){
+        Date date = new Date(System.currentTimeMillis());
+        return  new SimpleDateFormat(template, Locale.CHINA).format(date);
     }
 }
 

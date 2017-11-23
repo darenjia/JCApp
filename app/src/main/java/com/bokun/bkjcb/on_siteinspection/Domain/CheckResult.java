@@ -10,7 +10,8 @@ import java.util.ArrayList;
 public class CheckResult implements Serializable {
 
     private int id = -1;  //主键id
-    private int identifier; //唯一标识符，用于确定属于哪个检查计划
+    private int identifier; //唯一标识符，用于确定属于哪个检查工程
+    private String aq_lh_id; //标识符，用于确定属于哪个检查计划
     private int num;   //结果编号
     private String comment; //文字备注信息
     private int result = 2;  //选择结果
@@ -83,5 +84,13 @@ public class CheckResult implements Serializable {
 
     public void setAudioUrls(ArrayList<String> audioUrls) {
         this.audioUrls = audioUrls;
+    }
+
+    public String getAq_lh_id() {
+        return aq_lh_id;
+    }
+
+    public void setAq_lh_id(String aq_lh_id) {
+        this.aq_lh_id = aq_lh_id;
     }
 }

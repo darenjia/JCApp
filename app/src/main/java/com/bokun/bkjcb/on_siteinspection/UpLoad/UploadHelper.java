@@ -102,7 +102,7 @@ public class UploadHelper {
             FinishedPlan plan = DataUtil.getFinishedPlan(str);
             CheckPlan checkPlan = DataUtil.queryCheckPlan(context, plan.getSysGcxxdjh());
             remotePaths.add(String.valueOf(checkPlan.getSysId()));
-            results = DataUtil.readData(context, checkPlan.getIdentifier());
+            results = DataUtil.readData(context, checkPlan.getIdentifier(),projectPlan.getAq_lh_id());
             resultList.add(results);
             Gson gson = new Gson();
             JsonElement element = gson.toJsonTree(results);
@@ -191,7 +191,7 @@ public class UploadHelper {
         } else {
             path = "downpdf/" + projectId + "/" + remotePaths.get(flag);
         }
-
+        LogUtil.logI("上传路径：" + path);
         task = new FtpUploadTask().newInstance(pathMap, path, new OnFinishedListener() {
             @Override
             public void finish() {

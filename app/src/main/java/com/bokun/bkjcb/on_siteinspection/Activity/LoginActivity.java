@@ -240,6 +240,8 @@ public class LoginActivity extends BaseActivity implements RequestListener {
             } else {
                 HttpRequestVo request = new HttpRequestVo();
                 request.getRequestDataMap().put("user", userName);
+                //后面再做MD5加密处理
+//                request.getRequestDataMap().put("password", MD5Util.encode(password));
                 request.getRequestDataMap().put("password", password);
                 request.setMethodName("GetUser");
                 httpManager = new HttpManager(this, this, request, 2);

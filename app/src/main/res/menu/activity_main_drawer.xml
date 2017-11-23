@@ -9,7 +9,7 @@
         <item
             android:id="@+id/nav_info_check"
             android:icon="@drawable/vector_drawable_plans"
-            android:title="计划查询" />
+            android:title="临时检查" />
         <item
             android:id="@+id/nav_map"
             android:icon="@drawable/vector_drawable_map"

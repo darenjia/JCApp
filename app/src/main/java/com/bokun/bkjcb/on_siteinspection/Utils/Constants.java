@@ -72,6 +72,7 @@ public class Constants {
     public final static String CREATE_CHECK_RESULT = "create table checkresult(" +
             "id Integer primary key," +
             "identifier int(10)," +
+            "aq_lh_id char(30)," +
             "num int(10)," +
             "checkresult int(1)," +
             "comment text," +
@@ -84,109 +85,7 @@ public class Constants {
             "name varchar(20)," +
             "type int(1)" +
             ")";
-    public final static String CREATE_TABLE_INFO = "create table infokey(" +
-            "id Integer primary key," +
-            "title varchar(20)," +
-            "typeid varchar(10)," +
-            "type int(5)," +
-            "unit varchar(5)" +
-            ")";
-
-    public final static String CREATE_TABLE_JINGGAO = "create table jinggao(" +
-            "id Integer primary key," +
-            "SysId int(20)," +
-            "ScGgLcjg varchar(20)," +
-            "ScGgSzlc int(5)" +
-            ")";
-    public final static String CREATE_TABLE_BIAOGEINFO = "create table biaogeinfo(" +
-            "id Integer primary key," +
-            "SysId int(20)," +
-            "ScGgGdBgFzr varchar(20)," +
-            "ScGgGdBgTbr varchar(20)," +
-            "ScGgGdBgLxdh varchar(20)," +
-            "ScGgGdBgBcrq varchar(20)" +
-            ")";
-
-    public final static String CREATE_TABLE_SHIYONGDW = "create table shiyongdw(" +
-            "id Integer primary key," +
-            "SysId int(20)," +
-            "SydwMc varchar(30)," +
-            "SydwFddbr varchar(20)," +
-            "SydwLxr varchar(20)," +
-            "SydwLxdh varchar(20)," +
-            "SydwLx varchar(20)," +
-            "SydwSyfs varchar(20)," +
-            "SydwGsdj int(5)," +
-            "SydwZaxk int(5)," +
-            "SydwWsxk int(5)," +
-            "SydwXfxk int(5)" +
-            ")";
-
-    public final static String CREATE_TABLE_SHENGCHANG01 = "create table shengchan01(" +
-            "id Integer primary key," +
-            "SysGcxxdjh int(20)," +
-            "SysId int(20)," +
-            "SysMfgcbh varchar(20)," +
-            "ScJbGcmc varchar(30)," +
-            "ScJbGcdz varchar(30)," +
-            "ScJbSzqx varchar(20)," +
-            "ScJbJdxz varchar(30)," +
-            "ScJbBz text," +
-            "ScXzJcnf varchar(30)," +
-            "ScXzJzmj varchar(10)," +
-            "ScXzSjyt varchar(20)," +
-            "ScXzMfjzmj varchar(10)," +
-            "ScXzMzsd varchar(10)," +
-            "ScXzKbs int(5)," +
-            "ScXzDxcs int(5)," +
-            "ScXzJgys int(5)," +
-            "ScXzGcxs varchar(20)," +
-            "ScXzJglb varchar(20)," +
-            "ScXzGclb varchar(20)," +
-            "ScXzLtdxDt varchar(20)," +
-            "ScXzGcxz int(5)," +
-            "ScXzYllt int(5)," +
-            "ScXzLtqtgc int(5)," +
-            "ScXzLtdxZb int(5)," +
-            "ScXzDmjz varchar(20)," +
-            "ScXzDmjzQt varchar(20)," +
-            "ScXzSsgc int(5)" +
-            ")";
-
-
-    public final static String CREATE_TABLE_SHENGCHANG02 = "create table shengchan02(" +
-            "id Integer primary key," +
-            "SysId int(20)," +
-            "ScJszDw varchar(30)," +
-            "ScJszSjzg varchar(20)," +
-            "ScJszFddbr varchar(20)," +
-            "ScJszLxr varchar(20)," +
-            "ScJszLxdh varchar(20)," +
-            "ScJszDwxz varchar(20)," +
-            "ScJszCqz int(5)," +
-            "ScSyzMc varchar(30)," +
-            "ScSyzFddbr varchar(20)," +
-            "ScSyzLxr varchar(20)," +
-            "ScSyzLxdh varchar(20)," +
-            "ScSyzLx varchar(20)," +
-            "ScSyzCqz int(5)," +
-            "ScGlzMc varchar(30)," +
-            "ScGlzSjzg varchar(20)," +
-            "ScGlzFddbr varchar(20)," +
-            "ScGlzLxr varchar(20)," +
-            "ScGlzLxdh varchar(20)," +
-            "ScGlzLx varchar(20)" +
-            ")";
-
-    public final static String CREATE_TABLE_SHIYONGYT = "create table shiyongyt(" +
-            "id Integer primary key," +
-            "SysId int(20)," +
-            "SyScSsmc varchar(20)," +
-            "SyScQtyt varchar(20)," +
-            "SyScJzmj varchar(10)," +
-            "SyScCws int(5)" +
-            ")";
-
+    //修改checkplan表
     public final static String CREATE_TEMP_TABLE = "alter table checkplan rename to _temp_checkplan";
     public final static String CREATE_NEW_CHECKPALN = "create table checkplan(" +
             "identifier Integer primary key," +
@@ -204,6 +103,22 @@ public class Constants {
             ")";
     public final static String INSERT_DATA_CHECKPLAN = "insert into checkplan select *,'' from _temp_checkplan";
     public final static String DROP_TEMP = "drop table _temp_checkplan";
+
+    //修改checkresult表
+    public final static String CREATE_TEMP_CHECK_RESULT  = "alter table checkresult rename to _temp_checkresult";
+    public final static String CREATE_NEW_CHECK_RESULT= "create table checkresult(" +
+            "id Integer primary key," +
+            "identifier int(10)," +
+            "aq_lh_id char(30)," +
+            "num int(10)," +
+            "checkresult int(1)," +
+            "comment text," +
+            "audio char(100)," +
+            "image char(100)," +
+            "video char(100)" +
+            ")";
+    public final static String INSERT_DATA_CHECK_RESULT = "insert into checkresult select *,'' from _temp_checkresult";
+    public final static String DROP_TEMP_CHECK_RESULT = "drop table _temp_checkresult";
 
     /*
     *正式IP地址
