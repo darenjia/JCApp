@@ -11,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.bigkoo.alertview.AlertView;
+import com.bigkoo.alertview.OnItemClickListener;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
@@ -41,6 +43,7 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
     private boolean flag;
     private CheckPlan checkPlan;
     private ProjectPlan plan;
+    private AlertView alertView;
 
     @Override
     protected void initView() {
@@ -108,14 +111,28 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         //发起临时检查
         if (item.getItemId() == R.id.info_check) {
+            isCanCheck();
+        }
+        return true;
+    }
+
+    private void isCanCheck() {
+        if (checkPlan.getState() == 0) {
             plan = new ProjectPlan();
             plan.setAq_lh_id("SH" + checkPlan.getSysId());//必须id
             plan.setAq_lh_jcmc(Utils.getDate("yy-MM-dd") + checkPlan.getName() + "临时检查");//生成名称
             plan.setAq_sysid(String.valueOf(checkPlan.getSysId()));
             DataUtil.saveProjectPlan(plan, JCApplication.user);
             SecurityCheckActivity.ComeToSecurityCheckActivity(this, checkPlan, true, plan.getAq_lh_id());
+        } else {
+            alertView = new AlertView("提示", "当前工程近期已进行临时检查，暂时无法发起检查！", "确认", null, null, this, AlertView.Style.Alert, new OnItemClickListener() {
+                @Override
+                public void onItemClick(Object o, int position) {
+                    alertView.dismiss();
+                }
+            });
+            alertView.show();
         }
-        return true;
     }
 
     private void setPDFView() {

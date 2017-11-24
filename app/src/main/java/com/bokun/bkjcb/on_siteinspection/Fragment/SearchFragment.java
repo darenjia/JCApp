@@ -118,6 +118,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
         super.getDataFailed();
         LogUtil.logI("查询获取数据失败");
         view_search.setVisibility(View.GONE);
+        result_view.setVisibility(View.GONE);
         error_tip.setVisibility(View.VISIBLE);
     }
 
@@ -184,6 +185,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
 //                    listView.setFilterText(txt);
                     stringAdapter.getFilter().filter(txt);
                 } else {
+                    listView.setVisibility(View.VISIBLE);
                     stringAdapter.initData();
                     clearSearch.setImageResource(R.mipmap.ic_arrow_back);
                     IsAdapterEmpty();
@@ -278,7 +280,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
     }
 
     private void clearItems() {
-        listContainer.setVisibility(View.GONE);
+        result_view.setVisibility(View.GONE);
         mItem.clear();
     }
 
@@ -290,6 +292,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
 
     private void search(String item, int page_num) {
         view_search.setVisibility(View.VISIBLE);
+        result_view.setVisibility(View.GONE);
         if (NetworkUtils.isEnable(context)) {
             HttpRequestVo requestVo = new HttpRequestVo();
             requestVo.getRequestDataMap().put("", "");
@@ -308,6 +311,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
         checkPlans.clear();
         checkPlans.addAll(list);
         view_search.setVisibility(View.GONE);
+
         if (checkPlans.size() == 0) {
             error_tip.setVisibility(View.VISIBLE);
             result_view.setVisibility(View.GONE);

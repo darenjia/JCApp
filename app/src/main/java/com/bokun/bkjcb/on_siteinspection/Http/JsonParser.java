@@ -81,6 +81,18 @@ public class JsonParser {
         if (json.equals("{}")) {
             return results;
         }
+       /* //将JSON的String 转成一个JsonArray对象
+        com.google.gson.JsonParser parser = new com.google.gson.JsonParser();
+        JsonArray array = parser.parse(json).getAsJsonArray();
+        Gson gson = new Gson();
+        for (JsonElement element : array) {
+            CheckPlan checkPlan = gson.fromJson(element, CheckPlan.class);
+            if (checkPlan.getIdentifier() == 0 || checkPlan.getSysId() == 0) {
+                continue;
+            }
+            results.add(checkPlan);
+            LogUtil.logI(checkPlan.getName());
+        }*/
         try {
             //将JSON的String 转成一个JsonArray对象
             JSONArray jsonArray = new JSONArray(json);
