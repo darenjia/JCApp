@@ -152,9 +152,9 @@ public class SearchFragment extends MainFragment implements RequestListener {
             listContainer.setPullLoadMoreCompleted();
         }
         if (queryPlans.size() < 20) {
-            listContainer.setPullRefreshEnable(false);
+            listContainer.setPushRefreshEnable(false);
         } else {
-            listContainer.setPullRefreshEnable(true);
+            listContainer.setPushRefreshEnable(true);
         }
         setResultList(queryPlans);
         ArrayList<String> paths = new ArrayList<>();
