@@ -1,5 +1,7 @@
 package com.bokun.bkjcb.on_siteinspection.Http;
 
+import android.text.TextUtils;
+
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
@@ -61,7 +63,7 @@ public class JsonParser {
                 } catch (JSONException e) {
                     s = "";
                 }
-                if (s.equals("")) {
+                if (TextUtils.isEmpty(s)) {
                     s = "{}";
                 }
                 result.resData = s;

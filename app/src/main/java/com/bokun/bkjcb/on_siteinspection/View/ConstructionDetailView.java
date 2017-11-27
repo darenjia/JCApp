@@ -46,10 +46,15 @@ public class ConstructionDetailView {
     public View setData(CheckPlan checkPlan, boolean flag, View.OnClickListener listener, String title) {
         this.checkPlan = checkPlan;
         this.title = title;
-        return getConstructionDetailView(flag, listener);
+        return getConstructionDetailView(flag, listener, 0);
     }
 
-    private View getConstructionDetailView(boolean flag, View.OnClickListener listener) {
+    public View setData(CheckPlan checkPlan, boolean flag, View.OnClickListener listener, int type) {
+        this.checkPlan = checkPlan;
+        return getConstructionDetailView(flag, listener, type);
+    }
+
+    private View getConstructionDetailView(boolean flag, View.OnClickListener listener, int type) {
         initViews();
         mViewName.setText(checkPlan.getName());
         mViewId.setText(checkPlan.getIdentifier() + "");
@@ -59,7 +64,6 @@ public class ConstructionDetailView {
         mViewType.setText(checkPlan.getType());
         mViewManager.setText("");
         mViewUser.setText("");
-        mTitle.setText(title);
         if (flag) {
             mButtonCheck.setText("当前计划暂不可检查");
             mButtonCheck.setClickable(false);
@@ -67,12 +71,21 @@ public class ConstructionDetailView {
         } else {
             mButtonCheck.setOnClickListener(listener);
         }
-        mButtonLook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                InfoActivity.ComeInfoActivity(context,checkPlan.getUrl());
-            }
-        });
+
+        if (type == 1) {
+            mButtonCheck.setVisibility(View.GONE);
+            mTitle.setText("工程详情");
+            mButtonLook.setOnClickListener(listener);
+            mButtonCheck.setOnClickListener(null);
+        } else {
+            mTitle.setText(title);
+            mButtonLook.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    InfoActivity.ComeInfoActivity(context, checkPlan.getUrl());
+                }
+            });
+        }
         return resView;
     }
 

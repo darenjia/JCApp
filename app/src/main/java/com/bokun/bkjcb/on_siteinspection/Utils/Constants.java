@@ -67,7 +67,8 @@ public class Constants {
             "SysGcxxdjh int(20)," +
             "FinishedTime char(20)," +
             "Username char(10)," +
-            "AQ_LH_ID char(20)" +
+            "AQ_LH_ID char(20)," +
+            "Type int(8)" +
             ")";
     public final static String CREATE_CHECK_RESULT = "create table checkresult(" +
             "id Integer primary key," +
@@ -120,6 +121,20 @@ public class Constants {
     public final static String INSERT_DATA_CHECK_RESULT = "insert into checkresult select *,'' from _temp_checkresult";
     public final static String DROP_TEMP_CHECK_RESULT = "drop table _temp_checkresult";
 
+    //修改CREATE_FINISHED_PALN表
+    public final static String CREATE_TEMP_FINISHED_PALN  = "alter table finishedplan rename to _temp_finishedplan";
+    public final static String CREATE_NEW_FINISHED_PALN= "create table finishedplan(" +
+            "id Integer primary key," +
+            "SysId int(20)," +
+            "SysGcxxdjh int(20)," +
+            "FinishedTime char(20)," +
+            "Username char(10)," +
+            "AQ_LH_ID char(20)," +
+            "Type int(8)" +
+            ")";
+    public final static String INSERT_DATA_FINISHED_PALN = "insert into finishedplan select *,0 from _temp_finishedplan";
+    public final static String DROP_TEMP_FINISHED_PALN = "drop table _temp_finishedplan";
+
     /*
     *正式IP地址
     * */
@@ -136,12 +151,12 @@ public class Constants {
     /*
     * 测试IP地址
     * */
-    public static String TEST_HTTPURL = "http://192.168.100.136:8080/zgzxjkWebService.asmx";
+    public static String TEST_HTTPURL = "http://192.168.100.211:8080/zgzxjkWebService.asmx";
     /*  public static String FTP_HOST_DEFAULT = "192.168.100.136";
       public static final int FTP_HOST_PORT = 18000;
       public static final String FTP_USER_DEFAULT = "zgzx1";
       public static final String FTP_PASSWORD_DEFAULT = "zgzx";*/
-    public static final String TEST_URL = "http://192.168.100.136:8080/downpdf/Temp/";
+    public static final String TEST_URL = "http://192.168.100.211:8080/downpdf/Temp/";
     public static final String URL_CHECK = "http://192.168.100.211:8080/zgzxjkWebService.asmx";
 //    public static final String URL_SOFT = "http://101.231.52.50:8081/Aqgl/xiazaiapp";
     /**

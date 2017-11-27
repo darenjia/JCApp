@@ -274,8 +274,9 @@ public class LoginActivity extends BaseActivity implements RequestListener {
             mRembPass.setChecked(true);
         }
         new CheckUpUtil(this).checkUpadte(false, false);
-//        mUserName.setText("ljl_qs");
-//        mPassword.setText("000000");
+
+        mUserName.setText("ljl_qs");
+        mPassword.setText("000000");
 //        changeIp(null);
     }
 

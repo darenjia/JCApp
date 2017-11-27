@@ -13,6 +13,7 @@ public class FinishedPlan {
     private String Username;
     private String AQ_LH_ID;
     private JsonElement Result;
+    private int type;//0:安全检查  1:临时检查
 
     public int getSysID() {
         return SysID;
@@ -60,5 +61,13 @@ public class FinishedPlan {
 
     public void setResult(JsonElement result) {
         Result = result;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

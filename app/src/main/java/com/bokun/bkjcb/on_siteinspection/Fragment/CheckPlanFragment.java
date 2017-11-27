@@ -34,7 +34,7 @@ import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
-import com.bokun.bkjcb.on_siteinspection.Utils.CacheUitl;
+import com.bokun.bkjcb.on_siteinspection.Utils.CacheUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.MD5Util;
@@ -63,7 +63,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     private AlertDialog dialog;
     public static int DATA_CHANGED = 1;
     public static int DATA_UNCHANGED = 0;
-    private CacheUitl cacheUitl;
+    private CacheUtil cacheUtil;
     private String key = "sad1ee213124c1";
     private TextView errorView;
     private TextView nullView;
@@ -76,11 +76,11 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = View.inflate(context, R.layout.content_plan, null);
-        cacheUitl = new CacheUitl();
+        cacheUtil = new CacheUtil();
         try {
-            cacheUitl.getCache();
+            cacheUtil.getCache();
         } catch (IOException e) {
-            cacheUitl.getDiskCacheDir().delete();
+            cacheUtil.getDiskCacheDir().delete();
         }
         initPlanLayout(view);
         return view;
@@ -220,8 +220,8 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
             if (projectPlans == null || planFlag) {//|| projectPlans.size() == 0
                 projectPlans = JsonParser.getProjectData(result.resData);
                 /*有个问题，如果返回数据的SysId发生变化，则此方法要改*/
-                if (cacheUitl.cache != null && result.resData != null) {
-                    cacheUitl.saveData(Constants.CAAHE_KEY, result.resData);
+                if (cacheUtil.cache != null && result.resData != null) {
+                    cacheUtil.saveData(Constants.CAAHE_KEY, result.resData);
                 }
                 boolean flag = DataUtil.saveProjectPlan(projectPlans, MainActivity.user);
                 if (flag) {
@@ -242,12 +242,12 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
             }
             XLog.i("返回数据结果：" + result.resData);
             String cacheStr = null;
-            if (cacheUitl.cache != null) {
-                cacheStr = cacheUitl.getData(key);
+            if (cacheUtil.cache != null) {
+                cacheStr = cacheUtil.getData(key);
             }
             if (cacheStr == null) {
-                if (cacheUitl.cache != null) {
-                    cacheUitl.saveData(key, result.resData);
+                if (cacheUtil.cache != null) {
+                    cacheUtil.saveData(key, result.resData);
                 }
                 checkPlans = JsonParser.getJSONData(result.resData);
                 XLog.i(checkPlans.size() + "");
@@ -335,8 +335,8 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (cacheUitl != null && cacheUitl.cache != null) {
-            cacheUitl.close();
+        if (cacheUtil != null && cacheUtil.cache != null) {
+            cacheUtil.close();
         }
     }
 

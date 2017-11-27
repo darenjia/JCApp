@@ -125,7 +125,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                     .setPositiveButton("继续检查", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            results = DataUtil.readData(context, plan.getIdentifier(),aq_lh_id);
+                            results = DataUtil.readData(context, plan.getIdentifier(), aq_lh_id);
                             backup = new ArrayList<>(results);
                             initFragments();
                         }
@@ -149,12 +149,12 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
         }
     }
 
-    public static void ComeToSecurityCheckActivity(Activity Context, CheckPlan plan, boolean isTemp,String aqId) {
+    public static void ComeToSecurityCheckActivity(Activity Context, CheckPlan plan, boolean isTemp, String aqId) {
         Intent intent = new Intent(Context, SecurityCheckActivity.class);
         intent.putExtra("checkplan", plan);
         intent.putExtra("isTemp", isTemp);
         intent.putExtra("aq_lh_id", aqId);
-        Context.startActivityForResult(intent,0);
+        Context.startActivityForResult(intent, 0);
     }
 
     public List<String> getCheckItems() {
@@ -323,6 +323,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
             finishedPlan.setSysID(plan.getSysId());
             finishedPlan.setSysGcxxdjh(plan.getIdentifier());
             finishedPlan.setAQ_LH_ID(aq_lh_id);
+            finishedPlan.setType(isTemp ? 1 : 0);
             DataUtil.saveFinishedPlan(finishedPlan);
         }
         DataUtil.updateCheckPlanState(this, plan);

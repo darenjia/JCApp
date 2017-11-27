@@ -12,12 +12,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.bigkoo.alertview.AlertView;
-import com.bigkoo.alertview.OnItemClickListener;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
+import com.bokun.bkjcb.on_siteinspection.Utils.CacheUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
@@ -25,6 +25,8 @@ import com.elvishew.xlog.XLog;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnErrorListener;
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
+import com.hss01248.dialog.StyledDialog;
+import com.hss01248.dialog.interfaces.MyDialogListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -119,19 +121,30 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
     private void isCanCheck() {
         if (checkPlan.getState() == 0) {
             plan = new ProjectPlan();
-            plan.setAq_lh_id("SH" + checkPlan.getSysId());//必须id
+            plan.setAq_lh_id("SH" + Utils.getDate("yyyyMMddhhmm"));//必须id
             plan.setAq_lh_jcmc(Utils.getDate("yy-MM-dd") + checkPlan.getName() + "临时检查");//生成名称
             plan.setAq_sysid(String.valueOf(checkPlan.getSysId()));
             DataUtil.saveProjectPlan(plan, JCApplication.user);
             SecurityCheckActivity.ComeToSecurityCheckActivity(this, checkPlan, true, plan.getAq_lh_id());
         } else {
-            alertView = new AlertView("提示", "当前工程近期已进行临时检查，暂时无法发起检查！", "确认", null, null, this, AlertView.Style.Alert, new OnItemClickListener() {
+            StyledDialog.context = context;
+            StyledDialog.buildIosAlertVertical("提示", "当前工程近期已被检查过，暂无法再次发起临时检查！", new MyDialogListener() {
                 @Override
-                public void onItemClick(Object o, int position) {
-                    alertView.dismiss();
+                public void onFirst() {
+
                 }
-            });
-            alertView.show();
+
+                @Override
+                public void onSecond() {
+
+                }
+
+                @Override
+                public void onThird() {
+
+                }
+
+            }).setBtnText("取消").show();
         }
     }
 
@@ -164,7 +177,7 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
 
     @Override
     public void onError(Throwable throwable) {
-        XLog.i("error" + fileName);
+        XLog.i("error:" + fileName);
         if (loadData == null) {
             if (NetworkUtils.isEnable(this)) {
                 loadData = new LoadData();
@@ -175,29 +188,44 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
         }
     }
 
-    private class LoadData extends AsyncTask {
+    private class LoadData extends AsyncTask<Void, Void, InputStream> {
 
         @Override
-        protected Object doInBackground(Object[] objects) {
+        protected InputStream doInBackground(Void... voids) {
             if (file.exists()) {
                 file.delete();
             }
+            InputStream inputStream = null;
+            CacheUtil cacheUtil = new CacheUtil();
             try {
-                URL url = new URL(Constants.URL + fileName);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream inputStream = urlConnection.getInputStream();
-                Utils.saveFile(inputStream, file);
+
+                String str = JCApplication.isDebug() ? Constants.TEST_URL : Constants.URL;
+                URL url = new URL(str + fileName);
+                try {
+                    cacheUtil.getCache();
+                    inputStream = cacheUtil.getInputStreamData(getCacheName(fileName));
+                } catch (IOException e) {
+                    inputStream = null;
+                }
+                if (inputStream == null) {
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    inputStream = urlConnection.getInputStream();
+                    Utils.saveInputStreamCache(url, getCacheName(fileName));
+                    XLog.i("联网获取pdf");
+                } else {
+                    XLog.i("从缓存获取pdf");
+                }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return null;
+            return inputStream;
         }
 
         @Override
-        protected void onPostExecute(Object o) {
-            setPDFView();
+        protected void onPostExecute(InputStream o) {
+            pdfView.fromStream(o).load();
         }
     }
 
@@ -208,6 +236,10 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
             file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + parent, fileName);
         }
         return file;
+    }
+
+    private String getCacheName(String fileName) {
+        return fileName.substring(0, fileName.indexOf("."));
     }
 
     @Override

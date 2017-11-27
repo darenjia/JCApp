@@ -76,7 +76,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/card_search"
-        android:background="#50000000"
+        android:background="#F8F8FF"
         android:visibility="gone">
 
         <ProgressBar
@@ -101,8 +101,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:textSize="14sp"
-            android:text="@string/search_no_result" />
+            android:text="@string/search_no_result"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/btn_sea_local"
@@ -110,10 +110,10 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/error_tv"
             android:layout_centerHorizontal="true"
-            android:background="@color/colorPrimary"
-            android:textColor="@color/white"
             android:layout_marginBottom="10dp"
-            android:text="查询本地" />
+            android:background="@color/colorPrimary"
+            android:text="查询本地"
+            android:textColor="@color/white" />
     </RelativeLayout>
 
     <android.support.v7.widget.CardView
@@ -126,38 +126,9 @@
         card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="2dp">
 
-        <ListView
+        <com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView
             android:id="@+id/listContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#fff"
-            android:dividerHeight="1dp" />
-
-        <LinearLayout
-            android:id="@+id/nav_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <Button
-                android:id="@+id/lastPage"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/lastpage" />
-
-            <TextView
-                android:id="@+id/resultCount"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-
-            <Button
-                android:id="@+id/nextPage"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/nextpage" />
-        </LinearLayout>
+            android:layout_height="match_parent" />
     </android.support.v7.widget.CardView>
 </RelativeLayout>

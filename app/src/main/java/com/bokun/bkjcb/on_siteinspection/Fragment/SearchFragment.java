@@ -1,6 +1,7 @@
 package com.bokun.bkjcb.on_siteinspection.Fragment;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,11 +18,9 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -33,20 +32,23 @@ import android.widget.TextView;
 
 import com.bokun.bkjcb.on_siteinspection.Activity.InfoActivity;
 import com.bokun.bkjcb.on_siteinspection.Activity.MainActivity;
+import com.bokun.bkjcb.on_siteinspection.Adapter.SeachResultAdapter;
 import com.bokun.bkjcb.on_siteinspection.Adapter.StringAdapter;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
-import com.bokun.bkjcb.on_siteinspection.Download.DownloadManager;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpManager;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpRequestVo;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
+import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.SQLite.SearchedWordDao;
 import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
+import com.bokun.bkjcb.on_siteinspection.View.ConstructionDetailView;
+import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
 import org.ksoap2.serialization.SoapObject;
 
@@ -65,17 +67,22 @@ public class SearchFragment extends MainFragment implements RequestListener {
     private CardView card_search, result_view;
     private ImageView image_search_back, clearSearch;
     private EditText edit_text_search;
-    private ListView listView, listContainer;//搜索结果列表
+    private ListView listView;//搜索结果列表
+    private PullLoadMoreRecyclerView listContainer;
     private StringAdapter stringAdapter;//搜索历史适配器
     private Set<String> set;//判断有没有重复的搜索历史，重复的话不再保存
     private ArrayList<String> mItem;
     private ProgressBar marker_progress;
     private RelativeLayout error_tip;
     private ArrayList<CheckPlan> checkPlans;
+    private ArrayList<CheckPlan> queryPlans;
     private LinearLayout linearLayout;
-    private ResultAdapter resultAdapter;
+    private SeachResultAdapter resultAdapter;
     private boolean isFromNet = false;
     private Button local_search;
+    private int page = 1;
+    private String oldKey;
+    private boolean isClear;
 
     @Override
     protected View initView(LayoutInflater inflater) {
@@ -88,7 +95,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
         image_search_back = (ImageView) view.findViewById(R.id.image_search_back);
         clearSearch = (ImageView) view.findViewById(R.id.clearSearch);
         listView = (ListView) view.findViewById(R.id.listView);
-        listContainer = (ListView) view.findViewById(R.id.listContainer);
+        listContainer = (PullLoadMoreRecyclerView) view.findViewById(R.id.listContainer);
         error_tip = (RelativeLayout) view.findViewById(R.id.error_tip);
         local_search = (Button) view.findViewById(R.id.btn_sea_local);
         marker_progress = (ProgressBar) view.findViewById(R.id.marker_progress);
@@ -109,7 +116,16 @@ public class SearchFragment extends MainFragment implements RequestListener {
     protected void initData() {
         super.initData();
         checkPlans = new ArrayList<>();
-        resultAdapter = new ResultAdapter();
+        listContainer.setLinearLayout();
+        resultAdapter = new SeachResultAdapter(checkPlans, context, new SeachResultAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(CheckPlan checkPlan) {
+                createDailog(checkPlan);
+            }
+        });
+        listContainer.setPullRefreshEnable(false);
+        listContainer.setFooterViewBackgroundColor(R.color.colorAccent);
+        listContainer.setFooterViewTextColor(R.color.white);
         listContainer.setAdapter(resultAdapter);
     }
 
@@ -117,16 +133,30 @@ public class SearchFragment extends MainFragment implements RequestListener {
     protected void getDataFailed() {
         super.getDataFailed();
         LogUtil.logI("查询获取数据失败");
-        view_search.setVisibility(View.GONE);
-        result_view.setVisibility(View.GONE);
-        error_tip.setVisibility(View.VISIBLE);
+        if (checkPlans.size() > 0) {
+            if (listContainer.isLoadMore()) {
+                listContainer.setPullLoadMoreCompleted();
+            }
+        } else {
+            view_search.setVisibility(View.GONE);
+            result_view.setVisibility(View.GONE);
+            error_tip.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     protected void getDataSucceed(JsonResult object) {
         view_search.setVisibility(View.GONE);
         LogUtil.logI("获取数据成功");
-        setResultList(checkPlans);
+        if (listContainer.isLoadMore()) {
+            listContainer.setPullLoadMoreCompleted();
+        }
+        if (queryPlans.size() < 20) {
+            listContainer.setPullRefreshEnable(false);
+        } else {
+            listContainer.setPullRefreshEnable(true);
+        }
+        setResultList(queryPlans);
         ArrayList<String> paths = new ArrayList<>();
         for (int i = 0; i < checkPlans.size(); i++) {
             paths.add(checkPlans.get(i).getUrl());
@@ -136,7 +166,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
             if (!file.exists()) {
                 file.mkdirs();
             }
-            new Thread(new DownloadManager(paths)).start();
+//            new Thread(new DownloadManager(paths)).start();
         } else {
             Snackbar.make(getView(), R.string.mis_error_no_permission_sdcard, Snackbar.LENGTH_LONG).setAction("设置", new View.OnClickListener() {
                 @Override
@@ -164,7 +194,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
                 edit_text_search.setText(name);
                 listView.setVisibility(View.GONE);
                 ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(edit_text_search.getWindowToken(), 0);
-                search(name, 0);
+                search(name);
             }
         });
         edit_text_search.addTextChangedListener(new TextWatcher() {
@@ -204,19 +234,30 @@ public class SearchFragment extends MainFragment implements RequestListener {
                 }
             }
         });
-        listContainer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+      /*  listContainer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 CheckPlan plan = checkPlans.get(position);
                 InfoActivity.ComeInfoActivity(context, plan, isFromNet);
             }
+        });*/
+        listContainer.setOnPullLoadMoreListener(new PullLoadMoreRecyclerView.PullLoadMoreListener() {
+            @Override
+            public void onRefresh() {
+
+            }
+
+            @Override
+            public void onLoadMore() {
+                sendRequest(edit_text_search.getText().toString().trim());
+            }
         });
         local_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                isFromNet = false;
-                isFromNet = true;
-                setResultList(DataUtil.queryCheckPlan(edit_text_search.getText().toString()));
+                isFromNet = false;
+//                isFromNet = true;
+                setResultList(DataUtil.queryCheckPlan(edit_text_search.getText().toString().trim()));
             }
         });
 
@@ -243,7 +284,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
                     ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(edit_text_search.getWindowToken(), 0);
                     UpdateQuickSearch(edit_text_search.getText().toString());
                     listView.setVisibility(View.GONE);
-                    search(edit_text_search.getText().toString(), 0);
+                    search(edit_text_search.getText().toString().trim());
                 }
             }
         });
@@ -256,7 +297,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
                         ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(edit_text_search.getWindowToken(), 0);
                         UpdateQuickSearch(edit_text_search.getText().toString());
                         listView.setVisibility(View.GONE);
-                        search(edit_text_search.getText().toString(), 0);
+                        search(edit_text_search.getText().toString().trim());
                     }
                     return true;
                 }
@@ -290,28 +331,42 @@ public class SearchFragment extends MainFragment implements RequestListener {
         listView.setAdapter(stringAdapter);
     }
 
-    private void search(String item, int page_num) {
+    private void search(String item) {
         view_search.setVisibility(View.VISIBLE);
         result_view.setVisibility(View.GONE);
         if (NetworkUtils.isEnable(context)) {
-            HttpRequestVo requestVo = new HttpRequestVo();
-            requestVo.getRequestDataMap().put("", "");
-            requestVo.setMethodName("GetXxclSc");
-            HttpManager manager = new HttpManager(context, this, requestVo);
-//            manager.postRequest();
-            mHandler.sendEmptyMessageDelayed(4, 2000);
             isFromNet = true;
+            sendRequest(item);
         } else {
             isFromNet = false;
             setResultList(DataUtil.queryCheckPlan(item));
         }
     }
 
+    private void sendRequest(String item) {
+        if (oldKey == null || !oldKey.equals(item)) {
+            page = 1;
+            isClear = true;
+            oldKey = item;
+        } else {
+            page++;
+            isClear = false;
+        }
+        HttpRequestVo requestVo = new HttpRequestVo();
+        requestVo.getRequestDataMap().put("quxian", JCApplication.user.getQuxian());
+        requestVo.getRequestDataMap().put("nameordz", item);
+        requestVo.getRequestDataMap().put("page", String.valueOf(page));
+        requestVo.setMethodName("GetXxclSc_cx");
+        HttpManager manager = new HttpManager(context, this, requestVo);
+        manager.postRequest();
+    }
+
     private void setResultList(ArrayList<CheckPlan> list) {
-        checkPlans.clear();
+        if (isClear) {
+            checkPlans.clear();
+        }
         checkPlans.addAll(list);
         view_search.setVisibility(View.GONE);
-
         if (checkPlans.size() == 0) {
             error_tip.setVisibility(View.VISIBLE);
             result_view.setVisibility(View.GONE);
@@ -324,65 +379,33 @@ public class SearchFragment extends MainFragment implements RequestListener {
 
     @Override
     public void action(int i, Object object) {
-        JsonResult result = JsonParser.parseSoap((SoapObject) object);
+        JsonResult result = null;
+        if (RequestListener.EVENT_GET_DATA_SUCCESS == i) {
+            result = JsonParser.parseSoap((SoapObject) object);
+            queryPlans = JsonParser.getJSONData(result.resData);
+        }
         Message msg = new Message();
         msg.what = i;
         msg.obj = result;
         mHandler.sendMessage(msg);
     }
 
-    class ResultAdapter extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            return checkPlans.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return checkPlans.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = View.inflate(context, R.layout.checkitemlist, null);
+    private void createDailog(final CheckPlan checkPlan) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        ConstructionDetailView constructionDetailView = ConstructionDetailView.getConstructionView(context);
+        View view = constructionDetailView.setData(checkPlan, false, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getId() == R.id.btn_detail) {
+                    InfoActivity.ComeInfoActivity(context, checkPlan, isFromNet);
+                }
             }
-            TextView title = (TextView) convertView.findViewById(R.id.check_item_title);
-            TextView state = (TextView) convertView.findViewById(R.id.check_item_state);
-            CheckPlan plan = checkPlans.get(position);
-            title.setText(plan.getName());
-            state.setText(getState(plan.getState()));
-            state.setTextColor(getColor(plan.getState()));
-            return convertView;
-        }
+        }, 1);
+        builder.setView(view);
+        builder.setCancelable(true);
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
     }
 
-    private int getColor(int state) {
-        if (state == 1) {
-            return getResources().getColor(R.color.holo_orange_light);
-        } else if (state == 2) {
-            return getResources().getColor(R.color.holo_blue_bright);
-        } else if (state == 3) {
-            return getResources().getColor(R.color.holo_green_light);
-        }
-        return getResources().getColor(R.color.text_color);
-    }
-
-    private String getState(int state) {
-        if (state == 0) {
-            return "（检查未开始）";
-        } else if (state == 1) {
-            return "（检查未完成）";
-        } else if (state == 2) {
-            return "（检查已完成）";
-        } else {
-            return "（数据已上传）";
-        }
-    }
 }

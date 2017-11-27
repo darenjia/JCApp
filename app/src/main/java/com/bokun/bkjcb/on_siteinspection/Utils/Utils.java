@@ -25,12 +25,17 @@ import android.view.WindowManager;
 
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -322,11 +327,64 @@ public class Utils {
         }
         return version;
     }
-    /*
-    * 获取当前日期*/
-    public static String getDate(String template){
+
+    /**
+     * 获取当前日期
+     */
+    public static String getDate(String template) {
         Date date = new Date(System.currentTimeMillis());
-        return  new SimpleDateFormat(template, Locale.CHINA).format(date);
+        return new SimpleDateFormat(template, Locale.CHINA).format(date);
+    }
+
+    //流转字符串
+    public static String getStreamString(InputStream tInputStream) {
+        if (tInputStream != null) {
+            try {
+                BufferedReader tBufferedReader = new BufferedReader(new InputStreamReader(tInputStream));
+                StringBuilder tStringBuffer = new StringBuilder();
+                String sTempOneLine;
+                while ((sTempOneLine = tBufferedReader.readLine()) != null) {
+                    tStringBuffer.append(sTempOneLine);
+                }
+                return tStringBuffer.toString();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 将一个字符串转化为输入流
+     */
+    public static InputStream getStringStream(String sInputString) {
+        if (sInputString != null &&
+                !sInputString.trim().equals("")) {
+            try {
+                return new ByteArrayInputStream(sInputString.getBytes());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 缓存流文件
+     */
+    public static void saveInputStreamCache(URL url, String name) {
+        HttpURLConnection urlConnection = null;
+        try {
+            urlConnection = (HttpURLConnection) url.openConnection();
+            InputStream inputStream = urlConnection.getInputStream();
+            CacheUtil cacheUtil = new CacheUtil();
+            cacheUtil.getCache();
+            cacheUtil.saveData(name, inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            LogUtil.logI("写入缓存失败");
+        }
+
     }
 }
 

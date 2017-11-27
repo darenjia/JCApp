@@ -8,7 +8,7 @@
     </style>
 
     <style name="progressbar_style" parent="Base.Widget.AppCompat.ProgressBar">
-        <item name="android:indeterminateTint">@color/white</item>
+        <item name="android:indeterminateTint">@color/colorPrimary</item>
         <item name="android:indeterminateTintMode">src_atop</item>
     </style>
 

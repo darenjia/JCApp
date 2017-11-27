@@ -30,6 +30,7 @@ public class FinishedPlanDao {
         values.put("AQ_LH_ID", result.getAQ_LH_ID());
         values.put("FinishedTime", result.getFinishedTime());
         values.put("Username", result.getUsername());
+        values.put("Type", result.getType());
         long isSuccess = database.insert("finishedplan", "id", values);
         return isSuccess != -1;
     }
@@ -73,6 +74,7 @@ public class FinishedPlanDao {
             result.setAQ_LH_ID(cursor.getString(cursor.getColumnIndex("AQ_LH_ID")));
             result.setFinishedTime(cursor.getString(cursor.getColumnIndex("FinishedTime")));
             result.setUsername(cursor.getString(cursor.getColumnIndex("Username")));
+            result.setType(cursor.getInt(cursor.getColumnIndex("Type")));
         }
         return result;
     }

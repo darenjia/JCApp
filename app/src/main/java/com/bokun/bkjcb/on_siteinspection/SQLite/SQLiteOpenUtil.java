@@ -43,10 +43,17 @@ public class SQLiteOpenUtil extends SQLiteOpenHelper {
                 db.execSQL(Constants.DROP_TEMP);
 //                break;
             case 4:
+                //修改CheckResult表，添加aq_lh_id字段，区分检查结果所属计划
                 db.execSQL(Constants.CREATE_TEMP_CHECK_RESULT);
                 db.execSQL(Constants.CREATE_NEW_CHECK_RESULT);
                 db.execSQL(Constants.INSERT_DATA_CHECK_RESULT);
                 db.execSQL(Constants.DROP_TEMP_CHECK_RESULT);
+
+                //修改finishedPlan表，添加Type字段，区分完成计划类型
+                db.execSQL(Constants.CREATE_TEMP_FINISHED_PALN);
+                db.execSQL(Constants.CREATE_NEW_FINISHED_PALN);
+                db.execSQL(Constants.INSERT_DATA_FINISHED_PALN);
+                db.execSQL(Constants.DROP_TEMP_FINISHED_PALN);
                 break;
         }
     }

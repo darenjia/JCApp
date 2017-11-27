@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.SearchedWordDao;
-import com.bokun.bkjcb.on_siteinspection.Utils.CacheUitl;
+import com.bokun.bkjcb.on_siteinspection.Utils.CacheUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.CheckUpUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.SPUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
@@ -94,14 +94,14 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.about_clean_cache:
-                CacheUitl cacheUitl = new CacheUitl();
+                CacheUtil cacheUtil = new CacheUtil();
                 try {
-                    cacheUitl.getCache();
-                    cacheUitl.clean();
-                    cacheUitl.close();
+                    cacheUtil.getCache();
+                    cacheUtil.clean();
+                    cacheUtil.close();
                     UpdateUtil.clean(this);
                 } catch (IOException e) {
-                    cacheUitl.getDiskCacheDir().delete();
+                    cacheUtil.getDiskCacheDir().delete();
                 } finally {
                     cache_size.setText("0B");
                     showToast("缓存已清空");
@@ -147,14 +147,14 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
     }
 
     private String setSize() {
-        CacheUitl cacheUitl = new CacheUitl();
+        CacheUtil cacheUtil = new CacheUtil();
         try {
-            cacheUitl.getCache();
+            cacheUtil.getCache();
         } catch (IOException e) {
-            cacheUitl.getDiskCacheDir().delete();
+            cacheUtil.getDiskCacheDir().delete();
             return 0 + "K";
         }
-        long size = cacheUitl.getSize();
+        long size = cacheUtil.getSize();
         long sizeM = size / (1000 * 1000);
         long sizeK = size / 1000;
         if (sizeM > 0.1) {

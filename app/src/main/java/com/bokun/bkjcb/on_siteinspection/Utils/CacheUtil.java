@@ -10,19 +10,21 @@ import com.jakewharton.disklrucache.DiskLruCache;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Created by DengShuai on 2017/6/2.
  */
 
-public class CacheUitl {
+public class CacheUtil {
     private Context context;
     public DiskLruCache cache;
     private final int valueCount = 1;
     private final long max_size = 50 * 1024 * 1024;
     private final String fileName = "jianchajihua";
 
-    public CacheUitl() {
+    public CacheUtil() {
         this.context = JCApplication.getContext();
     }
 
@@ -64,6 +66,19 @@ public class CacheUitl {
         return true;
     }
 
+    public boolean saveData(String key, InputStream is) {
+        try {
+            DiskLruCache.Editor editor = cache.edit(key);
+            OutputStream outputStream = editor.newOutputStream(0);
+            reader(is, outputStream);
+            editor.commit();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     public String getData(String key) {
         String str = null;
         try {
@@ -75,6 +90,19 @@ public class CacheUitl {
             e.printStackTrace();
         }
         return str;
+    }
+
+    public InputStream getInputStreamData(String key) {
+        InputStream is = null;
+        try {
+            DiskLruCache.Snapshot snapshot = cache.get(key);
+            if (snapshot != null) {
+                is = snapshot.getInputStream(0);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return is;
     }
 
     public Long getSize() {
@@ -96,6 +124,14 @@ public class CacheUitl {
             cache.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void reader(InputStream is, OutputStream os) throws IOException {
+        int length = 0;
+        byte[] temp = new byte[4 * 1024];
+        while ((length = is.read(temp)) != -1) {
+            os.write(temp, 0, length);
         }
     }
 }
