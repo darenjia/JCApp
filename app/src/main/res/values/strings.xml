@@ -73,4 +73,7 @@
     <string name="cancle_all">全部暂停</string>
     <string name="check_new_version_no">当前版本为最新版</string>
     <string name="close">关闭</string>
+    <string name="search_result_local">搜索结果(本地查询)：</string>
+    <string name="search_result_internet">搜索结果(联网查询)：</string>
+    <string name="about_qingkongwj">删除三个月之前的pdf文件</string>
 </resources>

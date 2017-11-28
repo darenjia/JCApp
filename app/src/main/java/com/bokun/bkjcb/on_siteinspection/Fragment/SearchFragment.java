@@ -1,17 +1,9 @@
 package com.bokun.bkjcb.on_siteinspection.Fragment;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.Environment;
 import android.os.Message;
-import android.provider.Settings;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -44,15 +36,15 @@ import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.SQLite.SearchedWordDao;
-import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
+import com.bokun.bkjcb.on_siteinspection.Utils.ToastUtil;
 import com.bokun.bkjcb.on_siteinspection.View.ConstructionDetailView;
+import com.bokun.bkjcb.on_siteinspection.View.DividerItemDecoration;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
 import org.ksoap2.serialization.SoapObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -78,6 +70,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
     private ArrayList<CheckPlan> queryPlans;
     private LinearLayout linearLayout;
     private SeachResultAdapter resultAdapter;
+    private TextView result_title;
     private boolean isFromNet = false;
     private Button local_search;
     private int page = 1;
@@ -100,8 +93,9 @@ public class SearchFragment extends MainFragment implements RequestListener {
         local_search = (Button) view.findViewById(R.id.btn_sea_local);
         marker_progress = (ProgressBar) view.findViewById(R.id.marker_progress);
         linearLayout = (LinearLayout) view.findViewById(R.id.nav_view);
+        result_title = (TextView) view.findViewById(R.id.result_title);
         set = new HashSet<>();
-        SetTypeFace();
+//        SetTypeFace();
         stringAdapter = new StringAdapter(context, SearchedWordDao.all(context, 1));
         mItem = new ArrayList<>();
         listView.setTextFilterEnabled(true);
@@ -124,9 +118,10 @@ public class SearchFragment extends MainFragment implements RequestListener {
             }
         });
         listContainer.setPullRefreshEnable(false);
-        listContainer.setFooterViewBackgroundColor(R.color.colorAccent);
+        listContainer.setFooterViewBackgroundColor(R.color.blue_low);
         listContainer.setFooterViewTextColor(R.color.white);
         listContainer.setAdapter(resultAdapter);
+        listContainer.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
     }
 
     @Override
@@ -157,11 +152,12 @@ public class SearchFragment extends MainFragment implements RequestListener {
             listContainer.setPushRefreshEnable(true);
         }
         setResultList(queryPlans);
-        ArrayList<String> paths = new ArrayList<>();
+        result_title.setText(R.string.search_result_internet);
+
+       /* ArrayList<String> paths = new ArrayList<>();
         for (int i = 0; i < checkPlans.size(); i++) {
             paths.add(checkPlans.get(i).getUrl());
-        }
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission_group.STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        } if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission_group.STORAGE) != PackageManager.PERMISSION_GRANTED) {
             File file = new File(Environment.getExternalStorageDirectory() + Constants.FILE_PATH);
             if (!file.exists()) {
                 file.mkdirs();
@@ -177,7 +173,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
                     getActivity().startActivity(intent);
                 }
             }).show();
-        }
+        }*/
     }
 
     @Override
@@ -210,12 +206,12 @@ public class SearchFragment extends MainFragment implements RequestListener {
             @Override
             public void afterTextChanged(Editable s) {
                 String txt = s.toString().trim();
+                listView.setVisibility(View.VISIBLE);
                 if (txt.length() > 0) {
                     clearSearch.setImageResource(R.mipmap.ic_close);
 //                    listView.setFilterText(txt);
                     stringAdapter.getFilter().filter(txt);
                 } else {
-                    listView.setVisibility(View.VISIBLE);
                     stringAdapter.initData();
                     clearSearch.setImageResource(R.mipmap.ic_arrow_back);
                     IsAdapterEmpty();
@@ -258,6 +254,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
                 isFromNet = false;
 //                isFromNet = true;
                 setResultList(DataUtil.queryCheckPlan(edit_text_search.getText().toString().trim()));
+                result_title.setText(R.string.search_result_local);
             }
         });
 
@@ -338,6 +335,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
             isFromNet = true;
             sendRequest(item);
         } else {
+            ToastUtil.showShortToast(context,"当前为无网络状态，查询方式为本地查询！");
             isFromNet = false;
             setResultList(DataUtil.queryCheckPlan(item));
         }

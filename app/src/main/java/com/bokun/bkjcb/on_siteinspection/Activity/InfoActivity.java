@@ -124,6 +124,7 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
             plan.setAq_lh_id("SH" + Utils.getDate("yyyyMMddhhmm"));//必须id
             plan.setAq_lh_jcmc(Utils.getDate("yy-MM-dd") + checkPlan.getName() + "临时检查");//生成名称
             plan.setAq_sysid(String.valueOf(checkPlan.getSysId()));
+            plan.setAq_lh_seqid(plan.getAq_lh_id());
             DataUtil.saveProjectPlan(plan, JCApplication.user);
             SecurityCheckActivity.ComeToSecurityCheckActivity(this, checkPlan, true, plan.getAq_lh_id());
         } else {

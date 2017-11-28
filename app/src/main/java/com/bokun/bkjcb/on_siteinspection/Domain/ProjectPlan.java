@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 public class ProjectPlan implements Serializable, Comparable<ProjectPlan> {
     private int aq_lh_yyh;
-    private int aq_lh_seqid;
+    private String aq_lh_seqid;
     private String aq_lh_id;
     private String aq_lh_jcrq;
     private String aq_lh_allbj;
@@ -43,11 +43,11 @@ public class ProjectPlan implements Serializable, Comparable<ProjectPlan> {
         this.aq_lh_yyh = aq_lh_yyh;
     }
 
-    public int getAq_lh_seqid() {
+    public String getAq_lh_seqid() {
         return aq_lh_seqid;
     }
 
-    public void setAq_lh_seqid(int aq_lh_seqid) {
+    public void setAq_lh_seqid(String aq_lh_seqid) {
         this.aq_lh_seqid = aq_lh_seqid;
     }
 

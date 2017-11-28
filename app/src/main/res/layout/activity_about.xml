@@ -24,8 +24,8 @@
         style="@style/about_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/mid_size"
         android:layout_marginBottom="@dimen/small_size"
+        android:layout_marginTop="@dimen/mid_size"
         android:drawableTop="@drawable/check"
         android:gravity="center"
         android:text="@string/about_kongjianjc" />

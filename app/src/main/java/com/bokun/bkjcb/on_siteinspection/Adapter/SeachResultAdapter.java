@@ -42,8 +42,9 @@ public class SeachResultAdapter extends RecyclerView.Adapter<SeachResultAdapter.
     public void onBindViewHolder(ViewHolder holder, int position) {
         final CheckPlan plan = checkPlans.get(position);
         holder.title.setText(plan.getName());
-        holder.state.setText(getState(plan.getState()));
-        holder.state.setTextColor(getColor(plan.getState()));
+        holder.title.setTextColor(context.getResources().getColor(R.color.text_color));
+      /*  holder.state.setText(getState(plan.getState()));
+        holder.state.setTextColor(getColor(plan.getState()));*/
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,7 +67,7 @@ public class SeachResultAdapter extends RecyclerView.Adapter<SeachResultAdapter.
             super(itemView);
             this.view = itemView;
             this.title = (TextView) itemView.findViewById(R.id.check_item_title);
-            this.state = (TextView) itemView.findViewById(R.id.check_item_state);
+//            this.state = (TextView) itemView.findViewById(R.id.check_item_state);
         }
     }
 

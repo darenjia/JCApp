@@ -3,13 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:orientation="horizontal"
-    android:padding="10dp">
+    android:padding="6dp">
 
     <TextView
         android:id="@+id/check_item_title"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:text="sss"
         android:textColor="@color/colorAccent"
         android:textSize="16sp" />
 
@@ -17,7 +19,7 @@
         android:id="@+id/check_item_state"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:gravity="end"
+        android:gravity="end|center_vertical"
         android:textColor="@color/text_color"
         android:textSize="14sp" />
 </LinearLayout>

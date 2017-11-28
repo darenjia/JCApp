@@ -96,7 +96,7 @@ public class UploadHelper {
         remotePaths = new ArrayList<>();
         String s = projectPlan.getAq_sysid();
         LogUtil.logI(projectPlan.getAq_lh_jcmc() + " 任务开始：" + s);
-        projectId = String.valueOf(projectPlan.getAq_lh_seqid());
+        projectId = projectPlan.getAq_lh_seqid();
         String[] strings = s.split(",");
         for (String str : strings) {
             FinishedPlan plan = DataUtil.getFinishedPlan(str);

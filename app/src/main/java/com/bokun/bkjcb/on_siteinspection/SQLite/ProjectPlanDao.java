@@ -52,7 +52,7 @@ public class ProjectPlanDao {
             result.setAq_lh_jcmc(cursor.getString(cursor.getColumnIndex("aq_lh_jcmc")));
             result.setAq_jctz_zt(cursor.getString(cursor.getColumnIndex("aq_jctz_zt")));
             result.setAq_sysid(cursor.getString(cursor.getColumnIndex("aq_sysid")));
-            result.setAq_lh_seqid(cursor.getInt(cursor.getColumnIndex("aq_lh_seqid")));
+            result.setAq_lh_seqid(cursor.getString(cursor.getColumnIndex("aq_lh_seqid")));
             result.setAq_lh_szqx(cursor.getString(cursor.getColumnIndex("aq_lh_szqx")));
             result.setAQ_JCTZ_sfjc(cursor.getInt(cursor.getColumnIndex("AQ_JCTZ_sfjc")));
             list.add(result);
@@ -69,7 +69,7 @@ public class ProjectPlanDao {
             result.setAq_lh_jcmc(cursor.getString(cursor.getColumnIndex("aq_lh_jcmc")));
             result.setAq_jctz_zt(cursor.getString(cursor.getColumnIndex("aq_jctz_zt")));
             result.setAq_sysid(cursor.getString(cursor.getColumnIndex("aq_sysid")));
-            result.setAq_lh_seqid(cursor.getInt(cursor.getColumnIndex("aq_lh_seqid")));
+            result.setAq_lh_seqid(cursor.getString(cursor.getColumnIndex("aq_lh_seqid")));
             result.setAQ_JCTZ_sfjc(cursor.getInt(cursor.getColumnIndex("AQ_JCTZ_sfjc")));
         }
         return result;
@@ -140,8 +140,8 @@ public class ProjectPlanDao {
         return flag > 0;
     }
 
-    public String issaved(int id) {
-        Cursor cursor = database.query("constructioninfo", new String[]{"id"}, "aq_lh_seqid = ?", new String[]{String.valueOf(id)}, null, null, null);
+    public String issaved(String id) {
+        Cursor cursor = database.query("constructioninfo", new String[]{"id"}, "aq_lh_seqid = ?", new String[]{id}, null, null, null);
         while (cursor.moveToNext()) {
             return cursor.getString(0);
         }
