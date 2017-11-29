@@ -75,6 +75,19 @@ public class ProjectPlanDao {
         return result;
     }
 
+    public ProjectPlan queryBySysID(String sysId) {
+        ProjectPlan result = null;
+        Cursor cursor = database.query("constructioninfo", null, "aq_sysid=? and AQ_JCTZ_sfjc=0", new String[]{sysId}, null, null, null);
+        if (cursor.moveToNext()) {
+            result = new ProjectPlan();
+            result.setAq_lh_id(cursor.getString(cursor.getColumnIndex("aq_lh_id")));
+            result.setAq_lh_jcmc(cursor.getString(cursor.getColumnIndex("aq_lh_jcmc")));
+            result.setAq_lh_seqid(cursor.getString(cursor.getColumnIndex("aq_lh_seqid")));
+            result.setAq_jctz_zt(cursor.getString(cursor.getColumnIndex("aq_jctz_zt")));
+        }
+        return result;
+    }
+
     public ArrayList<ProjectPlan> queryNo(String state) {
         ArrayList<ProjectPlan> list = new ArrayList<>();
         ProjectPlan result = null;

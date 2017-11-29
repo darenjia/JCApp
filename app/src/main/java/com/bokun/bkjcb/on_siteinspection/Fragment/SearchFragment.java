@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Message;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DividerItemDecoration;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -40,7 +41,6 @@ import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.ToastUtil;
 import com.bokun.bkjcb.on_siteinspection.View.ConstructionDetailView;
-import com.bokun.bkjcb.on_siteinspection.View.DividerItemDecoration;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
 import org.ksoap2.serialization.SoapObject;
@@ -76,6 +76,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
     private int page = 1;
     private String oldKey;
     private boolean isClear;
+    private AlertDialog dialog;
 
     @Override
     protected View initView(LayoutInflater inflater) {
@@ -121,7 +122,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
         listContainer.setFooterViewBackgroundColor(R.color.blue_low);
         listContainer.setFooterViewTextColor(R.color.white);
         listContainer.setAdapter(resultAdapter);
-        listContainer.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
+        listContainer.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
     }
 
     @Override
@@ -335,7 +336,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
             isFromNet = true;
             sendRequest(item);
         } else {
-            ToastUtil.showShortToast(context,"当前为无网络状态，查询方式为本地查询！");
+            ToastUtil.showShortToast(context, "当前为无网络状态，查询方式为本地查询！");
             isFromNet = false;
             setResultList(DataUtil.queryCheckPlan(item));
         }
@@ -395,13 +396,14 @@ public class SearchFragment extends MainFragment implements RequestListener {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.btn_detail) {
+                    dialog.dismiss();
                     InfoActivity.ComeInfoActivity(context, checkPlan, isFromNet);
                 }
             }
         }, 1);
         builder.setView(view);
         builder.setCancelable(true);
-        AlertDialog dialog = builder.create();
+        dialog = builder.create();
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
     }

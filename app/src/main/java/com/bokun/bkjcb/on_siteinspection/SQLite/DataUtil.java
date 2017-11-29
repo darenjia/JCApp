@@ -43,7 +43,7 @@ public class DataUtil {
         return true;
     }
 
-    public static ArrayList<CheckResult> readData(Context context, int Identifier,String aq_lh_id) {
+    public static ArrayList<CheckResult> readData(Context context, int Identifier, String aq_lh_id) {
         CheckResultDaolmpl daolmpl = new CheckResultDaolmpl(context);
         CheckPlanDaolmpl planDaolmpl = new CheckPlanDaolmpl(context);
         ArrayList<CheckResult> results = new ArrayList<>();
@@ -51,7 +51,7 @@ public class DataUtil {
             planDaolmpl.colseDateBase();
             return results;
         }
-        results = daolmpl.queryCheckResult(Identifier,aq_lh_id);
+        results = daolmpl.queryCheckResult(Identifier, aq_lh_id);
         daolmpl.closeDatabase();
         LogUtil.logI("查询所有该计划的结果" + "identity" + Identifier + " size:" + results.size());
         return results;
@@ -346,5 +346,12 @@ public class DataUtil {
     public static String queryFileUrl(String id) {
         CheckPlanDaolmpl dao = new CheckPlanDaolmpl(JCApplication.getContext());
         return dao.queryCheckPlanFileUrl(id);
+    }
+
+    public static ProjectPlan queryCheckPlanIsFinished(CheckPlan checkPlan) {
+        ProjectPlan plan;
+        ProjectPlanDao planDao = new ProjectPlanDao(JCApplication.getContext());
+        plan = planDao.queryBySysID(String.valueOf(checkPlan.getSysId()));
+        return plan;
     }
 }

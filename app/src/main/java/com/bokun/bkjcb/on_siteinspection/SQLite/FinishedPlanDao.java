@@ -81,10 +81,12 @@ public class FinishedPlanDao {
 
     public boolean queryById(String SysID) {
         Cursor cursor = database.query("finishedplan", null, "SysId=?", new String[]{SysID}, null, null, null);
-        while (cursor.moveToNext()) {
-            return false;
-        }
-        return true;
+        return !cursor.moveToNext();
+    }
+
+    public boolean queryStateById(String SysID) {
+        Cursor cursor = database.query("finishedplan", null, "SysId=? and Type=1", new String[]{SysID}, null, null, null);
+        return !cursor.moveToNext();
     }
 
     public void deleteFinished(String SysID) {

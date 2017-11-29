@@ -119,33 +119,44 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
     }
 
     private void isCanCheck() {
-        if (checkPlan.getState() == 0) {
+        ProjectPlan projectPlan = DataUtil.queryCheckPlanIsFinished(checkPlan);
+        if (projectPlan == null) {
             plan = new ProjectPlan();
             plan.setAq_lh_id("SH" + Utils.getDate("yyyyMMddhhmm"));//必须id
             plan.setAq_lh_jcmc(Utils.getDate("yy-MM-dd") + checkPlan.getName() + "临时检查");//生成名称
             plan.setAq_sysid(String.valueOf(checkPlan.getSysId()));
             plan.setAq_lh_seqid(plan.getAq_lh_id());
+            plan.setAq_jctz_zt("无需办事项");
             DataUtil.saveProjectPlan(plan, JCApplication.user);
+            DataUtil.insertCheckPlan(context, checkPlan);
             SecurityCheckActivity.ComeToSecurityCheckActivity(this, checkPlan, true, plan.getAq_lh_id());
         } else {
-            StyledDialog.context = context;
-            StyledDialog.buildIosAlertVertical("提示", "当前工程近期已被检查过，暂无法再次发起临时检查！", new MyDialogListener() {
-                @Override
-                public void onFirst() {
+            if (!projectPlan.getAq_jctz_zt().equals("等待上传")) {
+                plan.setAq_lh_id(projectPlan.getAq_lh_id());//必须id
+                plan.setAq_lh_jcmc(projectPlan.getAq_lh_jcmc());//生成名称
+                plan.setAq_sysid(String.valueOf(checkPlan.getSysId()));
+                plan.setAq_lh_seqid(projectPlan.getAq_lh_id());
+                SecurityCheckActivity.ComeToSecurityCheckActivity(this, checkPlan, true, plan.getAq_lh_id());
+            } else {
+                StyledDialog.context = context;
+                StyledDialog.buildIosAlertVertical("提示", "当前工程近期已被检查过，暂无法再次发起临时检查！", new MyDialogListener() {
+                    @Override
+                    public void onFirst() {
 
-                }
+                    }
 
-                @Override
-                public void onSecond() {
+                    @Override
+                    public void onSecond() {
 
-                }
+                    }
 
-                @Override
-                public void onThird() {
+                    @Override
+                    public void onThird() {
 
-                }
+                    }
 
-            }).setBtnText("取消").show();
+                }).setBtnText("取消").show();
+            }
         }
     }
 
