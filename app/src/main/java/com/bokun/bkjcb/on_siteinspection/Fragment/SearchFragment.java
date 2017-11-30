@@ -225,19 +225,16 @@ public class SearchFragment extends MainFragment implements RequestListener {
                 if (edit_text_search.getText().toString().length() != 0) {
                     edit_text_search.setText("");
                     listView.setVisibility(View.VISIBLE);
+                    clearSearch.setImageResource(R.drawable.up_jt);
                     stringAdapter.initData();
                     ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(edit_text_search, InputMethodManager.SHOW_IMPLICIT);
                     IsAdapterEmpty();
+                } else {
+                    listView.setVisibility(listView.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+                    clearSearch.setImageResource(listView.getVisibility() == View.VISIBLE ? R.drawable.up_jt : R.mipmap.ic_arrow_back);
                 }
             }
         });
-      /*  listContainer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CheckPlan plan = checkPlans.get(position);
-                InfoActivity.ComeInfoActivity(context, plan, isFromNet);
-            }
-        });*/
         listContainer.setOnPullLoadMoreListener(new PullLoadMoreRecyclerView.PullLoadMoreListener() {
             @Override
             public void onRefresh() {
@@ -332,6 +329,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
     private void search(String item) {
         view_search.setVisibility(View.VISIBLE);
         result_view.setVisibility(View.GONE);
+        error_tip.setVisibility(View.GONE);
         if (NetworkUtils.isEnable(context)) {
             isFromNet = true;
             sendRequest(item);

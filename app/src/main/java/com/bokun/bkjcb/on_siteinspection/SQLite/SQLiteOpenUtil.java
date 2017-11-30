@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
+import com.elvishew.xlog.XLog;
 
 /**
  * Created by DengShuai on 2017/3/20.
@@ -41,6 +42,7 @@ public class SQLiteOpenUtil extends SQLiteOpenHelper {
                 db.execSQL(Constants.CREATE_NEW_CHECKPALN);
                 db.execSQL(Constants.INSERT_DATA_CHECKPLAN);
                 db.execSQL(Constants.DROP_TEMP);
+                XLog.i("修改");
 //                break;
             case 4:
                 //修改CheckResult表，添加aq_lh_id字段，区分检查结果所属计划
@@ -54,6 +56,12 @@ public class SQLiteOpenUtil extends SQLiteOpenHelper {
                 db.execSQL(Constants.CREATE_NEW_FINISHED_PALN);
                 db.execSQL(Constants.INSERT_DATA_FINISHED_PALN);
                 db.execSQL(Constants.DROP_TEMP_FINISHED_PALN);
+
+                //修改checkPlan表，添加plan_type字段，区分plan所属类型
+                db.execSQL(Constants.CREATE_TEMP_TABLE1);
+                db.execSQL(Constants.CREATE_NEW_CHECKPALN1);
+                db.execSQL(Constants.INSERT_DATA_CHECKPLAN1);
+                db.execSQL(Constants.DROP_TEMP1);
                 break;
         }
     }

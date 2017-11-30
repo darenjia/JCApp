@@ -7,8 +7,8 @@ android {
         applicationId "com.bokun.bkjcb.jcapp"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 5
-        versionName "1.5"
+        versionCode 6
+        versionName "1.6"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         /* vectorDrawables.useSupportLibrary = true
          buildConfigField "boolean", "ENABLE_ANALYTICS", "true"*/
@@ -64,4 +64,5 @@ dependencies {
     compile 'com.github.czy1121:update:1.1.1'
     compile 'com.github.hss01248:DialogUtil:1.2.5'
     compile 'com.wuxiaolong.pullloadmorerecyclerview:library:1.1.2'
+    compile 'com.tuyenmonkey:mkloader:1.4.0'
 }

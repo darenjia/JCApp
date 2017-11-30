@@ -38,6 +38,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
         values.put("type", plan.getType());
         values.put("tel", plan.getTel());
         values.put("url", plan.getUrl());
+        values.put("plan_type", plan.getPlan_type());
         long i = db.insert("checkplan", null, values);
 //        LogUtil.logI("插入plan" + i);
     }
@@ -90,6 +91,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
             plan.setManager(cursor.getString(cursor.getColumnIndex("manager")));
             plan.setUser(cursor.getString(cursor.getColumnIndex("user")));
             plan.setUrl(cursor.getString(cursor.getColumnIndex("url")));
+            plan.setPlan_type(cursor.getInt(cursor.getColumnIndex("plan_type")));
         }
         cursor.close();
         //LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
@@ -111,6 +113,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
         cursor.close();
         return fileName;//不用处理
     }
+
     @Override
     public ArrayList<CheckPlan> queryCheckPlan() {
         ArrayList<CheckPlan> list = new ArrayList<>();
@@ -129,6 +132,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
             plan.setManager(cursor.getString(cursor.getColumnIndex("manager")));
             plan.setUser(cursor.getString(cursor.getColumnIndex("user")));
             plan.setUrl(cursor.getString(cursor.getColumnIndex("url")));
+            plan.setPlan_type(cursor.getInt(cursor.getColumnIndex("plan_type")));
             list.add(plan);
         }
         //LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
@@ -153,6 +157,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
             plan.setManager(cursor.getString(cursor.getColumnIndex("manager")));
             plan.setUser(cursor.getString(cursor.getColumnIndex("user")));
             plan.setUrl(cursor.getString(cursor.getColumnIndex("url")));
+            plan.setPlan_type(cursor.getInt(cursor.getColumnIndex("plan_type")));
             list.add(plan);
         }
         //LogUtil.logI("查询检查计划：" + cursor.getColumnCount());
@@ -193,6 +198,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
             plan.setQuxian(cursor.getString(cursor.getColumnIndex("quxian")));
             plan.setManager(cursor.getString(cursor.getColumnIndex("manager")));
             plan.setUser(cursor.getString(cursor.getColumnIndex("user")));
+            plan.setPlan_type(cursor.getInt(cursor.getColumnIndex("plan_type")));
             list.add(plan);
         }
         cursor.close();
@@ -200,10 +206,10 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
         return list;
     }
 
-    public int queryCheckPlanState(int identifier) {
+    public int queryCheckPlanState(int identifier, int type) {
         CheckPlan plan = null;
         int i = 0;
-        Cursor cursor = db.query("checkplan", new String[]{"state"}, "identifier=?", new String[]{String.valueOf(identifier)}, null, null, null);
+        Cursor cursor = db.query("checkplan", new String[]{"state"}, "identifier=? and plan_type = ?", new String[]{String.valueOf(identifier), String.valueOf(type)}, null, null, null);
         while (cursor.moveToNext()) {
             XLog.i("查询计划状态");
             i = cursor.getInt(cursor.getColumnIndex("state"));
@@ -225,7 +231,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
 
     @Override
     public boolean updateCheckPlanState(CheckPlan plan) {
-        int state = queryCheckPlanState(plan.getIdentifier());
+        int state = queryCheckPlanState(plan.getIdentifier(), plan.getPlan_type());
         if (state == -1) {
             return false;
         }
@@ -242,13 +248,13 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
     }
 
     public boolean updateCheckPlanState(String id, int newstate) {
-        int state = queryCheckPlanState(Integer.valueOf(id));
+        int state = queryCheckPlanState(Integer.valueOf(id), 0);
         if (state == -1) {
             return false;
         }
         ContentValues values = new ContentValues();
         values.put("state", newstate);
-        int isSuccess = db.update("checkplan", values, "sysId = ?", new String[]{id});
+        int isSuccess = db.update("checkplan", values, "sysId = ? and plan_type=0", new String[]{id});
 
         return isSuccess != 0;
     }

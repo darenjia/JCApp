@@ -119,9 +119,10 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
     }
 
     private void isCanCheck() {
+        checkPlan.setPlan_type(1);//1表示临时检查
         ProjectPlan projectPlan = DataUtil.queryCheckPlanIsFinished(checkPlan);
+        plan = new ProjectPlan();
         if (projectPlan == null) {
-            plan = new ProjectPlan();
             plan.setAq_lh_id("SH" + Utils.getDate("yyyyMMddhhmm"));//必须id
             plan.setAq_lh_jcmc(Utils.getDate("yy-MM-dd") + checkPlan.getName() + "临时检查");//生成名称
             plan.setAq_sysid(String.valueOf(checkPlan.getSysId()));

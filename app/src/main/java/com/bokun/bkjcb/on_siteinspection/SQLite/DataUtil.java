@@ -161,9 +161,9 @@ public class DataUtil {
         return plans;
     }
 
-    public static int queryCheckPlanState(Context context, int indentifier) {
+    public static int queryCheckPlanState(Context context, int indentifier,int plan_type) {
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);
-        int state = daolmpl.queryCheckPlanState(indentifier);
+        int state = daolmpl.queryCheckPlanState(indentifier,plan_type);
         daolmpl.colseDateBase();
         // LogUtil.logI("查询一条检查计划状态" + indentifier + " state:" + state);
         return state;
@@ -262,6 +262,9 @@ public class DataUtil {
         return true;
     }
 
+    /**
+     * 更新安全检查状态
+    * */
     public static boolean changeProjectState(ProjectPlan plan) {
         boolean flag = false;
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());

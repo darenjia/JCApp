@@ -59,7 +59,8 @@ public class Constants {
             "tel varchar(20)," +
             "manager varchar(50)," +
             "user varchar(30)," +
-            "url varchar(50)" +
+            "url varchar(50)," +
+            "plan_type int(8)" +
             ")";
     public final static String CREATE_FINISHED_PALN = "create table finishedplan(" +
             "id Integer primary key," +
@@ -135,6 +136,26 @@ public class Constants {
     public final static String INSERT_DATA_FINISHED_PALN = "insert into finishedplan select *,0 from _temp_finishedplan";
     public final static String DROP_TEMP_FINISHED_PALN = "drop table _temp_finishedplan";
 
+
+    //修改checkplan1表
+    public final static String CREATE_TEMP_TABLE1 = "alter table checkplan rename to _temp_checkplan";
+    public final static String CREATE_NEW_CHECKPALN1 = "create table checkplan(" +
+            "identifier Integer primary key," +
+            "sysId int(12)," +
+            "name char(30)," +
+            "state int(1)," +
+            "address varchar(50)," +
+            "quxian varchar(10)," +
+            "area varchar(20)," +
+            "type varchar(20)," +
+            "tel varchar(20)," +
+            "manager varchar(50)," +
+            "user varchar(30)," +
+            "url varchar(50)," +
+            "plan_type int(8)" +
+            ")";
+    public final static String INSERT_DATA_CHECKPLAN1 = "insert into checkplan select *,0 from _temp_checkplan";
+    public final static String DROP_TEMP1 = "drop table _temp_checkplan";
     /*
     *正式IP地址
     * */

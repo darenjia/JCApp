@@ -89,7 +89,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
         page_num = (TextView) findViewById(R.id.txt_page);
 
              /*判断该检查是否检查*/
-        isChecked = DataUtil.queryCheckPlanState(this, plan.getIdentifier()) != 0;
+        isChecked = DataUtil.queryCheckPlanState(this, plan.getIdentifier(),plan.getPlan_type()) != 0;
 
     }
 

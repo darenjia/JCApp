@@ -27,6 +27,7 @@ public class CheckPlan implements Serializable {
     private String user;
     private String quxian;
     private String url; //登记表地址
+    private int plan_type; //登记表地址
 
     public String getQuxian() {
         return quxian;
@@ -135,5 +136,13 @@ public class CheckPlan implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public int getPlan_type() {
+        return plan_type;
+    }
+
+    public void setPlan_type(int plan_type) {
+        this.plan_type = plan_type;
     }
 }
