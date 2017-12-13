@@ -62,6 +62,7 @@ public class SQLiteOpenUtil extends SQLiteOpenHelper {
                 db.execSQL(Constants.CREATE_NEW_CHECKPALN1);
                 db.execSQL(Constants.INSERT_DATA_CHECKPLAN1);
                 db.execSQL(Constants.DROP_TEMP1);
+                DataUtil.initCheckResult();
                 break;
         }
     }
