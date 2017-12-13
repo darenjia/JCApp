@@ -217,6 +217,20 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
         cursor.close();
         return i;
     }
+    public ArrayList<CheckPlan> queryByCheckPlanState() {
+        CheckPlan plan = null;
+        ArrayList<CheckPlan> checkPlans = new ArrayList<>();
+        Cursor cursor = db.query("checkplan",null, "state = 1 or state = 2", null, null, null, null);
+        while (cursor.moveToNext()) {
+           plan = new CheckPlan();
+            plan.setIdentifier(cursor.getInt(cursor.getColumnIndex("identifier")));
+            plan.setState(cursor.getInt(cursor.getColumnIndex("state")));
+            plan.setSysId(cursor.getInt(cursor.getColumnIndex("sysId")));
+            checkPlans.add(plan);
+        }
+//        cursor.close();
+        return checkPlans;
+    }
 
     public String queryCheckPlanFileUrl(String sysId) {
         String url = null;

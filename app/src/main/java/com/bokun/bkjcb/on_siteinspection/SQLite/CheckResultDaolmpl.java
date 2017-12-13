@@ -46,10 +46,10 @@ public class CheckResultDaolmpl extends CheckResultDao {
     }
 
     @Override
-    public ArrayList<CheckResult> queryCheckResult(int Identifier,String aq_lh_id) {
+    public ArrayList<CheckResult> queryCheckResult(int Identifier, String aq_lh_id) {
         ArrayList<CheckResult> list = new ArrayList<>();
         CheckResult result;
-        Cursor cursor = database.query("checkresult", null, "identifier = ? and aq_lh_id = ?", new String[]{String.valueOf(Identifier),aq_lh_id}, null, null, "num ASC");
+        Cursor cursor = database.query("checkresult", null, "identifier = ? and aq_lh_id = ?", new String[]{String.valueOf(Identifier), aq_lh_id}, null, null, "num ASC");
         while (cursor.moveToNext()) {
             result = new CheckResult();
             result.setId(cursor.getInt(cursor.getColumnIndex("id")));
@@ -68,8 +68,8 @@ public class CheckResultDaolmpl extends CheckResultDao {
     }
 
     @Override
-    public boolean queryById(int Identifier,String aq_lh_id) {
-        Cursor cursor = database.query("checkresult", null, "identifier = ? and aq_lh_id = ?", new String[]{String.valueOf(Identifier),aq_lh_id}, null, null, "num ASC");
+    public boolean queryById(int Identifier, String aq_lh_id) {
+        Cursor cursor = database.query("checkresult", null, "identifier = ? and aq_lh_id = ?", new String[]{String.valueOf(Identifier), aq_lh_id}, null, null, "num ASC");
         while (cursor.moveToNext()) {
             return true;
         }
@@ -91,14 +91,20 @@ public class CheckResultDaolmpl extends CheckResultDao {
         return isSuccess != 0;
     }
 
-    @Override
-    public void changeCheckResult(CheckResult result) {
-
+    public void changeCheckResult(String identifier, String aq_lh_id) {
+        ContentValues values = new ContentValues();
+        values.put("aq_lh_id", aq_lh_id);
+        database.update("checkresult", values, "identifier", new String[]{identifier});
     }
 
     @Override
-    public void clean(int id,String aq_lh_id) {
-        database.delete("checkresult", "identifier=? and aq_lh_id = ?", new String[]{String.valueOf(id),aq_lh_id});
+    public void clean(int id, String aq_lh_id) {
+        database.delete("checkresult", "identifier=? and aq_lh_id = ?", new String[]{String.valueOf(id), aq_lh_id});
+    }
+
+    @Override
+    public void changeCheckResult(CheckResult result) {
+
     }
 
 

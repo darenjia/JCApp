@@ -55,6 +55,8 @@ public class AlertGuidBuilder {
                     l = position - 1;
                 } else if (position > 16) {
                     l = position - 2;
+                } else {
+                    return;
                 }
                 listener.onClick(l);
                 dialog.dismiss();

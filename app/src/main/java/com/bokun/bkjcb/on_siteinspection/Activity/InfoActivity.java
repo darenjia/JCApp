@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.bigkoo.alertview.AlertView;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
@@ -45,7 +44,6 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
     private boolean flag;
     private CheckPlan checkPlan;
     private ProjectPlan plan;
-    private AlertView alertView;
 
     @Override
     protected void initView() {
@@ -66,7 +64,6 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
                 finish();
             }
         });
-        //mmp true:来自服务器，可发起临时检查
         flag = getIntent().getBooleanExtra("isFromNet", false);
     }
 
@@ -270,10 +267,4 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
         }
     }
 }
-//临时检查：
-/*
-* 1、会不会与安全检查id重复
-* 2、会不会重复检查
-* 3、aq_lh_id的值怎么办
-* 4、seq_id文件夹命名没有
-* */
+

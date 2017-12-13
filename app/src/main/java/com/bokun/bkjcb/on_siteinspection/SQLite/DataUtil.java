@@ -161,9 +161,9 @@ public class DataUtil {
         return plans;
     }
 
-    public static int queryCheckPlanState(Context context, int indentifier,int plan_type) {
+    public static int queryCheckPlanState(Context context, int indentifier, int plan_type) {
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);
-        int state = daolmpl.queryCheckPlanState(indentifier,plan_type);
+        int state = daolmpl.queryCheckPlanState(indentifier, plan_type);
         daolmpl.colseDateBase();
         // LogUtil.logI("查询一条检查计划状态" + indentifier + " state:" + state);
         return state;
@@ -264,7 +264,7 @@ public class DataUtil {
 
     /**
      * 更新安全检查状态
-    * */
+     */
     public static boolean changeProjectState(ProjectPlan plan) {
         boolean flag = false;
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
@@ -357,4 +357,19 @@ public class DataUtil {
         plan = planDao.queryBySysID(String.valueOf(checkPlan.getSysId()));
         return plan;
     }
+
+    public static void initCheckResult() {
+        CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(JCApplication.getContext());
+        ArrayList<CheckPlan> list = daolmpl.queryByCheckPlanState();
+        ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
+        CheckResultDaolmpl resultDaolmpl = new CheckResultDaolmpl(JCApplication.getContext());
+        for (CheckPlan plan : list) {
+            String aq_lh_id = dao.queryAq_lh_id(plan.getSysId());
+            if (aq_lh_id == null) {
+                continue;
+            }
+            resultDaolmpl.changeCheckResult(String.valueOf(plan.getSysId()), aq_lh_id);
+        }
+    }
+
 }

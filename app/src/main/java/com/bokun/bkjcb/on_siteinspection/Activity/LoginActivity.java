@@ -201,7 +201,7 @@ public class LoginActivity extends BaseActivity implements RequestListener {
         // Check for a valid password, if the user entered one.
         if (TextUtils.isEmpty(password) || !isPasswordValid(password)) {
 //            mPassword.setError(getString(R.string.error_invalid_password));
-            setError(mPassword,getString(R.string.error_invalid_password));
+            setError(mPassword, getString(R.string.error_invalid_password));
             focusView = mPassword;
             cancel = true;
         }
@@ -209,12 +209,12 @@ public class LoginActivity extends BaseActivity implements RequestListener {
         // Check for a valid email address.
         if (TextUtils.isEmpty(userName)) {
 //            mUserName.setError(getString(R.string.error_field_required));
-            setError(mUserName,getString(R.string.error_field_required));
+            setError(mUserName, getString(R.string.error_field_required));
             focusView = mUserName;
             cancel = true;
         } else if (!isUserNameValid(userName)) {
 //            mUserName.setError(getString(R.string.error_invalid_username));
-            setError(mUserName,getString(R.string.error_invalid_username));
+            setError(mUserName, getString(R.string.error_invalid_username));
             focusView = mUserName;
             cancel = true;
         }
@@ -235,14 +235,14 @@ public class LoginActivity extends BaseActivity implements RequestListener {
                     saveInfo();
                     MainActivity.ComeToMainActivity(this, user);
                 } else {
-                    setError(mPassword,"密码错误");
+                    setError(mPassword, "密码错误");
                 }
             } else {
                 HttpRequestVo request = new HttpRequestVo();
                 request.getRequestDataMap().put("user", userName);
                 //后面再做MD5加密处理
-//                request.getRequestDataMap().put("password", MD5Util.encode(password));
-                request.getRequestDataMap().put("password", password);
+                request.getRequestDataMap().put("password", MD5Util.encode(password));
+//                request.getRequestDataMap().put("password", password);
                 request.setMethodName("GetUser");
                 httpManager = new HttpManager(this, this, request, 2);
                 httpManager.postRequest();
@@ -252,13 +252,13 @@ public class LoginActivity extends BaseActivity implements RequestListener {
         }
     }
 
-    private void setError(EditText view,String message) {
-        try{
+    private void setError(EditText view, String message) {
+        try {
             view.setError(message);
             view.requestFocus();
-        }catch (ClassCastException ignored){
+        } catch (ClassCastException ignored) {
             view.setError(null);
-            Snackbar.make(mCardView,message, Snackbar.LENGTH_LONG).show();
+            Snackbar.make(mCardView, message, Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -273,10 +273,10 @@ public class LoginActivity extends BaseActivity implements RequestListener {
 //            mPassword.setText(password);
             mRembPass.setChecked(true);
         }
-        new CheckUpUtil(this).checkUpadte(false, false);
+        new CheckUpUtil(this).checkUpadte(false, true);
 
-        mUserName.setText("ljl_qs");
-        mPassword.setText("000000");
+//        mUserName.setText("ljl_qs");
+//        mPassword.setText("1");
 //        changeIp(null);
     }
 

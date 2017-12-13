@@ -165,8 +165,8 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission_group.STORAGE) != PackageManager.PERMISSION_GRANTED) {
             path = Environment.getExternalStorageDirectory() + "/CheckApp";
             File file = new File(path);
-            if (!file.exists()) {
-                file.mkdir();
+            if (!file.exists()&&file.mkdir()) {
+                creatSnackBar(R.string.make_error_file_sdcard);
             }
         } else {
             creatSnackBar(R.string.mis_error_no_permission_sdcard);
@@ -286,9 +286,6 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
 
         if (resultCode == RESULT_OK) {
             if (requestCode == UCrop.REQUEST_CROP) {
-//                Bundle bundle = data.getExtras();
-//                LogUtil.logI("bitmap" + (bundle.get("data") == null));
-//                Bitmap bitmap = (Bitmap) bundle.get("data");
                 LogUtil.logI("剪裁完成");
                 setImage(image.getAbsolutePath(), CAMERA_IMAGE);
                 imagePaths.add(image.getAbsolutePath());
@@ -312,24 +309,28 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
                 LogUtil.logI(uri.toString());
                 CropUtil.startCropActivity(uri, image, getContext(), CheckItemFragment.this);
             } else if (requestCode == REQUESR_CODE_VIDEO) {
-//                Bitmap bitmap = (Bitmap) bundle.get("data");
-//                Bitmap bitmap = getCutBitmap(sdcardTempFile.getAbsolutePath());
                 setImage(video.getAbsolutePath(), VIDEO_IMAGE);
                 videoPaths.add(video.getAbsolutePath());
             } else if (requestCode == REQUESR_CODE_RECORD) {
                 String filePath;
                 try {
                     Uri uri = data.getData();
-                    Cursor cursor = getActivity().getContentResolver()
-                            .query(uri, null, null, null, null);
-                    cursor.moveToFirst();
-                    int index = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
-                    filePath = cursor.getString(index);
-                    LogUtil.logI(filePath);
+                    Cursor cursor = null;
+                    if (uri != null) {
+                        cursor = getActivity().getContentResolver()
+                                .query(uri, null, null, null, null);
+                    }
+                    if (cursor != null) {
+                        cursor.moveToFirst();
+                        int index = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
+                        filePath = cursor.getString(index);
+                        LogUtil.logI(filePath);
+                        Utils.copyFile(filePath, audio);
+                        cursor.close();
+                    }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-                Utils.copyFile(filePath, audio);
                 if (audio != null && audio.length() != 0) {
                     setImage(null, AUDIO_IMAGE);
                     audioPaths.add(audio.getAbsolutePath());
@@ -429,10 +430,10 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
                 mImageView = LocalTools.setImageView(getContext(), params, new BitmapDrawable(bitmap), bitmap);
                 viewHolder.video_title.setText("视频文件（" + (++videoCount) + "/3）:");
             }
-            if (bitmap == null) {
-            }
         }
-        layout.addView(mImageView);
+        if (layout != null) {
+            layout.addView(mImageView);
+        }
     }
 
     private boolean isFileOk(File file) {
@@ -471,12 +472,16 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
             public void onDelete() {
                 layout.removeViewAt(preview.getPosition());
                 paths.remove(preview.getPosition());
-                if (type.equals("image")) {
-                    viewHolder.image_title.setText("图片文件（" + (--imageCount) + "/3）:");
-                } else if (type.equals("video")) {
-                    viewHolder.video_title.setText("视频文件（" + (--videoCount) + "/3）:");
-                } else {
-                    viewHolder.audio_title.setText("音频文件（" + (--audioCount) + "/3）:");
+                switch (type) {
+                    case "image":
+                        viewHolder.image_title.setText("图片文件（" + (--imageCount) + "/3）:");
+                        break;
+                    case "video":
+                        viewHolder.video_title.setText("视频文件（" + (--videoCount) + "/3）:");
+                        break;
+                    default:
+                        viewHolder.audio_title.setText("音频文件（" + (--audioCount) + "/3）:");
+                        break;
                 }
             }
 

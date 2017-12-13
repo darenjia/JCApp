@@ -34,11 +34,12 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="table_content">{}</string>
-    <string name="mis_msg_no_camera">相机不可用</string>
+    <string name="mis_msg_no_camera">相机或录音机不可用</string>
     <string name="mis_error_image_not_exist">照片地址不可用</string>
     <string name="mis_error_no_permission_camera">无法使用相机，请在权限管理中设置权限</string>
     <string name="mis_error_no_permission_audio">无法使用录音机，请在权限管理中设置权限</string>
     <string name="mis_error_no_permission_sdcard">无法使用SD卡，请在权限管理中设置权限</string>
+    <string name="make_error_file_sdcard">无法从SD卡创建目录</string>
     <string name="btn_scan">预览</string>
     <string name="btn_check">检查</string>
     <string name="image_file">图片文件（0/3）：</string>

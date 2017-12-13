@@ -126,6 +126,15 @@ public class ProjectPlanDao {
         return list;
     }
 
+    public String queryAq_lh_id(int sysId) {
+        Cursor cursor = database.query("constructioninfo", null, "aq_sysid like ?", new String[]{"%" + sysId + "%"}, null, null, null);
+        while (cursor.moveToNext()) {
+
+            return cursor.getString(cursor.getColumnIndex("aq_lh_id"));
+        }
+        return null;
+    }
+
     public boolean update(String id, String state) {
         ContentValues values = new ContentValues();
         values.put("aq_jctz_zt", state);
