@@ -278,6 +278,7 @@ public class LoginActivity extends BaseActivity implements RequestListener {
 //        mUserName.setText("ljl_qs");
 //        mPassword.setText("1");
 //        changeIp(null);
+//        DataUtil.initCheckResult(new SQLiteOpenUtil(JCApplication.getContext()).getWritableDatabase());
     }
 
     @Override

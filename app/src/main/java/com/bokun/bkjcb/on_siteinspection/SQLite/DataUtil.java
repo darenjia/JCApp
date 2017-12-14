@@ -1,6 +1,9 @@
 package com.bokun.bkjcb.on_siteinspection.SQLite;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckResult;
@@ -358,18 +361,45 @@ public class DataUtil {
         return plan;
     }
 
-    public static void initCheckResult() {
-        CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(JCApplication.getContext());
-        ArrayList<CheckPlan> list = daolmpl.queryByCheckPlanState();
-        ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
-        CheckResultDaolmpl resultDaolmpl = new CheckResultDaolmpl(JCApplication.getContext());
+    public static void initCheckResult(SQLiteDatabase db) {
+        ArrayList<CheckPlan> list = queryByCheckPlanState(db);
         for (CheckPlan plan : list) {
-            String aq_lh_id = dao.queryAq_lh_id(plan.getSysId());
+            String aq_lh_id = queryAq_lh_id(db, plan.getSysId());
             if (aq_lh_id == null) {
                 continue;
             }
-            resultDaolmpl.changeCheckResult(String.valueOf(plan.getSysId()), aq_lh_id);
+            changeCheckResult(db, String.valueOf(plan.getIdentifier()), aq_lh_id);
         }
+    }
+
+    private static ArrayList<CheckPlan> queryByCheckPlanState(SQLiteDatabase db) {
+        CheckPlan plan = null;
+        ArrayList<CheckPlan> checkPlans = new ArrayList<>();
+        Cursor cursor = db.query("checkplan", null, "state = 1 or state = 2", null, null, null, null);
+        while (cursor.moveToNext()) {
+            plan = new CheckPlan();
+            plan.setIdentifier(cursor.getInt(cursor.getColumnIndex("identifier")));
+            plan.setState(cursor.getInt(cursor.getColumnIndex("state")));
+            plan.setSysId(cursor.getInt(cursor.getColumnIndex("sysId")));
+            checkPlans.add(plan);
+        }
+        cursor.close();
+        return checkPlans;
+    }
+
+    private static String queryAq_lh_id(SQLiteDatabase db, int sysId) {
+        Cursor cursor = db.query("constructioninfo", null, "aq_sysid like ?", new String[]{"%" + sysId + "%"}, null, null, null);
+        if (cursor.moveToNext()) {
+            return cursor.getString(cursor.getColumnIndex("aq_lh_id"));
+        }
+        cursor.close();
+        return null;
+    }
+
+    private static void changeCheckResult(SQLiteDatabase db, String identifier, String aq_lh_id) {
+        ContentValues values = new ContentValues();
+        values.put("aq_lh_id", aq_lh_id);
+        db.update("checkresult", values, "identifier = ?", new String[]{identifier});
     }
 
 }

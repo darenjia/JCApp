@@ -16,7 +16,7 @@ import com.elvishew.xlog.XLog;
 public class SQLiteOpenUtil extends SQLiteOpenHelper {
 
     public SQLiteOpenUtil(Context context) {
-        super(context, "User.db", null, 5);
+        super(context, "User.db", null, 6);
     }
 
     public SQLiteOpenUtil(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler) {
@@ -62,7 +62,9 @@ public class SQLiteOpenUtil extends SQLiteOpenHelper {
                 db.execSQL(Constants.CREATE_NEW_CHECKPALN1);
                 db.execSQL(Constants.INSERT_DATA_CHECKPLAN1);
                 db.execSQL(Constants.DROP_TEMP1);
-                DataUtil.initCheckResult();
+//                break;
+            case 5:
+                DataUtil.initCheckResult(db);
                 break;
         }
     }
