@@ -74,13 +74,13 @@ public class Constants {
     public final static String CREATE_CHECK_RESULT = "create table checkresult(" +
             "id Integer primary key," +
             "identifier int(10)," +
-            "aq_lh_id char(30)," +
             "num int(10)," +
             "checkresult int(1)," +
             "comment text," +
             "audio char(100)," +
             "image char(100)," +
-            "video char(100)" +
+            "video char(100)," +
+            "aq_lh_id char(30)" +
             ")";
     public final static String CREATE_SEARCH_HISTORY = "create table searchhistory(" +
             "id Integer primary key," +
@@ -107,24 +107,24 @@ public class Constants {
     public final static String DROP_TEMP = "drop table _temp_checkplan";
 
     //修改checkresult表
-    public final static String CREATE_TEMP_CHECK_RESULT  = "alter table checkresult rename to _temp_checkresult";
-    public final static String CREATE_NEW_CHECK_RESULT= "create table checkresult(" +
+    public final static String CREATE_TEMP_CHECK_RESULT = "alter table checkresult rename to _temp_checkresult";
+    public final static String CREATE_NEW_CHECK_RESULT = "create table checkresult(" +
             "id Integer primary key," +
             "identifier int(10)," +
-            "aq_lh_id char(30)," +
             "num int(10)," +
             "checkresult int(1)," +
             "comment text," +
             "audio char(100)," +
             "image char(100)," +
-            "video char(100)" +
+            "video char(100)," +
+            "aq_lh_id char(30)" +
             ")";
     public final static String INSERT_DATA_CHECK_RESULT = "insert into checkresult select *,'' from _temp_checkresult";
     public final static String DROP_TEMP_CHECK_RESULT = "drop table _temp_checkresult";
 
     //修改CREATE_FINISHED_PALN表
-    public final static String CREATE_TEMP_FINISHED_PALN  = "alter table finishedplan rename to _temp_finishedplan";
-    public final static String CREATE_NEW_FINISHED_PALN= "create table finishedplan(" +
+    public final static String CREATE_TEMP_FINISHED_PALN = "alter table finishedplan rename to _temp_finishedplan";
+    public final static String CREATE_NEW_FINISHED_PALN = "create table finishedplan(" +
             "id Integer primary key," +
             "SysId int(20)," +
             "SysGcxxdjh int(20)," +

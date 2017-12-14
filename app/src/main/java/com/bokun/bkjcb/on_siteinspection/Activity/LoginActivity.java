@@ -53,6 +53,7 @@ public class LoginActivity extends BaseActivity implements RequestListener {
     private boolean isRemberPass;
     private String passWord;
     private String ip;
+    private TextView version;
 
     private static class MyHandler extends Handler {
         private final WeakReference<LoginActivity> mActivity;
@@ -118,6 +119,7 @@ public class LoginActivity extends BaseActivity implements RequestListener {
         mLoginView = (LinearLayout) findViewById(R.id.logining_view);
         mRembPass = (CheckBox) findViewById(R.id.login_pass_remb);
         mCardView = (CardView) findViewById(R.id.login_cardview);
+        version = (TextView) findViewById(R.id.version);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("登录");
         setSupportActionBar(toolbar);
@@ -273,6 +275,7 @@ public class LoginActivity extends BaseActivity implements RequestListener {
 //            mPassword.setText(password);
             mRembPass.setChecked(true);
         }
+        version.setText("当前版本：" + Utils.getVersion(this));
         new CheckUpUtil(this).checkUpadte(false, true);
 
 //        mUserName.setText("ljl_qs");
