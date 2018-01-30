@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -12,7 +16,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
+import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
+import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
@@ -30,9 +36,11 @@ import com.hss01248.dialog.interfaces.MyDialogListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 
 public class InfoActivity extends BaseActivity implements OnErrorListener {
 
@@ -45,6 +53,49 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
     private CheckPlan checkPlan;
     private ProjectPlan plan;
 
+    private static class MyHandler extends Handler {
+        private final WeakReference<InfoActivity> mActivity;
+
+        public MyHandler(InfoActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            final InfoActivity activity = mActivity.get();
+            if (activity != null) {
+                switch (msg.what) {
+                    case RequestListener.EVENT_NOT_NETWORD:
+                        Snackbar.make(activity.pdfView, "无网络连接，请检查网络", Snackbar.LENGTH_LONG).setAction("设置", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                                activity.startActivity(intent);
+                            }
+                        }).show();
+                        break;
+                    case RequestListener.EVENT_CLOSE_SOCKET:
+                    case RequestListener.EVENT_NETWORD_EEEOR:
+                        Snackbar.make(activity.pdfView, "请确认网络是否可用！", Snackbar.LENGTH_LONG).show();
+                        break;
+                    case RequestListener.EVENT_GET_DATA_EEEOR:
+                        Snackbar.make(activity.pdfView, "服务器错误，请稍后再试！", Snackbar.LENGTH_LONG).show();
+                        break;
+                    case RequestListener.EVENT_GET_DATA_SUCCESS:
+                        JsonResult result = (JsonResult) msg.obj;
+                        if (result.success) {
+                            MainActivity.ComeToMainActivity(activity, result.resData);
+                        } else {
+                            Snackbar.make(activity.pdfView, result.message, Snackbar.LENGTH_LONG).show();
+                        }
+                        break;
+
+                }
+            }
+        }
+    }
+
+    private InfoActivity.MyHandler mHandler = new InfoActivity.MyHandler(this);
     @Override
     protected void initView() {
         setContentView(R.layout.activity_info);
@@ -120,20 +171,27 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
         ProjectPlan projectPlan = DataUtil.queryCheckPlanIsFinished(checkPlan);
         plan = new ProjectPlan();
         if (projectPlan == null) {
-            plan.setAq_lh_id("SH" + Utils.getDate("yyyyMMddhhmm"));//必须id
+            String py = Utils.getQuxianPY(JCApplication.user.getQuxian());
+            XLog.i("区县："+py);
+            plan.setAq_lh_id(py + Utils.getDate("yyyyMMddhhmm"));//必须id
             plan.setAq_lh_jcmc(Utils.getDate("yy-MM-dd") + checkPlan.getName() + "临时检查");//生成名称
             plan.setAq_sysid(String.valueOf(checkPlan.getSysId()));
             plan.setAq_lh_seqid(plan.getAq_lh_id());
             plan.setAq_jctz_zt("无需办事项");
+            plan.setAq_lh_jcrq(Utils.getDate("yyyy/MM/dd"));
             DataUtil.saveProjectPlan(plan, JCApplication.user);
             DataUtil.insertCheckPlan(context, checkPlan);
             SecurityCheckActivity.ComeToSecurityCheckActivity(this, checkPlan, true, plan.getAq_lh_id());
         } else {
-            if (!projectPlan.getAq_jctz_zt().equals("等待上传")) {
+//            String[] nyr = projectPlan.getAq_lh_jcrq().split("/");
+            Date date = new Date(projectPlan.getAq_lh_jcrq());
+            boolean isOverTime = System.currentTimeMillis() - date.getTime() > (24 * 60 * 60 * 1000);
+            if (!projectPlan.getAq_jctz_zt().equals("等待上传")||isOverTime) {
                 plan.setAq_lh_id(projectPlan.getAq_lh_id());//必须id
                 plan.setAq_lh_jcmc(projectPlan.getAq_lh_jcmc());//生成名称
                 plan.setAq_sysid(String.valueOf(checkPlan.getSysId()));
                 plan.setAq_lh_seqid(projectPlan.getAq_lh_id());
+                plan.setAq_lh_jcrq(projectPlan.getAq_lh_jcrq());
                 SecurityCheckActivity.ComeToSecurityCheckActivity(this, checkPlan, true, plan.getAq_lh_id());
             } else {
                 StyledDialog.context = context;
@@ -187,14 +245,14 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
 
     @Override
     public void onError(Throwable throwable) {
-        XLog.i("error:" + fileName);
+        XLog.i("直接打开pdf error:" + fileName);
         if (loadData == null) {
             if (NetworkUtils.isEnable(this)) {
                 loadData = new LoadData();
                 loadData.execute();
             }
         } else {
-            Toast.makeText(this, "打开文件失败，请在有网的环境下稍后再试！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "打开文件失败，请连接网络再试！", Toast.LENGTH_SHORT).show();
         }
     }
 
