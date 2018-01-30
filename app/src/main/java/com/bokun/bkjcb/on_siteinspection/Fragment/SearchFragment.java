@@ -77,6 +77,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
     private String oldKey;
     private boolean isClear;
     private AlertDialog dialog;
+    private TextView errorText;
 
     @Override
     protected View initView(LayoutInflater inflater) {
@@ -95,6 +96,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
         marker_progress = (ProgressBar) view.findViewById(R.id.marker_progress);
         linearLayout = (LinearLayout) view.findViewById(R.id.nav_view);
         result_title = (TextView) view.findViewById(R.id.result_title);
+        errorText = (TextView)view.findViewById(R.id.error_tv);
         set = new HashSet<>();
 //        SetTypeFace();
         stringAdapter = new StringAdapter(context, SearchedWordDao.all(context, 1));
@@ -132,11 +134,14 @@ public class SearchFragment extends MainFragment implements RequestListener {
         if (checkPlans.size() > 0) {
             if (listContainer.isLoadMore()) {
                 listContainer.setPullLoadMoreCompleted();
+                page--;
             }
         } else {
             view_search.setVisibility(View.GONE);
             result_view.setVisibility(View.GONE);
+            errorText.setText("查询失败，请稍后重试！");
             error_tip.setVisibility(View.VISIBLE);
+
         }
     }
 
@@ -367,6 +372,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
         if (checkPlans.size() == 0) {
             error_tip.setVisibility(View.VISIBLE);
             result_view.setVisibility(View.GONE);
+            errorText.setText("未查询到相关数据！");
         } else {
             error_tip.setVisibility(View.GONE);
             result_view.setVisibility(View.VISIBLE);

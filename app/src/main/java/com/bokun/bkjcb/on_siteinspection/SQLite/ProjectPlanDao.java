@@ -84,6 +84,7 @@ public class ProjectPlanDao {
             result.setAq_lh_jcmc(cursor.getString(cursor.getColumnIndex("aq_lh_jcmc")));
             result.setAq_lh_seqid(cursor.getString(cursor.getColumnIndex("aq_lh_seqid")));
             result.setAq_jctz_zt(cursor.getString(cursor.getColumnIndex("aq_jctz_zt")));
+            result.setAq_lh_jcrq(cursor.getString(cursor.getColumnIndex("aq_lh_jcrq")));
         }
         return result;
     }

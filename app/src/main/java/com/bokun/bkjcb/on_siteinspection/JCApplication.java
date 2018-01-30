@@ -30,7 +30,7 @@ public class JCApplication extends Application {
 //                        : LogLevel.NONE)
                 .logLevel(LogLevel.ALL)
                 .tag("dengshuai")                                         // 指定 TAG，默认为 "X-LOG"
-                .t()                                                   // 允许打印线程信息，默认禁止
+//                .t()                                                   // 允许打印线程信息，默认禁止
                 .st(2)                                                 // 允许打印深度为2的调用栈信息，默认禁止
                 .b()                                                   // 允许打印日志边框，默认禁止
 //                .jsonFormatter(new MyJsonFormatter())                  // 指定 JSON 格式化器，默认为 DefaultJsonFormatter
@@ -69,6 +69,6 @@ public class JCApplication extends Application {
         if(BuildConfig.DEBUG){
             return true;
         }
-        return false;
+        return true;
     }
 }

@@ -74,6 +74,7 @@ public class UploadHelper {
     private int size;
     private int flag = 0;
     private FtpUploadTask task;
+    private int type;//检查类型
 
     public interface OnFinishedListener {
         void finish();
@@ -98,11 +99,13 @@ public class UploadHelper {
         LogUtil.logI(projectPlan.getAq_lh_jcmc() + " 任务开始：" + s);
         projectId = projectPlan.getAq_lh_seqid();
         String[] strings = s.split(",");
+        FinishedPlan plan;
         for (String str : strings) {
-            FinishedPlan plan = DataUtil.getFinishedPlan(str);
+            plan = DataUtil.getFinishedPlan(str);
+            type = plan.getType();
             CheckPlan checkPlan = DataUtil.queryCheckPlan(context, plan.getSysGcxxdjh());
             remotePaths.add(String.valueOf(checkPlan.getSysId()));
-            results = DataUtil.readData(context, checkPlan.getIdentifier(),projectPlan.getAq_lh_id());
+            results = DataUtil.readData(context, checkPlan.getIdentifier(), projectPlan.getAq_lh_id());
             resultList.add(results);
             Gson gson = new Gson();
             JsonElement element = gson.toJsonTree(results);
@@ -121,10 +124,15 @@ public class UploadHelper {
             return;
         }
         String json = jsons.get(flag);
+        json = json.replaceAll("[^\\u0000-\\uFFFF]", "");
         LogUtil.logI(json);
         final HttpRequestVo request = new HttpRequestVo();
         request.getRequestDataMap().put("jcnr", json);
-        request.setMethodName("GetJianChaShuJu");
+        if (type == 0){
+            request.setMethodName("GetJianChaShuJu");
+        }else {
+            request.setMethodName("GetlsJianChaShuJu");
+        }
         HttpManager manager = new HttpManager(context, new RequestListener() {
             @Override
             public void action(int i, Object object) {

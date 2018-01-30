@@ -172,6 +172,7 @@ public class HttpManager implements Runnable {
             for (Map.Entry<String, String> entry : map.entrySet()) {
                 rpc.addProperty(entry.getKey(), entry.getValue());
             }
+            LogUtil.logI(map.get("page")!=null?map.get("page"):"");
             // 创建 HttpTransportSE 对象,并指定 WebService 的 WSDL 文档的 URL
             ht = new HttpTransportSE(URL);
             // 设置 debug 模式

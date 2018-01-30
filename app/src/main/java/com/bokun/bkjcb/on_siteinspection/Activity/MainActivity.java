@@ -298,6 +298,7 @@ public class MainActivity extends BaseActivity
             if (key.equals("forth")) {
                 ((UpLoadFragment) currentFragment).refresh();
             }
+//            transaction.add(contentView.getId(),currentFragment);
             transaction.show(currentFragment);
         }
         transaction.commit();

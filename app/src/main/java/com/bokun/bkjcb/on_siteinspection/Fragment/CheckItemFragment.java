@@ -99,7 +99,7 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
         viewHolder.txt_content.setText(content);
 
         int flag = result.getResult();
-        LogUtil.logI(flag + ":flag" + result.getComment());
+//        LogUtil.logI(flag + ":flag" + result.getComment());
         if (flag != 2) {
             if (flag == 0) {
                 viewHolder.mRdaioGroup.check(R.id.check_result_radio_1);
@@ -149,7 +149,7 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
         viewHolder.mRdaioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                LogUtil.logI("id:" + checkedId);
+//                LogUtil.logI("id:" + checkedId);
                 int flag = 2;
                 if (checkedId == R.id.check_result_radio_1) {
                     flag = 0;

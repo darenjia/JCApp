@@ -336,6 +336,14 @@ public class Utils {
         return new SimpleDateFormat(template, Locale.CHINA).format(date);
     }
 
+    /**
+     * 获取当前日期
+     */
+    public static long getNowDate() {
+        Date date = new Date(System.currentTimeMillis());
+        return date.getTime();
+    }
+
     //流转字符串
     public static String getStreamString(InputStream tInputStream) {
         if (tInputStream != null) {
@@ -385,6 +393,13 @@ public class Utils {
             LogUtil.logI("写入缓存失败");
         }
 
+    }
+
+    public static String getQuxianPY(String quxian) {
+        if (quxian.equals("全市")){
+            return "SH";
+        }
+        return Cn2Spell.getPinYinHeadChar(quxian).toUpperCase();
     }
 }
 

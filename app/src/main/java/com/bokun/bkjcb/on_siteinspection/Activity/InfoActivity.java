@@ -13,17 +13,23 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
+import com.bokun.bkjcb.on_siteinspection.Http.HttpManager;
+import com.bokun.bkjcb.on_siteinspection.Http.HttpRequestVo;
+import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
 import com.bokun.bkjcb.on_siteinspection.Http.RequestListener;
 import com.bokun.bkjcb.on_siteinspection.JCApplication;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.CacheUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
+import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.NetworkUtils;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 import com.elvishew.xlog.XLog;
@@ -32,6 +38,8 @@ import com.github.barteksc.pdfviewer.listener.OnErrorListener;
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 import com.hss01248.dialog.StyledDialog;
 import com.hss01248.dialog.interfaces.MyDialogListener;
+
+import org.ksoap2.serialization.SoapObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +50,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 
-public class InfoActivity extends BaseActivity implements OnErrorListener {
+public class InfoActivity extends BaseActivity implements OnErrorListener, RequestListener {
 
     private Toolbar toolbar;
     private String fileName;
@@ -52,8 +60,11 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
     private boolean flag;
     private CheckPlan checkPlan;
     private ProjectPlan plan;
+    private RelativeLayout errorLayout;
+    private Button tryAgain;
 
-    private static class MyHandler extends Handler {
+
+    private class MyHandler extends Handler {
         private final WeakReference<InfoActivity> mActivity;
 
         public MyHandler(InfoActivity activity) {
@@ -73,33 +84,47 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
                                 activity.startActivity(intent);
                             }
                         }).show();
+                        openError();
                         break;
                     case RequestListener.EVENT_CLOSE_SOCKET:
                     case RequestListener.EVENT_NETWORD_EEEOR:
                         Snackbar.make(activity.pdfView, "请确认网络是否可用！", Snackbar.LENGTH_LONG).show();
+                        openError();
                         break;
                     case RequestListener.EVENT_GET_DATA_EEEOR:
-                        Snackbar.make(activity.pdfView, "服务器错误，请稍后再试！", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(activity.pdfView, "该工程信息登记表打开错误！", Snackbar.LENGTH_LONG).show();
+                        openError();
                         break;
                     case RequestListener.EVENT_GET_DATA_SUCCESS:
                         JsonResult result = (JsonResult) msg.obj;
                         if (result.success) {
-                            MainActivity.ComeToMainActivity(activity, result.resData);
+                            getUrlSuccess(result.resData);
                         } else {
                             Snackbar.make(activity.pdfView, result.message, Snackbar.LENGTH_LONG).show();
+                            openError();
                         }
                         break;
 
                 }
             }
         }
+
+
     }
 
+    private void openError() {
+        errorLayout.setVisibility(View.VISIBLE);
+    }
+    private void hideError(){
+        errorLayout.setVisibility(View.GONE);
+    }
     private InfoActivity.MyHandler mHandler = new InfoActivity.MyHandler(this);
+
     @Override
     protected void initView() {
         setContentView(R.layout.activity_info);
     }
+
 
     @Override
     protected void findView() {
@@ -107,6 +132,8 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
         pdfView = (PDFView) findViewById(R.id.pdfView);
         toolbar.setTitle("基本信息登记表");
         setSupportActionBar(toolbar);
+        errorLayout = (RelativeLayout) findViewById(R.id.error_layout);
+        tryAgain = (Button) findViewById(R.id.try_again);
         toolbar.setNavigationIcon(R.drawable.back);
         Utils.initSystemBar(this, toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -120,7 +147,16 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
 
     @Override
     protected void setListener() {
-
+        tryAgain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HttpRequestVo request = new HttpRequestVo();
+                request.getRequestDataMap().put("SysId", String.valueOf(checkPlan.getSysId()));
+                request.setMethodName("Getpdf");
+                HttpManager httpManager = new HttpManager(InfoActivity.this, InfoActivity.this, request, 2);
+                httpManager.postRequest();
+            }
+        });
     }
 
 
@@ -129,22 +165,19 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
         fileName = getIntent().getStringExtra("url");
         checkPlan = (CheckPlan) getIntent().getSerializableExtra("plan");
         if (TextUtils.isEmpty(fileName) && checkPlan != null) {
-            fileName = checkPlan.getUrl();
+//            fileName = checkPlan.getUrl();
+            HttpRequestVo request = new HttpRequestVo();
+            request.getRequestDataMap().put("SysId", String.valueOf(checkPlan.getSysId()));
+            request.setMethodName("Getpdf");
+            HttpManager httpManager = new HttpManager(this, this, request, 2);
+            httpManager.postRequest();
+            return;
         }
-//        new LoadData().execute();
-//        photoView.setImageBitmap();
-       /* pdfView.fromAsset("上海市地下工程基本信息登记表.pdf")
-                .defaultPage(0)
-                .enableAnnotationRendering(true)
-                .scrollHandle(new DefaultScrollHandle(this))
-                .spacing(10)
-                .onError(this)// in dp
-                .load();*/
         if (fileName == null || fileName.equals("")) {
             Toast.makeText(this, "该工程暂无信息登记表！", Toast.LENGTH_SHORT).show();
             return;
         }
-        XLog.i("打开pdf文件：" + fileName);
+//        XLog.i("打开pdf文件：" + fileName);
         setPDFView();
     }
 
@@ -172,7 +205,7 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
         plan = new ProjectPlan();
         if (projectPlan == null) {
             String py = Utils.getQuxianPY(JCApplication.user.getQuxian());
-            XLog.i("区县："+py);
+            XLog.i("区县：" + py);
             plan.setAq_lh_id(py + Utils.getDate("yyyyMMddhhmm"));//必须id
             plan.setAq_lh_jcmc(Utils.getDate("yy-MM-dd") + checkPlan.getName() + "临时检查");//生成名称
             plan.setAq_sysid(String.valueOf(checkPlan.getSysId()));
@@ -186,7 +219,7 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
 //            String[] nyr = projectPlan.getAq_lh_jcrq().split("/");
             Date date = new Date(projectPlan.getAq_lh_jcrq());
             boolean isOverTime = System.currentTimeMillis() - date.getTime() > (24 * 60 * 60 * 1000);
-            if (!projectPlan.getAq_jctz_zt().equals("等待上传")||isOverTime) {
+            if (!projectPlan.getAq_jctz_zt().equals("等待上传") || isOverTime) {
                 plan.setAq_lh_id(projectPlan.getAq_lh_id());//必须id
                 plan.setAq_lh_jcmc(projectPlan.getAq_lh_jcmc());//生成名称
                 plan.setAq_sysid(String.valueOf(checkPlan.getSysId()));
@@ -256,11 +289,20 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
         }
     }
 
+    private void getUrlSuccess(String url) {
+        if (NetworkUtils.isEnable(this)) {
+            fileName = JsonParser.getURL(url);
+//            XLog.i(fileName);
+            LoadData loadData = new LoadData();
+            loadData.execute();
+        }
+    }
+
     private class LoadData extends AsyncTask<Void, Void, InputStream> {
 
         @Override
         protected InputStream doInBackground(Void... voids) {
-            if (file.exists()) {
+            if (file != null && file.exists()) {
                 file.delete();
             }
             InputStream inputStream = null;
@@ -278,10 +320,10 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
                 if (inputStream == null) {
                     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                     inputStream = urlConnection.getInputStream();
-                    Utils.saveInputStreamCache(url, getCacheName(fileName));
-                    XLog.i("联网获取pdf");
+//                    Utils.saveInputStreamCache(url, getCacheName(fileName));
+                    LogUtil.logI("联网获取pdf");
                 } else {
-                    XLog.i("从缓存获取pdf");
+                    LogUtil.logI("从缓存获取pdf");
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -293,8 +335,18 @@ public class InfoActivity extends BaseActivity implements OnErrorListener {
 
         @Override
         protected void onPostExecute(InputStream o) {
+           hideError();
             pdfView.fromStream(o).load();
         }
+    }
+
+    @Override
+    public void action(int i, Object object) {
+        JsonResult result = JsonParser.parseSoap((SoapObject) object);
+        Message msg = new Message();
+        msg.what = i;
+        msg.obj = result;
+        mHandler.sendMessage(msg);
     }
 
     private File getFile(String fileName) {

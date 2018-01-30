@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:gravity="center_vertical"
-            android:text=""
+            android:text="正在上传"
             android:textSize="15sp" />
 
     </LinearLayout>
@@ -46,7 +46,7 @@
             android:checked="false"
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
-            android:text=""
+            android:text="开始"
             android:textColor="#797979" />
         <!--<com.bokun.bkjcb.on_siteinspection.View.ProgressButton
             android:layout_width="60dp"

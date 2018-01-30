@@ -211,7 +211,6 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
         int i = 0;
         Cursor cursor = db.query("checkplan", new String[]{"state"}, "identifier=? and plan_type = ?", new String[]{String.valueOf(identifier), String.valueOf(type)}, null, null, null);
         while (cursor.moveToNext()) {
-            XLog.i("查询计划状态");
             i = cursor.getInt(cursor.getColumnIndex("state"));
         }
         cursor.close();

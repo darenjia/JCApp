@@ -94,6 +94,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         nullView = (TextView) view.findViewById(R.id.null_view);
         getDateFromNet();
         refreshLayout.setRefreshing(true);
+        checkPlans = new ArrayList<>();
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

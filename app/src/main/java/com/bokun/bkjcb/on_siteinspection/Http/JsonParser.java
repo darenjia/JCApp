@@ -152,6 +152,25 @@ public class JsonParser {
         return results;
     }
 
+    public static String getURL(String json) {
+        String url = "";
+        if (json.equals("{}")) {
+            return "";
+        }
+        try {
+            //将JSON的String 转成一个JsonArray对象
+            JSONObject object = new JSONObject(json);
+            try {
+                url = object.getString("URLPDF");
+            } catch (JSONException e) {
+                url = "";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
+
     public static ArrayList<ProjectPlan> getProjectData(String json) {
         LogUtil.logI(json);
         ArrayList<ProjectPlan> results = new ArrayList<>();
