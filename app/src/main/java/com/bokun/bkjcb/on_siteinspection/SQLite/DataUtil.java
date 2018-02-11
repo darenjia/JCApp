@@ -309,6 +309,7 @@ public class DataUtil {
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(JCApplication.getContext());
         CheckResultDaolmpl daoR = new CheckResultDaolmpl(JCApplication.getContext());
+        FinishedPlanDao finishedPlanDao = new FinishedPlanDao(JCApplication.getContext());
         ArrayList<ProjectPlan> projectPlans;
         ArrayList<CheckResult> checkResults = new ArrayList<>();
         projectPlans = dao.query("上传完成", user.getId());
@@ -318,17 +319,31 @@ public class DataUtil {
             for (String s : strings) {
                 checkPlans.add(daolmpl.queryCheckPlan(s));
 //                daolmpl.delete(s);
+                if (checkPlans.size() > 0) {
+                    for (CheckPlan c : checkPlans) {
+                        FinishedPlan plan = DataUtil.getFinishedPlan(String.valueOf(c.getSysId()));
+                        FileUtils.deleteFile(daoR.queryCheckResult(c.getIdentifier(), p.getAq_lh_id()));
+                        daolmpl.delete(String.valueOf(c.getSysId()), String.valueOf(plan.getType()));
+                        finishedPlanDao.deleteFinished(String.valueOf(c.getSysId()), p.getAq_lh_id());
+                        daoR.clean(c.getIdentifier(), p.getAq_lh_id());
+                    }
+                }
             }
             dao.delete(p.getAq_lh_id());
         }
-        for (CheckPlan c : checkPlans) {
-            checkResults.addAll(daoR.queryCheckResult(c.getIdentifier()));
+        /*if (projectPlans.size() > 0) {
+            for (CheckPlan c : checkPlans) {
+                checkResults.addAll(daoR.queryCheckResult(c.getIdentifier(), projectPlans.get(0).getAq_lh_id()));
 //            cleanData(JCApplication.getContext(), c.getIdentifier());
-            if (checkResults.size() > 0) {
-                daoR.clean(c.getIdentifier(), checkResults.get(0).getAq_lh_id());
+                if (checkResults.size() > 0) {
+                    FinishedPlan plan = DataUtil.getFinishedPlan(String.valueOf(c.getSysId()));
+                    daoR.clean(c.getIdentifier(), checkResults.get(0).getAq_lh_id());
+                    daolmpl.delete(String.valueOf(c.getSysId()), String.valueOf(plan.getType()));
+                    finishedPlanDao.deleteFinished(c.getSysId());
+                }
             }
         }
-        FileUtils.deleteFile(checkResults);
+        FileUtils.deleteFile(checkResults);*/
 
     }
 

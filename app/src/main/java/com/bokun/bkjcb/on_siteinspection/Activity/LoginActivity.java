@@ -229,6 +229,7 @@ public class LoginActivity extends BaseActivity implements RequestListener {
             }catch (ClassCastException ignored){
 
             }*/
+            focusView.requestFocus();
         } else {
             User user = DataUtil.getUser(userName);
             if (!NetworkUtils.isEnable(this) && user != null) {

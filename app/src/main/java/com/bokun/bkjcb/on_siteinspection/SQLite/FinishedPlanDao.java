@@ -89,8 +89,8 @@ public class FinishedPlanDao {
         return !cursor.moveToNext();
     }
 
-    public void deleteFinished(String SysID) {
-        database.delete("finishedplan", "SysId=?", new String[]{SysID});
+    public void deleteFinished(String SysID,String aq_lh_id) {
+        database.delete("finishedplan", "SysId=? and AQ_LH_ID=?", new String[]{SysID,aq_lh_id});
     }
 
     public void close() {

@@ -216,10 +216,9 @@ public class InfoActivity extends BaseActivity implements OnErrorListener, Reque
             DataUtil.insertCheckPlan(context, checkPlan);
             SecurityCheckActivity.ComeToSecurityCheckActivity(this, checkPlan, true, plan.getAq_lh_id());
         } else {
-//            String[] nyr = projectPlan.getAq_lh_jcrq().split("/");
             Date date = new Date(projectPlan.getAq_lh_jcrq());
             boolean isOverTime = System.currentTimeMillis() - date.getTime() > (24 * 60 * 60 * 1000);
-            if (!projectPlan.getAq_jctz_zt().equals("等待上传") || isOverTime) {
+            if ((projectPlan.getAq_jctz_zt().equals("上传完成") && isOverTime)||(!projectPlan.getAq_jctz_zt().equals("正在上传")&&!projectPlan.getAq_jctz_zt().equals("上传完成"))) {
                 plan.setAq_lh_id(projectPlan.getAq_lh_id());//必须id
                 plan.setAq_lh_jcmc(projectPlan.getAq_lh_jcmc());//生成名称
                 plan.setAq_sysid(String.valueOf(checkPlan.getSysId()));

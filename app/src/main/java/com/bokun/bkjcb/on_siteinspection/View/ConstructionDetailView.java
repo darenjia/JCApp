@@ -57,7 +57,7 @@ public class ConstructionDetailView {
     private View getConstructionDetailView(boolean flag, View.OnClickListener listener, int type) {
         initViews();
         mViewName.setText(checkPlan.getName());
-        mViewId.setText(checkPlan.getIdentifier() + "");
+        mViewId.setText(checkPlan.getIdentifier() == 0 ? "" : String.valueOf(checkPlan.getIdentifier()));
         mViewAddress.setText(checkPlan.getAddress());
 //        mViewTel.setText("");
         mViewArea.setText(checkPlan.getArea() + "m²");

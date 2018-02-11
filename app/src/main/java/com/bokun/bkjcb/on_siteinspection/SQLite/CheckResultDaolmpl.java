@@ -42,7 +42,7 @@ public class CheckResultDaolmpl extends CheckResultDao {
 
     @Override
     public ArrayList<CheckResult> queryCheckResult(int Identifier) {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override

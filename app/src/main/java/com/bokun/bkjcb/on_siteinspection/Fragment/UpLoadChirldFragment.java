@@ -1,6 +1,7 @@
 package com.bokun.bkjcb.on_siteinspection.Fragment;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,7 +14,6 @@ import android.os.Message;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -298,6 +298,35 @@ public class UpLoadChirldFragment extends BaseFragment {
                 getContext().startService(intent);
                 openBroadCast();
             } else {
+             /*   StyledDialog.context = getContext();
+                StyledDialog.buildIosAlertVertical("提示", "当前网络为移动网络，该操作会消耗较多数据流量，是否继续操作？", new MyDialogListener() {
+                    @Override
+                    public void onFirst() {
+                        util = NotificationUtil.newInstance();
+                        getContext().startService(intent);
+                        openBroadCast();
+                    }
+
+                    @Override
+                    public void onSecond() {
+                        plan.setAq_jctz_zt("等待上传");
+                        plan.setState_upload(0);
+                        DataUtil.updateProjectState(plan);
+                        plans_upload.add(plan);
+                        plans_uploading.remove(plan);
+                        isStop = false;
+                        task = null;
+                        adapter.notifyDataSetChanged();
+                        adapterUploading.notifyDataSetChanged();
+                        updateCount();
+                    }
+
+                    @Override
+                    public void onThird() {
+
+                    }
+
+                }).setBtnText("继续","取消").show();*/
                 AlertDialog tipDialog = new AlertDialog.Builder(getContext())
                         .setTitle("提示")
                         .setMessage("当前网络为移动网络，该操作会消耗较多数据流量，是否继续操作？")
@@ -489,7 +518,7 @@ public class UpLoadChirldFragment extends BaseFragment {
         } else if (state == 1) {
             return "等待";
         } else if (state == 2) {
-            return "0%";
+            return "上传中";
         } else if (state == 3) {
             return "上传";
         } else {

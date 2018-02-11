@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
-import com.elvishew.xlog.XLog;
 
 import java.util.ArrayList;
 
@@ -258,6 +257,9 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
     @Override
     public void delete(String sysID) {
         db.delete("checkplan", "sysId=?", new String[]{sysID});
+    }
+    public void delete(String sysID,String type) {
+        db.delete("checkplan", "sysId=? and plan_type = ?", new String[]{sysID,type});
     }
 
     public boolean updateCheckPlanState(String id, int newstate) {
