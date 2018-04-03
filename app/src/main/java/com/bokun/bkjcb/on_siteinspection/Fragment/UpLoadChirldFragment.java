@@ -145,17 +145,39 @@ public class UpLoadChirldFragment extends BaseFragment {
                 }
             }
         });
-        if (finished) {
-            listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                @Override
-                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                    ProjectPlan plan = plans_upload.get(position);
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                final ProjectPlan plan = plans_upload.get(position);
+                if (finished) {
                     plan.setAq_jctz_zt("等待上传");
                     DataUtil.changeProjectState1(plan);
-                    return true;
+                } else {
+                    AlertDialog tipDialog = new AlertDialog.Builder(getContext())
+                            .setTitle("提示")
+                            .setMessage("是否删除当前任务?(该操作将会删除检查记录及所有取证文件)")
+                            .setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    DataUtil.deleteProjectPlan(plan);
+                                    plans_upload.remove(position);
+                                    adapter.notifyDataSetChanged();
+                                    dialog.dismiss();
+                                }
+                            }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).create();
+                    tipDialog.setCanceledOnTouchOutside(false);
+                    tipDialog.show();
                 }
-            });
-        }
+                return true;
+            }
+        });
+
     }
 
     class ListAdapter extends BaseAdapter {
@@ -201,7 +223,6 @@ public class UpLoadChirldFragment extends BaseFragment {
             viewHolder.title.setText(projectPlan.getAq_lh_jcmc());
             viewHolder.state.setText(getStateText(projectPlan.getState_upload()));
             if (isUploading) {
-//                Logger.i("？？" + list.size() + " " + list.toString());
                 if (position == 0 && projectPlan.getState_upload() == 1) {
                     viewHolder.state.setText("正在上传");
                     progress = viewHolder.button;
@@ -219,32 +240,7 @@ public class UpLoadChirldFragment extends BaseFragment {
                 viewHolder.button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        /*int flag = flg;
-                        if (((Button) v).getText().equals("上传")) {
-                            while (flag != 0 && list.get(flag - 1).getState_upload() == 0) {
-                                list.remove(flag);
-                                projectPlans.add(flag - 1, projectPlan);
-                                flag--;
-                            }
-                            if (flag != 0) {
-                                projectPlan.setState_upload(1);
-                            } else {
-                                projectPlan.setState_upload(2);
-                            }
-                            notifyDataSetChanged();
-                            return;
-                        } else {
-                            ((Button) v).setText("上传");
-                            projectPlan.setState_upload(0);
-                            if (flag != (list.size() - 1)) {
-                                list.remove(flag);
-                                projectPlans.add(projectPlan);
-                            }
-                            stopUpload();
-                            isStop = false;
-                            task = null;
-                            notifyDataSetChanged();
-                        }*/
+
                         if (isUploading) {
                             projectPlan.setState_upload(0);
                             plans_upload.add(projectPlan);

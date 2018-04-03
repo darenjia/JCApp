@@ -69,6 +69,6 @@ public class JCApplication extends Application {
         if(BuildConfig.DEBUG){
             return true;
         }
-        return true;
+        return false;
     }
 }

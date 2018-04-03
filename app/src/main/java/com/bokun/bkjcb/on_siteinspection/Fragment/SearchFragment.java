@@ -230,6 +230,7 @@ public class SearchFragment extends MainFragment implements RequestListener {
                 if (edit_text_search.getText().toString().length() != 0) {
                     edit_text_search.setText("");
                     listView.setVisibility(View.VISIBLE);
+                    result_view.setVisibility(View.GONE);
                     clearSearch.setImageResource(R.drawable.up_jt);
                     stringAdapter.initData();
                     ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(edit_text_search, InputMethodManager.SHOW_IMPLICIT);

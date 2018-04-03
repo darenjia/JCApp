@@ -206,7 +206,7 @@ public class InfoActivity extends BaseActivity implements OnErrorListener, Reque
         if (projectPlan == null) {
             String py = Utils.getQuxianPY(JCApplication.user.getQuxian());
             XLog.i("区县：" + py);
-            plan.setAq_lh_id(py + Utils.getDate("yyyyMMddhhmm"));//必须id
+            plan.setAq_lh_id(py + Utils.getDate("yyyyMMddhhmmss"));//必须id
             plan.setAq_lh_jcmc(Utils.getDate("yy-MM-dd") + checkPlan.getName() + "临时检查");//生成名称
             plan.setAq_sysid(String.valueOf(checkPlan.getSysId()));
             plan.setAq_lh_seqid(plan.getAq_lh_id());
@@ -253,6 +253,7 @@ public class InfoActivity extends BaseActivity implements OnErrorListener, Reque
         pdfView.useBestQuality(true);
         pdfView.fromFile(file)
                 .defaultPage(0)
+                .enableSwipe(true)
                 .enableAnnotationRendering(false)
                 .enableAntialiasing(true)
                 .scrollHandle(new DefaultScrollHandle(this))

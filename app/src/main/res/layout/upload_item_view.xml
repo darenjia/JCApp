@@ -47,21 +47,8 @@
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
             android:text="开始"
+            android:focusable="false"
             android:textColor="#797979" />
-        <!--<com.bokun.bkjcb.on_siteinspection.View.ProgressButton
-            android:layout_width="60dp"
-            android:layout_height="30dp"
-            android:text="添 加"
-            android:textSize="12sp"
-            android:layout_gravity="center"
-            android:layout_marginEnd="10dp"
-            android:textColor="#ffffff"
-            app:buttonCornerRadius="5dp"
-            app:buttonNormalColor="#d5e4e2"
-            app:buttonPressedColor="#89b3c4"
-            app:progressBgColor="#7192be"
-            app:progressColor="#61c3e7"
-            app:showProgressNum="true" />-->
 
     </LinearLayout>
 </LinearLayout>

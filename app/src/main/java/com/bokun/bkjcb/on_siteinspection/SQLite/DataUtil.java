@@ -311,12 +311,12 @@ public class DataUtil {
         CheckResultDaolmpl daoR = new CheckResultDaolmpl(JCApplication.getContext());
         FinishedPlanDao finishedPlanDao = new FinishedPlanDao(JCApplication.getContext());
         ArrayList<ProjectPlan> projectPlans;
-        ArrayList<CheckResult> checkResults = new ArrayList<>();
         projectPlans = dao.query("上传完成", user.getId());
         ArrayList<CheckPlan> checkPlans = new ArrayList<>();
         for (ProjectPlan p : projectPlans) {
             String[] strings = p.getAq_sysid().split(",");
             for (String s : strings) {
+                checkPlans.clear();
                 checkPlans.add(daolmpl.queryCheckPlan(s));
 //                daolmpl.delete(s);
                 if (checkPlans.size() > 0) {
@@ -345,6 +345,28 @@ public class DataUtil {
         }
         FileUtils.deleteFile(checkResults);*/
 
+    }
+
+    public static void deleteProjectPlan(ProjectPlan p) {
+        ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
+        CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(JCApplication.getContext());
+        CheckResultDaolmpl daoR = new CheckResultDaolmpl(JCApplication.getContext());
+        FinishedPlanDao finishedPlanDao = new FinishedPlanDao(JCApplication.getContext());
+        ArrayList<CheckPlan> checkPlans = new ArrayList<>();
+            String[] strings = p.getAq_sysid().split(",");
+            for (String s : strings) {
+                checkPlans.add(daolmpl.queryCheckPlan(s));
+                if (checkPlans.size() > 0) {
+                    for (CheckPlan c : checkPlans) {
+                        FinishedPlan plan = DataUtil.getFinishedPlan(String.valueOf(c.getSysId()));
+                        FileUtils.deleteFile(daoR.queryCheckResult(c.getIdentifier(), p.getAq_lh_id()));
+                        daolmpl.delete(String.valueOf(c.getSysId()), String.valueOf(plan.getType()));
+                        finishedPlanDao.deleteFinished(String.valueOf(c.getSysId()), p.getAq_lh_id());
+                        daoR.clean(c.getIdentifier(), p.getAq_lh_id());
+                    }
+            }
+            dao.delete(p.getAq_lh_id());
+        }
     }
 
     public static void insertUser(User user) {

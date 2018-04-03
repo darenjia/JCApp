@@ -5,11 +5,15 @@
             android:id="@+id/nav_check_plan"
             android:checked="true"
             android:icon="@drawable/vector_drawable_plan"
-            android:title="现场检查" />
+            android:title="检查工程" />
         <item
             android:id="@+id/nav_info_check"
             android:icon="@drawable/vector_drawable_plans"
             android:title="临时检查" />
+        <item
+            android:id="@+id/nav_info_progress"
+            android:icon="@drawable/vector_drawable_plans"
+            android:title="检查进度" />
         <item
             android:id="@+id/nav_map"
             android:icon="@drawable/vector_drawable_map"

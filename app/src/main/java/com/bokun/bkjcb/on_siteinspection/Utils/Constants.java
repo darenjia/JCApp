@@ -160,13 +160,13 @@ public class Constants {
     *正式IP地址
     * */
 
-    public static final String HTTPURL = "http://101.231.52.50:8080/zgzxjkWebService.asmx";
-    public static final String FTP_HOST_DEFAULT = "101.231.52.50";
-    public static final int FTP_HOST_PORT = 18000;
+    public static final String HTTPURL = "http://43.254.152.169:9003/zgzxjkWebService.asmx";
+    public static final String FTP_HOST_DEFAULT = "43.254.152.169";
+    public static final int FTP_HOST_PORT = 9004;//9004
     public static final String FTP_USER_DEFAULT = "zgzx1";
     public static final String FTP_PASSWORD_DEFAULT = "zgzx";
-    public static final String URL = "http://101.231.52.50:8080/downpdf/Temp/";
-    public static final String URL_SOFT = "http://101.231.52.50:8081/Aqgl/xiazaiapp";
+    public static final String URL = "http://43.254.152.169:9003/downpdf/Temp/";
+    public static final String URL_SOFT = "http://43.254.152.169:9001/Aqgl/xiazaiapp";
 
 
     /*

@@ -140,7 +140,7 @@ public class MainActivity extends BaseActivity
         JCApplication.user = user;
         userMessage.setText("区县:" + user.getQuxian());
         userName.setText(user.getRealName());
-        loadView("检查计划", "first");
+        loadView("检查工程", "first");
 
         if (!ServiceUtil.isServiceRunning("com.bokun.bkjcb.on_siteinspection.Service.UploadService")) {
             ArrayList<ProjectPlan> pre_plans_uploading = DataUtil.getProjectByState("正在上传", JCApplication.user);
@@ -163,7 +163,7 @@ public class MainActivity extends BaseActivity
             drawerLayout.closeDrawer(GravityCompat.START);
             opened = true;
         } else if (opened && currentFragment != fragment) {
-            loadView("检查计划", "first");
+            loadView("检查工程", "first");
         } else {
 
             if (ServiceUtil.isServiceRunning("com.bokun.bkjcb.on_siteinspection.Service.UploadService")) {
@@ -241,14 +241,14 @@ public class MainActivity extends BaseActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_check_plan) {
-            loadView("检查计划", "first");
+            loadView("检查工程", "first");
         } else if (id == R.id.nav_info_check) {
             loadView("临时检查", "second");
         } else if (id == R.id.nav_map) {
             loadView("地图", "third");
-        } /*else if (id == R.id.nav_details) {
-            loadView("工程信息详情", "forth");
-        } */ else if (id == R.id.nav_update_result) {
+        } else if (id == R.id.nav_info_progress) {
+            loadView("检查进度", "fifth");
+        } else if (id == R.id.nav_update_result) {
             loadView("上传进度", "forth");
         } else if (id == R.id.nav_app_introduce) {
             AboutActivity.toAboutActiivty(this);
@@ -288,6 +288,8 @@ public class MainActivity extends BaseActivity
                 ((UpLoadFragment) currentFragment).setListener(this);
             } else if (key.equals("second")) {
                 currentFragment = new SearchFragment();
+            }else if(key.equals("fifth")){
+                //
             }
             transaction.add(contentView.getId(), currentFragment);
             viewMap.put(key, currentFragment);
