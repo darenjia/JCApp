@@ -28,10 +28,24 @@ public class UserDao {
         values.put("quxian", user.getQuxian());
         values.put("sys_realname", user.getRealName());
         values.put("roles", user.getRole());
+        values.put("userid",user.getUserID());
         long flag = database.insert("UserInfo", "id", values);
         if (flag != -1) {
             user.setId((int) flag);
         }
+        return flag > 0;
+
+    }
+    public boolean updateUser(User user) {
+
+        ContentValues values = new ContentValues();
+        values.put("name", user.getUserName());
+        values.put("password", user.getPassword());
+        values.put("quxian", user.getQuxian());
+        values.put("sys_realname", user.getRealName());
+        values.put("roles", user.getRole());
+        values.put("userid",user.getUserID());
+        long flag = database.update("UserInfo", values,"name=?",new String[]{user.getUserName()});
         return flag > 0;
 
     }
@@ -47,6 +61,7 @@ public class UserDao {
             user.setQuxian(cursor.getString(cursor.getColumnIndex("quxian")));
             user.setRealName(cursor.getString(cursor.getColumnIndex("sys_realname")));
             user.setRole(cursor.getString(cursor.getColumnIndex("roles")));
+            user.setUserID(cursor.getString(cursor.getColumnIndex("userid")));
         }
         return user;
     }

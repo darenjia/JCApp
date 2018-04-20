@@ -107,10 +107,10 @@ public class ProjectPlanDao {
         return list;
     }
 
-    public ArrayList<ProjectPlan> queryNo(String state, int userId) {
+    public ArrayList<ProjectPlan> queryNo(int userId) {
         ArrayList<ProjectPlan> list = new ArrayList<>();
         ProjectPlan result = null;
-        Cursor cursor = database.query("constructioninfo", null, "aq_jctz_zt != ? and userId = ?", new String[]{state, String.valueOf(userId)}, null, null, null);
+        Cursor cursor = database.query("constructioninfo", null, "userId = ?", new String[]{String.valueOf(userId)}, null, null, null);
         while (cursor.moveToNext()) {
             result = new ProjectPlan();
             result.setAq_lh_id(cursor.getString(cursor.getColumnIndex("aq_lh_id")));

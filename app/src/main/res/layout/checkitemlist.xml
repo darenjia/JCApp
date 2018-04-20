@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:orientation="horizontal"
-    android:padding="6dp">
+    android:background="#E6E9ED"
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/check_item_title"

@@ -89,7 +89,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     private void initPlanLayout(View view) {
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperlayout);
         listview = (ExpandableListView) view.findViewById(R.id.plan_list);
-        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorRecycler));
+        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimaryDark));
         errorView = (TextView) view.findViewById(R.id.error_view);
         nullView = (TextView) view.findViewById(R.id.null_view);
         getDateFromNet();
@@ -102,7 +102,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                 refreshLayout.setRefreshing(true);
                 if (projectPlans != null) {
                     projectPlans.clear();
-                    projectPlans.addAll(DataUtil.queryProjectPlan("上传完成", MainActivity.user.getId()));
+                    projectPlans.addAll(DataUtil.queryProjectPlan(MainActivity.user.getId()));
                 }
                 planFlag = true;
                 getDateFromNet();
@@ -179,7 +179,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         LogUtil.logI("获取数据失败,从缓存读数据");
         //setExpandableListView();
 //        errorView.setVisibility(View.VISIBLE);
-        projectPlans = DataUtil.queryProjectPlan("上传完成", MainActivity.user.getId());
+        projectPlans = DataUtil.queryProjectPlan(MainActivity.user.getId());
         if (projectPlans == null) {
 //            errorView.setVisibility(View.VISIBLE);
         }
@@ -230,7 +230,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                     getCheckPlanFromNet();
                     projectPlans.clear();
                     //projectPlans.addAll(DataUtil.queryProjectPlan("等待上传"));
-                    projectPlans.addAll(DataUtil.queryProjectPlan("上传完成", MainActivity.user.getId()));
+                    projectPlans.addAll(DataUtil.queryProjectPlan(MainActivity.user.getId()));
                     //projectPlans.addAll(DataUtil.queryProjectPlan("需办事项"));
                 } else {
                     i = RequestListener.EVENT_GET_DATA_SUCCESS;
@@ -384,7 +384,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
 
     public void dateHasChange() {
         projectPlans.clear();
-        projectPlans.addAll(DataUtil.queryProjectPlan("上传完成", MainActivity.user.getId()));
+        projectPlans.addAll(DataUtil.queryProjectPlan(MainActivity.user.getId()));
         //projectPlans.addAll(DataUtil.queryProjectPlan("需办事项"));
 
         if (projectPlans.size() == 0) {

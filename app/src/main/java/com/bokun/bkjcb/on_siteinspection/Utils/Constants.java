@@ -17,7 +17,8 @@ public class Constants {
             "password char(30)," +
             "quxian char(10)," +
             "roles char(50)," +
-            "sys_realname char(20)" +
+            "sys_realname char(20)," +
+            "userid char(20)"+
             ")";
     //检查计划表
     public final static String CREATE_PLAN_TABLE = "create table PlanInfo(" +
@@ -87,6 +88,9 @@ public class Constants {
             "name varchar(20)," +
             "type int(1)" +
             ")";
+    /**
+    * 新增计划表
+    * */
     //修改checkplan表
     public final static String CREATE_TEMP_TABLE = "alter table checkplan rename to _temp_checkplan";
     public final static String CREATE_NEW_CHECKPALN = "create table checkplan(" +
@@ -156,6 +160,20 @@ public class Constants {
             ")";
     public final static String INSERT_DATA_CHECKPLAN1 = "insert into checkplan select *,0 from _temp_checkplan";
     public final static String DROP_TEMP1 = "drop table _temp_checkplan";
+
+    //修改checkplan1表
+    public final static String CREATE_TEMP_TABLE2 = "alter table UserInfo rename to _temp_UserInfo";
+    public final static String CREATE_NEW_UserInfo = "create table UserInfo(" +
+            "id Integer primary key," +
+            "name varchar(10)," +
+            "password char(30)," +
+            "quxian char(10)," +
+            "roles char(50)," +
+            "sys_realname char(20)," +
+            "userid char(20)"+
+            ")";
+    //public final static String INSERT_DATA_UserInfo = "insert into UserInfo select *,'' from _temp_UserInfo";
+    public final static String DROP_TEMP2 = "drop table _temp_UserInfo";
     /*
     *正式IP地址
     * */
@@ -172,13 +190,13 @@ public class Constants {
     /*
     * 测试IP地址
     * */
-    public static String TEST_HTTPURL = "http://192.168.100.211:8080/zgzxjkWebService.asmx";
+    public static String TEST_HTTPURL = "http://192.168.100.136:8080/zgzxjkWebService.asmx";
     /*  public static String FTP_HOST_DEFAULT = "192.168.100.136";
       public static final int FTP_HOST_PORT = 18000;
       public static final String FTP_USER_DEFAULT = "zgzx1";
       public static final String FTP_PASSWORD_DEFAULT = "zgzx";*/
-    public static final String TEST_URL = "http://192.168.100.211:8080/downpdf/Temp/";
-    public static final String URL_CHECK = "http://192.168.100.211:8080/zgzxjkWebService.asmx";
+    public static final String TEST_URL = "http://192.168.100.136:8080/downpdf/Temp/";
+    public static final String URL_CHECK = "http://192.168.100.136:8080/zgzxjkWebService.asmx";
 //    public static final String URL_SOFT = "http://101.231.52.50:8081/Aqgl/xiazaiapp";
     /**
      * ftp状态

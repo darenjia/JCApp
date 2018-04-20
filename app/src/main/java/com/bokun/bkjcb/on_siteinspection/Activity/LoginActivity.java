@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bokun.bkjcb.on_siteinspection.BuildConfig;
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
 import com.bokun.bkjcb.on_siteinspection.Domain.User;
 import com.bokun.bkjcb.on_siteinspection.Http.HttpManager;
@@ -281,6 +282,9 @@ public class LoginActivity extends BaseActivity implements RequestListener {
 
 //        mUserName.setText("ljl_qs");
 //        mPassword.setText("1");
+        if(BuildConfig.DEBUG){
+            mPassword.setText("1");
+        }
 //        changeIp(null);
 //        DataUtil.initCheckResult(new SQLiteOpenUtil(JCApplication.getContext()).getWritableDatabase());
     }

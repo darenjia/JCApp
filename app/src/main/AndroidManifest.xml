@@ -74,7 +74,9 @@
         <activity
             android:name=".Activity.MapActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
+        <activity
+            android:name=".Activity.ProgressDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.bokun.bkjcb.on_siteinspection.fileProvider"

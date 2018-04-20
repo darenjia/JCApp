@@ -134,9 +134,9 @@ public class DataUtil {
         return plans;
     }
 
-    public static ArrayList<ProjectPlan> queryProjectPlan(String state, int userId) {
+    public static ArrayList<ProjectPlan> queryProjectPlan(int userId) {
         ProjectPlanDao dao = new ProjectPlanDao(JCApplication.getContext());
-        ArrayList<ProjectPlan> plans = dao.queryNo(state, userId);
+        ArrayList<ProjectPlan> plans = dao.queryNo(userId);
         dao.close();
         return plans;
     }
@@ -374,7 +374,9 @@ public class DataUtil {
         if (!dao.getUserIs(user.getUserName())) {
             dao.addUser(user);
         } else {
+            dao.updateUser(user);
             user.setId(dao.getUser(user.getUserName()).getId());
+
         }
         dao.close();
     }

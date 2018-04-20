@@ -65,4 +65,5 @@ dependencies {
     compile 'com.wuxiaolong.pullloadmorerecyclerview:library:1.1.2'
     compile 'com.tuyenmonkey:mkloader:1.4.0'
     compile 'com.belerweb:pinyin4j:2.5.1'
+    compile 'com.haozhang.libary:android-slanted-textview:1.2'
 }

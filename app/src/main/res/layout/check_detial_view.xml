@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:lineSpacingMultiplier="1.2"
             android:background="@drawable/check_item_content_start_bg"
             android:paddingTop="10dp" />
 

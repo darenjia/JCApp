@@ -121,7 +121,9 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
                 startActivity(intent1);
                 break;
             case R.id.about_update:
-                new CheckUpUtil(this).checkUpadte(true,true);
+                new CheckUpUtil(this).checkUpadte(true, true);
+                break;
+            default:
                 break;
         }
     }

@@ -4,7 +4,9 @@ import android.text.TextUtils;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
+import com.bokun.bkjcb.on_siteinspection.Domain.ProgressDetail;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
+import com.bokun.bkjcb.on_siteinspection.Domain.ProjectProgress;
 import com.bokun.bkjcb.on_siteinspection.Domain.User;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.google.gson.Gson;
@@ -152,6 +154,80 @@ public class JsonParser {
         return results;
     }
 
+    public static ArrayList<ProjectProgress> getProgressData(String json) {
+        LogUtil.logI(json);
+        ArrayList<ProjectProgress> results = new ArrayList<>();
+        if (json.equals("{}")) {
+            return results;
+        }
+       /* //将JSON的String 转成一个JsonArray对象
+        com.google.gson.JsonParser parser = new com.google.gson.JsonParser();
+        JsonArray array = parser.parse(json).getAsJsonArray();
+        Gson gson = new Gson();
+        for (JsonElement element : array) {
+            CheckPlan checkPlan = gson.fromJson(element, CheckPlan.class);
+            if (checkPlan.getIdentifier() == 0 || checkPlan.getSysId() == 0) {
+                continue;
+            }
+            results.add(checkPlan);
+            LogUtil.logI(checkPlan.getName());
+        }*/
+        try {
+            //将JSON的String 转成一个JsonArray对象
+            JSONArray jsonArray = new JSONArray(json);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                ProjectProgress object = new ProjectProgress();
+                JSONObject con = jsonArray.optJSONObject(i);
+                try {
+                    object.setAq_lh_jcmc(con.getString("aq_lh_jcmc"));
+                } catch (JSONException e) {
+                    object.setAq_lh_jcmc("");
+                }
+                try {
+                    object.setAq_lh_qxjd(con.getString("aq_lh_qxjd"));
+                } catch (JSONException e) {
+                    object.setAq_lh_qxjd("");
+                }
+
+                try {
+                    object.setAq_lh_szqx(con.getString("aq_lh_szqx"));
+                } catch (JSONException e) {
+                    object.setAq_lh_szqx("");
+                }
+                try {
+                    object.setQx(con.getString("qx"));
+                } catch (JSONException e) {
+                    object.setQx("");
+                }
+                try {
+                    object.setAq_lh_jcrq(con.getString("aq_lh_jcrq"));
+                } catch (Exception e) {
+                    object.setAq_lh_jcrq("");
+                }
+                try {
+                    object.setAq_jctype(con.getString("aq_jctype"));
+                } catch (JSONException e) {
+                    object.setAq_jctype("");
+                }
+                try {
+                    object.setBjqk(con.getString("bjqk"));
+                } catch (JSONException e) {
+                    object.setBjqk("");
+                }
+                try {
+                    object.setAq_lh_seqid(con.getString("aq_lh_seqid"));
+                } catch (JSONException e) {
+                    object.setAq_lh_seqid("");
+                }
+
+                results.add(object);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
+
     public static String getURL(String json) {
         String url = "";
         if (json.equals("{}")) {
@@ -199,6 +275,7 @@ public class JsonParser {
             result.setQuxian(jsonObject.getString("quxian"));
             result.setRole(jsonObject.getString("roles"));
             result.setRealName(jsonObject.getString("sys_realname"));
+            result.setUserID(jsonObject.getString("sys_userid"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -219,8 +296,23 @@ public class JsonParser {
 
         return jsonResult;
     }
+    public static ArrayList<ProgressDetail> getProgressDetail(String json){
+        ArrayList<ProgressDetail> results= new ArrayList<>();
+        if (json.equals("{}")) {
+            return results;
+        }
+        //将JSON的String 转成一个JsonArray对象
+        com.google.gson.JsonParser parser = new com.google.gson.JsonParser();
+        JsonArray array = parser.parse(json).getAsJsonArray();
+        Gson gson = new Gson();
+        for (JsonElement element : array) {
+            ProgressDetail detail = gson.fromJson(element, ProgressDetail.class);
+            results.add(detail);
+        }
+        return results;
+    }
 
-    private void getData(String json, Class c) {
+    private void  getData(String json, Class c) {
         com.google.gson.JsonParser parser = new com.google.gson.JsonParser();
         JsonArray array = parser.parse(json).getAsJsonArray();
         Gson gson = new Gson();

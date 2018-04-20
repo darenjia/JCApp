@@ -26,6 +26,7 @@ import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.User;
 import com.bokun.bkjcb.on_siteinspection.Fragment.CheckPlanFragment;
 import com.bokun.bkjcb.on_siteinspection.Fragment.MapFragment;
+import com.bokun.bkjcb.on_siteinspection.Fragment.PlanProgressFragment;
 import com.bokun.bkjcb.on_siteinspection.Fragment.SearchFragment;
 import com.bokun.bkjcb.on_siteinspection.Fragment.UpLoadFragment;
 import com.bokun.bkjcb.on_siteinspection.Http.JsonParser;
@@ -138,7 +139,7 @@ public class MainActivity extends BaseActivity
             DataUtil.insertUser(user);
         }
         JCApplication.user = user;
-        userMessage.setText("区县:" + user.getQuxian());
+        userMessage.setText(user.getQuxian());
         userName.setText(user.getRealName());
         loadView("检查工程", "first");
 
@@ -290,6 +291,7 @@ public class MainActivity extends BaseActivity
                 currentFragment = new SearchFragment();
             }else if(key.equals("fifth")){
                 //
+                currentFragment = new PlanProgressFragment();
             }
             transaction.add(contentView.getId(), currentFragment);
             viewMap.put(key, currentFragment);

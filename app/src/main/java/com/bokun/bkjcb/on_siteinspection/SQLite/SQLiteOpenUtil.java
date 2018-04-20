@@ -15,7 +15,7 @@ import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 public class SQLiteOpenUtil extends SQLiteOpenHelper {
 
     public SQLiteOpenUtil(Context context) {
-        super(context, "User.db", null, 6);
+        super(context, "User.db", null, 7);
     }
 
     public SQLiteOpenUtil(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler) {
@@ -64,6 +64,12 @@ public class SQLiteOpenUtil extends SQLiteOpenHelper {
 //                break;
             case 5:
                 DataUtil.initCheckResult(db);
+            case 6:
+                //修改User表，添加UserID字段
+                db.execSQL(Constants.CREATE_TEMP_TABLE2);
+                db.execSQL(Constants.CREATE_NEW_UserInfo);
+                //db.execSQL(Constants.INSERT_DATA_UserInfo);
+                db.execSQL(Constants.DROP_TEMP2);
                 break;
         }
     }
