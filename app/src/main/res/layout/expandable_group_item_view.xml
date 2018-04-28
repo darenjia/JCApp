@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#F5F7FA"
+    android:id="@+id/plan_layout"
     android:foreground="?attr/selectableItemBackground">
 
     <TextView
@@ -21,20 +22,24 @@
     <TextView
         android:id="@+id/group_quxian"
         style="@style/expandablelistview_group"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:maxLines="1"
+        android:layout_weight="0.6"
         android:text="@string/app_name"
+        android:gravity="center"
         android:textColor="@color/text_color"
         android:textSize="@dimen/mid_font" />
 
     <TextView
         android:id="@+id/group_time"
-        style="@style/expandablelistview_group"
-        android:layout_width="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:layout_width="100dp"
         android:layout_height="match_parent"
-        android:gravity="end"
-        android:text="@string/action_sign_in_short"
+        android:gravity="left"
+        android:text="2018/04/31"
         android:textColor="@color/text_color"
         android:textSize="@dimen/mid_font" />
 

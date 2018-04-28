@@ -141,7 +141,7 @@ public class MainActivity extends BaseActivity
         JCApplication.user = user;
         userMessage.setText(user.getQuxian());
         userName.setText(user.getRealName());
-        loadView("检查工程", "first");
+        loadView("实地检查", "first");
 
         if (!ServiceUtil.isServiceRunning("com.bokun.bkjcb.on_siteinspection.Service.UploadService")) {
             ArrayList<ProjectPlan> pre_plans_uploading = DataUtil.getProjectByState("正在上传", JCApplication.user);
@@ -164,7 +164,7 @@ public class MainActivity extends BaseActivity
             drawerLayout.closeDrawer(GravityCompat.START);
             opened = true;
         } else if (opened && currentFragment != fragment) {
-            loadView("检查工程", "first");
+            loadView("实地检查", "first");
         } else {
 
             if (ServiceUtil.isServiceRunning("com.bokun.bkjcb.on_siteinspection.Service.UploadService")) {
@@ -242,7 +242,7 @@ public class MainActivity extends BaseActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_check_plan) {
-            loadView("检查工程", "first");
+            loadView("实地检查", "first");
         } else if (id == R.id.nav_info_check) {
             loadView("临时检查", "second");
         } else if (id == R.id.nav_map) {

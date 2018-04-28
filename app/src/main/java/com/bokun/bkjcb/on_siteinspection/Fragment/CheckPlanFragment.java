@@ -16,6 +16,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,7 +53,7 @@ import java.util.ArrayList;
  * Created by DengShuai on 2017/4/7.
  */
 
-public class CheckPlanFragment extends MainFragment implements RequestListener {
+public class CheckPlanFragment extends MainFragment implements RequestListener, AbsListView.OnScrollListener {
 
 
     private ArrayList<CheckPlan> checkPlans;
@@ -64,10 +65,10 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     public static int DATA_CHANGED = 1;
     public static int DATA_UNCHANGED = 0;
     private CacheUtil cacheUtil;
-    private String key = "sad1ee213124c1";
+    private String key;
     private TextView errorView;
     private TextView nullView;
-    private boolean planFlag = true;//判断是获取工程还是计划
+    private int planFlag = 2;//判断是获取工程还是计划 0 计划 1工程 2 原有计划
     private StringBuilder sysIds;
     private ArrayList<String> paths;
 
@@ -77,6 +78,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = View.inflate(context, R.layout.content_plan, null);
         cacheUtil = new CacheUtil();
+        key = MD5Util.encode(String.valueOf(MainActivity.user.getId()));
         try {
             cacheUtil.getCache();
         } catch (IOException e) {
@@ -89,10 +91,11 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     private void initPlanLayout(View view) {
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperlayout);
         listview = (ExpandableListView) view.findViewById(R.id.plan_list);
-        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimaryDark));
+        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
         errorView = (TextView) view.findViewById(R.id.error_view);
         nullView = (TextView) view.findViewById(R.id.null_view);
-        getDateFromNet();
+        getDataFailed();
+        getCheckPlanState();
         refreshLayout.setRefreshing(true);
         checkPlans = new ArrayList<>();
 
@@ -104,8 +107,8 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                     projectPlans.clear();
                     projectPlans.addAll(DataUtil.queryProjectPlan(MainActivity.user.getId()));
                 }
-                planFlag = true;
-                getDateFromNet();
+                planFlag = 2;
+                getCheckPlanState();
             }
         });
     }
@@ -145,10 +148,35 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         }
     }
 
+    private void getCheckPlanState() {
+        StringBuilder builder = new StringBuilder();
+        if (projectPlans != null && projectPlans.size() > 0) {
+            for (int i = 0; i < projectPlans.size(); i++) {
+                String seqId = projectPlans.get(i).getAq_lh_seqid();
+                if (seqId != null && !seqId.equals("")) {
+                    builder.append(seqId);
+                }
+                if (i < projectPlans.size() - 1) {
+                    builder.append(",");
+                }
+            }
+            LogUtil.logI("本地数据seqId" + builder.toString());
+            HttpRequestVo requestVo = new HttpRequestVo();
+            requestVo.getRequestDataMap().put("aq_lh_seqid", builder.toString());
+            requestVo.setMethodName("GetJianChaJiHuaById ");
+            HttpManager manager = new HttpManager(context, this, requestVo);
+            manager.postRequest();
+            planFlag = 2;
+        } else {
+            getDateFromNet();
+            planFlag = 0;
+        }
+    }
+
     @Override
     protected void getDataSucceed(JsonResult object) {
         errorView.setVisibility(View.GONE);
-        LogUtil.logI("获取数据成功");
+        LogUtil.logI("所有数据获取成功");
         setExpandableListView();
         paths = new ArrayList<>();
         for (int i = 0; i < checkPlans.size(); i++) {
@@ -176,16 +204,10 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     @Override
     protected void getDataFailed() {
         super.getDataFailed();
-        LogUtil.logI("获取数据失败,从缓存读数据");
-        //setExpandableListView();
-//        errorView.setVisibility(View.VISIBLE);
+        LogUtil.logI("联网获取数据失败,从数据库读老数据");
         projectPlans = DataUtil.queryProjectPlan(MainActivity.user.getId());
-        if (projectPlans == null) {
-//            errorView.setVisibility(View.VISIBLE);
-        }
         setConstuctions();
         setExpandableListView();
-
     }
 
     private void setExpandableListView() {
@@ -211,6 +233,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                 return true;
             }
         });
+        listview.setOnScrollListener(this);
     }
 
     @Override
@@ -218,15 +241,19 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
         JsonResult result = null;
         if (object != null) {
             result = JsonParser.parseSoap((SoapObject) object);
-            if (projectPlans == null || planFlag) {//|| projectPlans.size() == 0
+            if (projectPlans == null || (planFlag == 0 || planFlag == 2)) {//|| projectPlans.size() == 0
                 projectPlans = JsonParser.getProjectData(result.resData);
                 /*有个问题，如果返回数据的SysId发生变化，则此方法要改*/
-                if (cacheUtil.cache != null && result.resData != null) {
+                /*if (cacheUtil.cache != null && result.resData != null) {
                     cacheUtil.saveData(Constants.CAAHE_KEY, result.resData);
-                }
+                }//该操作无意义，删
+                */
                 boolean flag = DataUtil.saveProjectPlan(projectPlans, MainActivity.user);
-                if (flag) {
-                    planFlag = false;
+                if (flag && planFlag == 2) {
+                    planFlag = 0;
+                    getDateFromNet();
+                } else if (flag && planFlag == 0) {
+                    planFlag = 1;
                     getCheckPlanFromNet();
                     projectPlans.clear();
                     //projectPlans.addAll(DataUtil.queryProjectPlan("等待上传"));
@@ -241,7 +268,7 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                 }
                 return;
             }
-            XLog.i("返回数据结果：" + result.resData);
+            XLog.i("返回工程数据：" + result.resData);
             String cacheStr = null;
             if (cacheUtil.cache != null) {
                 cacheStr = cacheUtil.getData(key);
@@ -251,12 +278,11 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
                     cacheUtil.saveData(key, result.resData);
                 }
                 checkPlans = JsonParser.getJSONData(result.resData);
-                XLog.i(checkPlans.size() + "");
                 DataUtil.insertCheckPlans(context, checkPlans);
             } else {
                 if (!cacheStr.equals(result.resData)) {
                     checkPlans = JsonParser.getJSONData(result.resData);
-                    XLog.i(checkPlans.size() + "");
+                    XLog.i(checkPlans.size() + ":联网获取的工程Number");
                     DataUtil.insertCheckPlans(context, checkPlans);
                 }
             }
@@ -404,5 +430,24 @@ public class CheckPlanFragment extends MainFragment implements RequestListener {
     public void onResume() {
         super.onResume();
         ((MainActivity) getContext()).showMenu(false);
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        boolean enable = false;
+        if (listview != null && listview.getChildCount() > 0) {
+            // check if the first item of the list is visible
+            boolean firstItemVisible = listview.getFirstVisiblePosition() == 0;
+            // check if the top of the first item is visible
+            boolean topOfFirstItemVisible = listview.getChildAt(0).getTop() == 0;
+            // enabling or disabling the refresh layout
+            enable = firstItemVisible && topOfFirstItemVisible;
+        }
+        refreshLayout.setEnabled(enable);
     }
 }

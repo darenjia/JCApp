@@ -13,49 +13,58 @@
 
             <TextView
                 android:layout_weight="1"
-                android:gravity="right"
+                android:gravity="right|center_vertical"
+                android:layout_width="0dp"
                 android:text="工程登记号："
+                android:layout_height="match_parent"
                 android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/pro_djh"
                 android:layout_weight="2"
-                android:gravity="center"
+                android:gravity="left"
                 android:text="@string/app_name"
+                android:layout_width="0dp"
                 android:textColor="@color/text_color"
                 android:textSize="16sp" />
         </TableRow>
 
-        <TableRow android:padding="10dp">
+        <TableRow android:paddingLeft="10dp" android:paddingRight="10dp" android:paddingBottom="10dp">
 
             <TextView
                 android:layout_weight="1"
-                android:gravity="right"
+                android:gravity="right|center_vertical"
                 android:text="工程名称："
+                android:layout_height="match_parent"
+                android:layout_width="0dp"
                 android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/pro_gcm"
                 android:layout_weight="2"
-                android:gravity="center"
+                android:gravity="left"
+                android:layout_width="0dp"
                 android:text="@string/app_name"
                 android:textColor="@color/text_color"
                 android:textSize="16sp" />
         </TableRow>
 
-        <TableRow android:padding="10dp">
+        <TableRow android:paddingLeft="10dp" android:paddingRight="10dp">
 
             <TextView
                 android:layout_weight="1"
-                android:gravity="right"
+                android:gravity="right|center_vertical"
                 android:text="工程地址："
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/pro_dz"
                 android:layout_weight="2"
-                android:gravity="center"
+                android:gravity="left"
                 android:text="@string/app_name"
+                android:layout_width="0dp"
                 android:textColor="@color/text_color"
                 android:textSize="16sp" />
         </TableRow>
@@ -64,14 +73,16 @@
 
             <TextView
                 android:layout_weight="1"
-                android:gravity="right"
+                android:gravity="right|center_vertical"
+                android:layout_width="0dp"
                 android:text="反馈附件："
                 android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/pro_fj"
                 android:layout_weight="2"
-                android:gravity="center"
+                android:gravity="left"
+                android:layout_width="0dp"
                 android:textColor="@color/text_color"
                 android:textSize="16sp" />
         </TableRow>

@@ -4,6 +4,7 @@ import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -27,7 +28,7 @@ import java.util.ArrayList;
  * Description :
  */
 
-public class PlanProgressFragment extends MainFragment implements RequestListener, SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener {
+public class PlanProgressFragment extends MainFragment implements RequestListener, SwipeRefreshLayout.OnRefreshListener, AdapterView.OnItemClickListener, AbsListView.OnScrollListener {
 
 
     private ListView listView;
@@ -79,6 +80,7 @@ public class PlanProgressFragment extends MainFragment implements RequestListene
     private void setListener() {
         refreshLayout.setOnRefreshListener(this);
         listView.setOnItemClickListener(this);
+        listView.setOnScrollListener(this);
     }
 
     @Override
@@ -98,5 +100,24 @@ public class PlanProgressFragment extends MainFragment implements RequestListene
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ProgressDetailActivity.comeToProgressDetailAcicity(getContext(), results.get(position).getAq_lh_seqid(), results.get(position).getAq_lh_jcmc());
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        boolean enable = false;
+        if (listView != null && listView.getChildCount() > 0) {
+            // check if the first item of the list is visible
+            boolean firstItemVisible = listView.getFirstVisiblePosition() == 0;
+            // check if the top of the first item is visible
+            boolean topOfFirstItemVisible = listView.getChildAt(0).getTop() == 0;
+            // enabling or disabling the refresh layout
+            enable = firstItemVisible && topOfFirstItemVisible;
+        }
+        refreshLayout.setEnabled(enable);
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
     }
 }

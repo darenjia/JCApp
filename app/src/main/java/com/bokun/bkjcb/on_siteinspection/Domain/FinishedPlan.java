@@ -13,7 +13,7 @@ public class FinishedPlan {
     private String Username;
     private String AQ_LH_ID;
     private JsonElement Result;
-    private int type;//0:安全检查  1:临时检查
+    private int type ;//0:安全检查  1:临时检查
 
     public int getSysID() {
         return SysID;

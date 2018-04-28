@@ -113,8 +113,9 @@ public class UpLoadChirldFragment extends BaseFragment {
         }
         if (finished) {
             startAll.setText("清空已完成");
-
+            startAll.setVisibility(View.GONE);
         } else {
+            startAll.setVisibility(View.VISIBLE);
             startAll.setText("全部开始");
             linearLayout.setVisibility(View.VISIBLE);
             title.setVisibility(View.VISIBLE);

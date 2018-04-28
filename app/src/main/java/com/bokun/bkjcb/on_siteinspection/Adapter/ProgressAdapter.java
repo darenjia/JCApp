@@ -72,9 +72,10 @@ public class ProgressAdapter extends BaseAdapter{
         holder.time.setText(progress.getAq_lh_jcrq());
         holder.qu.setText(progress.getAq_lh_qxjd()+"("+progress.getAq_lh_szqx()+")");
         holder.type.setText(progress.getAq_jctype().equals("0")?"日常检查":"联合检查");
-        holder.title.setText(progress.getAq_lh_jcmc());
         if (!progress.getBjqk().equals("未办结")){
-            holder.slantedview.setSlantedBackgroundColor(context.getResources().getColor(R.color.holo_blue_bright));
+            holder.slantedview.setSlantedBackgroundColor(context.getResources().getColor(R.color.green));
+        }else {
+            holder.slantedview.setSlantedBackgroundColor(context.getResources().getColor(R.color.bittersweet));
         }
         holder.slantedview.setText(progress.getBjqk());
         return convertView;

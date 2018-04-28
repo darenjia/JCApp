@@ -5,7 +5,7 @@
             android:id="@+id/nav_check_plan"
             android:checked="true"
             android:icon="@drawable/vector_drawable_plan"
-            android:title="检查工程" />
+            android:title="实地检查" />
         <item
             android:id="@+id/nav_info_check"
             android:icon="@drawable/vector_drawable_check"
@@ -16,7 +16,7 @@
             android:title="检查进度" />
         <item
             android:id="@+id/nav_map"
-            android:icon="@drawable/vector_drawable_position"
+            android:icon="@drawable/vector_drawable_map"
             android:title="地图查看" />
         <!-- <item
              android:id="@+id/nav_details"
@@ -35,7 +35,7 @@
                 android:title="帮助与设置" />
             <item
                 android:id="@+id/nav_logout"
-                android:icon="@drawable/vector_drawable_loginout"
+                android:icon="@drawable/vector_drawable_logout"
                 android:title="注销" />
             <item
                 android:id="@+id/nav_exit"

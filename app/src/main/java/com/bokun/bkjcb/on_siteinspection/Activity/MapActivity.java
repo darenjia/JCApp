@@ -252,6 +252,7 @@ public class MapActivity extends AppCompatActivity implements LocationSource, Po
 //        mLocationOption.setInterval(5000);
         //设置setOnceLocationLatest(boolean b)接口为true，启动定位时SDK会返回最近3s内精度最高的一次定位结果。
         // 如果设置其为true，setOnceLocation(boolean b)接口也会被设置为true，反之不会，默认为false。
+        mLocationOption.setOnceLocation(true);
         mLocationOption.setOnceLocationLatest(true);
         //设置是否允许模拟位置,默认为false，不允许模拟位置
         mLocationOption.setMockEnable(true);

@@ -7,7 +7,7 @@
     <color name="colorNone">#00ffffff</color>
     <color name="yellow">#f4f0e0</color>
     <color name="colorGray">#bcb8b8</color>
-    <color name="colorRecycler">#b4b4b4</color>
+    <color name="colorRecycler">#d1d1d1</color>
     <color name="progress_bg">#fff2c0</color>
 
     <color name="blue_pressed">#7cb342</color>
@@ -31,6 +31,7 @@
     <color name="gay_progress">#9e9e9e</color>
     <color name="red_gray">#ff5454</color>
     <color name="blue">#4A89DC</color>
+    <color name="green">#37BC9B</color>
     <color name="blue_low">#50afe6</color>
     <color name="accent">#BDBDBD</color>
     <color name="text_color">#6D6D6D</color>
@@ -38,4 +39,7 @@
     <color name="white">#FEFEFE</color>
     <color name="white_off">#BDBDBD</color>
     <color name="black">#000000</color>
+    <color name="colorFinished">#e1ffe7</color>
+    <color name="teal">#7DB1B1</color>
+    <color name="bittersweet">#FC6E51</color>
 </resources>

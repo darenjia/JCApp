@@ -23,7 +23,7 @@ public class ProjectPlan implements Serializable, Comparable<ProjectPlan> {
     private String aq_jctype;
     private String aq_sysid;
     private String aq_jctz_zt;
-    private int AQ_JCTZ_sfjc;
+    private int AQ_JCTZ_sfjc;//2已审批 3已完成 4告知单已发，不显示
 
     public int getAQ_JCTZ_sfjc() {
         return AQ_JCTZ_sfjc;

@@ -5,6 +5,7 @@ import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
@@ -84,6 +85,7 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         } else {
             view = convertView;
         }
+        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.plan_layout);
         TextView title = (TextView) view.findViewById(R.id.group_title);
         TextView quxian = (TextView) view.findViewById(R.id.group_quxian);
         TextView time = (TextView) view.findViewById(R.id.group_time);
@@ -91,10 +93,16 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         title.setText(plan_list.get(groupPosition).getAq_lh_jcmc());
         quxian.setText(plan_list.get(groupPosition).getAq_lh_szqx());
         time.setText(plan_list.get(groupPosition).getAq_lh_jcrq());
+
         if (isExpanded) {
             icon.setState(ExpandIconView.LESS, false);
         } else {
             icon.setState(ExpandIconView.MORE, false);
+        }
+        if (plan_list.get(groupPosition).getAq_jctz_zt().equals("上传完成")) {
+            title.setTextColor(context.getResources().getColor(R.color.green));
+        }else {
+            title.setTextColor(context.getResources().getColor(R.color.text_color1));
         }
         return view;
     }

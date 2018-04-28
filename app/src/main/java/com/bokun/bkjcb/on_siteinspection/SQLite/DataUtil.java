@@ -235,6 +235,10 @@ public class DataUtil {
                 if (p.getAQ_JCTZ_sfjc() == 1 || p.getAQ_JCTZ_sfjc() == 0) {
                     continue;
                 }
+                if (p.getAQ_JCTZ_sfjc() == 4) {
+                    deleteProjectPlan(p);
+                    continue;
+                }
                 String id = dao.issaved(p.getAq_lh_seqid());
                 if (id == null) {
                     dao.save(p, user.getId());
@@ -353,17 +357,23 @@ public class DataUtil {
         CheckResultDaolmpl daoR = new CheckResultDaolmpl(JCApplication.getContext());
         FinishedPlanDao finishedPlanDao = new FinishedPlanDao(JCApplication.getContext());
         ArrayList<CheckPlan> checkPlans = new ArrayList<>();
-            String[] strings = p.getAq_sysid().split(",");
-            for (String s : strings) {
-                checkPlans.add(daolmpl.queryCheckPlan(s));
-                if (checkPlans.size() > 0) {
-                    for (CheckPlan c : checkPlans) {
-                        FinishedPlan plan = DataUtil.getFinishedPlan(String.valueOf(c.getSysId()));
-                        FileUtils.deleteFile(daoR.queryCheckResult(c.getIdentifier(), p.getAq_lh_id()));
-                        daolmpl.delete(String.valueOf(c.getSysId()), String.valueOf(plan.getType()));
-                        finishedPlanDao.deleteFinished(String.valueOf(c.getSysId()), p.getAq_lh_id());
-                        daoR.clean(c.getIdentifier(), p.getAq_lh_id());
+        String[] strings = p.getAq_sysid().split(",");
+        for (String s : strings) {
+            checkPlans.add(daolmpl.queryCheckPlan(s));
+            if (checkPlans.size() > 0) {
+                for (CheckPlan c : checkPlans) {
+                    if (c == null) {
+                        continue;
                     }
+                    FinishedPlan plan = DataUtil.getFinishedPlan(String.valueOf(c.getSysId()));
+                    if (plan == null) {
+                        continue;
+                    }
+                    FileUtils.deleteFile(daoR.queryCheckResult(c.getIdentifier(), p.getAq_lh_id()));
+                    daolmpl.delete(String.valueOf(c.getSysId()), String.valueOf(plan.getType()));
+                    finishedPlanDao.deleteFinished(String.valueOf(c.getSysId()), p.getAq_lh_id());
+                    daoR.clean(c.getIdentifier(), p.getAq_lh_id());
+                }
             }
             dao.delete(p.getAq_lh_id());
         }

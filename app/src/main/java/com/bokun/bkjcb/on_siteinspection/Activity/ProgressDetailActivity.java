@@ -109,7 +109,7 @@ public class ProgressDetailActivity extends BaseActivity implements RequestListe
                 finish();
             }
         });
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener(){
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -117,7 +117,7 @@ public class ProgressDetailActivity extends BaseActivity implements RequestListe
 
             @Override
             public void onPageSelected(int position) {
-                pageNum.setText((position+1)+"/" + pageSize);
+                pageNum.setText((position + 1) + "/" + pageSize);
             }
 
             @Override
@@ -147,7 +147,7 @@ public class ProgressDetailActivity extends BaseActivity implements RequestListe
         viewPager.setAdapter(adapter);
         pageSize = list.size();
         title.setText(name);
-        pageNum.setText("1/"+pageSize);
+        pageNum.setText("1/" + pageSize);
     }
 
     @Override
@@ -170,10 +170,15 @@ public class ProgressDetailActivity extends BaseActivity implements RequestListe
         viewPager.setVisibility(View.GONE);
     }
 
-    public static void comeToProgressDetailAcicity(Context context, String seqid,String name) {
+    public static void comeToProgressDetailAcicity(Context context, String seqid, String name) {
         Intent intent = new Intent(context, ProgressDetailActivity.class);
         intent.putExtra("seqid", seqid);
         intent.putExtra("name", name);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }
