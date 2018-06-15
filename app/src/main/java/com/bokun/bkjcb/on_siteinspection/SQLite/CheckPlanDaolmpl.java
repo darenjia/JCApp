@@ -44,7 +44,7 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
 
     @Override
     public boolean updateCheckPlan(CheckPlan plan) {
-        CheckPlan checkPlan = queryCheckPlan(plan.getIdentifier());
+        CheckPlan checkPlan = queryCheckPlan(plan.getSysId());
         if (checkPlan == null) {
             return false;
         }
@@ -52,15 +52,15 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
        /* values.put("name", plan.getName());
         values.put("state", plan.getState());*/
         values.put("url", plan.getUrl());
-        int isSuccess = db.update("checkplan", values, "identifier = ?", new String[]{String.valueOf(plan.getIdentifier())});
+        int isSuccess = db.update("checkplan", values, "sysId = ?", new String[]{String.valueOf(plan.getSysId())});
 
         return isSuccess != 0;
     }
 
     @Override
-    public CheckPlan queryCheckPlan(int identifier) {
+    public CheckPlan queryCheckPlan(int sysId) {
         CheckPlan plan = null;
-        Cursor cursor = db.query("checkplan", null, "identifier=?", new String[]{String.valueOf(identifier)}, null, null, null);
+        Cursor cursor = db.query("checkplan", null, "sysId=?", new String[]{String.valueOf(sysId)}, null, null, null);
         while (cursor.moveToNext()) {
             plan = new CheckPlan();
             plan.setIdentifier(cursor.getInt(cursor.getColumnIndex("identifier")));
@@ -98,8 +98,8 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
     }
 
     @Override
-    public String queryCheckPlanIsNull(int identifier) {
-        Cursor cursor = db.query("checkplan", null, "identifier=?", new String[]{String.valueOf(identifier)}, null, null, null);
+    public String queryCheckPlanIsNull(int sysId) {
+        Cursor cursor = db.query("checkplan", null, "sysId=?", new String[]{String.valueOf(sysId)}, null, null, null);
         String fileName = null;
         if (cursor.moveToNext()) {
             fileName = cursor.getString(cursor.getColumnIndex("url"));
@@ -205,10 +205,10 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
         return list;
     }
 
-    public int queryCheckPlanState(int identifier, int type) {
+    public int queryCheckPlanState(int sysId, int type) {
         CheckPlan plan = null;
         int i = 0;
-        Cursor cursor = db.query("checkplan", new String[]{"state"}, "identifier=? and plan_type = ?", new String[]{String.valueOf(identifier), String.valueOf(type)}, null, null, null);
+        Cursor cursor = db.query("checkplan", new String[]{"state"}, "sysId=? and plan_type = ?", new String[]{String.valueOf(sysId), String.valueOf(type)}, null, null, null);
         while (cursor.moveToNext()) {
             i = cursor.getInt(cursor.getColumnIndex("state"));
         }

@@ -68,6 +68,7 @@ public class ProgressAdapter extends BaseAdapter{
             holder = (ViewHolder) convertView.getTag();
 
         }
+        holder.title.setText(progress.getAq_lh_jcmc());
         holder.endtime.setText(progress.getQx());
         holder.time.setText(progress.getAq_lh_jcrq());
         holder.qu.setText(progress.getAq_lh_qxjd()+"("+progress.getAq_lh_szqx()+")");

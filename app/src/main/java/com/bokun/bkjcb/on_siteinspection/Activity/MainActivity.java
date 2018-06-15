@@ -44,8 +44,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 /*
-* MianActivity
-* */
+ * MianActivity
+ * */
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, UpLoadFragment.OnDataChangeListener {
 
@@ -219,6 +219,7 @@ public class MainActivity extends BaseActivity
         getMenuInflater().inflate(R.menu.main, menu);
         this.menu = menu;
         menu.setGroupVisible(R.id.menu_map, false);
+        menu.setGroupVisible(R.id.menu_condition, false);
         return true;
     }
 
@@ -233,6 +234,10 @@ public class MainActivity extends BaseActivity
             bundle.putParcelable("point", MapFragment.newInstance().mStartPoint);
             MapActivity.ComeToMapActivity(this, bundle);
             return true;
+        } else if (id == R.id.action_condition) {
+            PlanProgressFragment fragment = (PlanProgressFragment) viewMap.get("fifth");
+            fragment.switchCondition();
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -274,6 +279,7 @@ public class MainActivity extends BaseActivity
         toolbar.setTitle(title);
         if (menu != null) {
             menu.setGroupVisible(R.id.menu_map, false);
+            menu.setGroupVisible(R.id.menu_condition, false);
         }
         currentFragment = viewMap.get(key);
         hideAllFragment();
@@ -289,8 +295,8 @@ public class MainActivity extends BaseActivity
                 ((UpLoadFragment) currentFragment).setListener(this);
             } else if (key.equals("second")) {
                 currentFragment = new SearchFragment();
-            }else if(key.equals("fifth")){
-                //
+            } else if (key.equals("fifth")) {
+                menu.setGroupVisible(R.id.menu_condition, true);
                 currentFragment = new PlanProgressFragment();
             }
             transaction.add(contentView.getId(), currentFragment);
@@ -298,6 +304,9 @@ public class MainActivity extends BaseActivity
         } else {
             if (key.equals("third")) {
                 menu.setGroupVisible(R.id.menu_map, true);
+            }
+            if (key.equals("fifth")) {
+                menu.setGroupVisible(R.id.menu_condition, true);
             }
             if (key.equals("forth")) {
                 ((UpLoadFragment) currentFragment).refresh();
@@ -321,6 +330,9 @@ public class MainActivity extends BaseActivity
                 break;
             case "forth":
                 navigationView.setCheckedItem(R.id.nav_update_result);
+                break;
+            case "fifth":
+                navigationView.setCheckedItem(R.id.nav_info_progress);
                 break;
         }
     }

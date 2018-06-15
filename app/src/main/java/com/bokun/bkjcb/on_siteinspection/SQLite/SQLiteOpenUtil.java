@@ -15,7 +15,7 @@ import com.bokun.bkjcb.on_siteinspection.Utils.Constants;
 public class SQLiteOpenUtil extends SQLiteOpenHelper {
 
     public SQLiteOpenUtil(Context context) {
-        super(context, "User.db", null, 7);
+        super(context, "User.db", null, 8);
     }
 
     public SQLiteOpenUtil(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler) {
@@ -41,8 +41,7 @@ public class SQLiteOpenUtil extends SQLiteOpenHelper {
                 db.execSQL(Constants.CREATE_NEW_CHECKPALN);
                 db.execSQL(Constants.INSERT_DATA_CHECKPLAN);
                 db.execSQL(Constants.DROP_TEMP);
-//                XLog.i("修改");
-//                break;
+
             case 4:
                 //修改CheckResult表，添加aq_lh_id字段，区分检查结果所属计划
                 db.execSQL(Constants.CREATE_TEMP_CHECK_RESULT);
@@ -61,7 +60,7 @@ public class SQLiteOpenUtil extends SQLiteOpenHelper {
                 db.execSQL(Constants.CREATE_NEW_CHECKPALN1);
                 db.execSQL(Constants.INSERT_DATA_CHECKPLAN1);
                 db.execSQL(Constants.DROP_TEMP1);
-//                break;
+
             case 5:
                 DataUtil.initCheckResult(db);
             case 6:
@@ -70,6 +69,11 @@ public class SQLiteOpenUtil extends SQLiteOpenHelper {
                 db.execSQL(Constants.CREATE_NEW_UserInfo);
                 //db.execSQL(Constants.INSERT_DATA_UserInfo);
                 db.execSQL(Constants.DROP_TEMP2);
+            case 7:
+                db.execSQL(Constants.CREATE_TEMP_TABLE1);
+                db.execSQL(Constants.CREATE_NEW_CHECKPALN1);
+                db.execSQL(Constants.INSERT_DATA_CHECKPLAN2);
+                db.execSQL(Constants.DROP_TEMP1);
                 break;
         }
     }

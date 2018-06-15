@@ -46,31 +46,31 @@ public class DataUtil {
         return true;
     }
 
-    public static ArrayList<CheckResult> readData(Context context, int Identifier, String aq_lh_id) {
+    public static ArrayList<CheckResult> readData(Context context, int sysId, String aq_lh_id) {
         CheckResultDaolmpl daolmpl = new CheckResultDaolmpl(context);
         CheckPlanDaolmpl planDaolmpl = new CheckPlanDaolmpl(context);
         ArrayList<CheckResult> results = new ArrayList<>();
-        if (planDaolmpl.queryCheckPlan(Identifier) == null) {
+        if (planDaolmpl.queryCheckPlan(sysId) == null) {
             planDaolmpl.colseDateBase();
             return results;
         }
-        results = daolmpl.queryCheckResult(Identifier, aq_lh_id);
+        results = daolmpl.queryCheckResult(sysId, aq_lh_id);
         daolmpl.closeDatabase();
-        LogUtil.logI("查询所有该计划的结果" + "identity" + Identifier + " size:" + results.size());
+        LogUtil.logI("查询所有该计划的结果" + "identity" + sysId + " size:" + results.size());
         return results;
     }
 
-    public static void cleanData(Context context, int Identifier) {
+    public static void cleanData(Context context, int sysId,String aq_lh_id_) {
         CheckResultDaolmpl daolmpl = new CheckResultDaolmpl(context);
         CheckPlanDaolmpl planDaolmpl = new CheckPlanDaolmpl(context);
-        if (planDaolmpl.queryCheckPlan(Identifier) == null) {
+        if (planDaolmpl.queryCheckPlan(sysId) == null) {
             planDaolmpl.colseDateBase();
             return;
         }
-        ArrayList<CheckResult> results = daolmpl.queryCheckResult(Identifier);
+        ArrayList<CheckResult> results = daolmpl.queryCheckResult(sysId,aq_lh_id_);
         FileUtils.deleteFile(results);
         if (results.size() > 0) {
-            daolmpl.clean(Identifier, results.get(0).getAq_lh_id());
+            daolmpl.clean(sysId, results.get(0).getAq_lh_id());
         }
         daolmpl.closeDatabase();
     }
@@ -78,7 +78,7 @@ public class DataUtil {
     public static void insertCheckPlans(Context context, ArrayList<CheckPlan> plans) {
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);
         for (CheckPlan plan : plans) {
-            String state = daolmpl.queryCheckPlanIsNull(plan.getIdentifier());
+            String state = daolmpl.queryCheckPlanIsNull(plan.getSysId());
             if (state == null) {
                 daolmpl.insertCheckPlan(plan);
                 XLog.i("新增计划" + plan.getName());
@@ -164,9 +164,9 @@ public class DataUtil {
         return plans;
     }
 
-    public static int queryCheckPlanState(Context context, int indentifier, int plan_type) {
+    public static int queryCheckPlanState(Context context, int sysId, int plan_type) {
         CheckPlanDaolmpl daolmpl = new CheckPlanDaolmpl(context);
-        int state = daolmpl.queryCheckPlanState(indentifier, plan_type);
+        int state = daolmpl.queryCheckPlanState(sysId, plan_type);
         daolmpl.colseDateBase();
         // LogUtil.logI("查询一条检查计划状态" + indentifier + " state:" + state);
         return state;
@@ -326,10 +326,10 @@ public class DataUtil {
                 if (checkPlans.size() > 0) {
                     for (CheckPlan c : checkPlans) {
                         FinishedPlan plan = DataUtil.getFinishedPlan(String.valueOf(c.getSysId()));
-                        FileUtils.deleteFile(daoR.queryCheckResult(c.getIdentifier(), p.getAq_lh_id()));
+                        FileUtils.deleteFile(daoR.queryCheckResult(c.getSysId(), p.getAq_lh_id()));
                         daolmpl.delete(String.valueOf(c.getSysId()), String.valueOf(plan.getType()));
                         finishedPlanDao.deleteFinished(String.valueOf(c.getSysId()), p.getAq_lh_id());
-                        daoR.clean(c.getIdentifier(), p.getAq_lh_id());
+                        daoR.clean(c.getSysId(), p.getAq_lh_id());
                     }
                 }
             }
@@ -369,10 +369,10 @@ public class DataUtil {
                     if (plan == null) {
                         continue;
                     }
-                    FileUtils.deleteFile(daoR.queryCheckResult(c.getIdentifier(), p.getAq_lh_id()));
+                    FileUtils.deleteFile(daoR.queryCheckResult(c.getSysId(), p.getAq_lh_id()));
                     daolmpl.delete(String.valueOf(c.getSysId()), String.valueOf(plan.getType()));
                     finishedPlanDao.deleteFinished(String.valueOf(c.getSysId()), p.getAq_lh_id());
-                    daoR.clean(c.getIdentifier(), p.getAq_lh_id());
+                    daoR.clean(c.getSysId(), p.getAq_lh_id());
                 }
             }
             dao.delete(p.getAq_lh_id());
@@ -417,7 +417,7 @@ public class DataUtil {
             if (aq_lh_id == null) {
                 continue;
             }
-            changeCheckResult(db, String.valueOf(plan.getIdentifier()), aq_lh_id);
+            changeCheckResult(db, String.valueOf(plan.getSysId()), aq_lh_id);
         }
     }
 

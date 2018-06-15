@@ -89,7 +89,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
         page_num = (TextView) findViewById(R.id.txt_page);
 
              /*判断该检查是否检查*/
-        isChecked = DataUtil.queryCheckPlanState(this, plan.getIdentifier(),plan.getPlan_type()) != 0;
+        isChecked = DataUtil.queryCheckPlanState(this, plan.getSysId(),plan.getPlan_type()) != 0;
 
     }
 
@@ -125,7 +125,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                     .setPositiveButton("继续检查", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            results = DataUtil.readData(context, plan.getIdentifier(), aq_lh_id);
+                            results = DataUtil.readData(context, plan.getSysId(), aq_lh_id);
                             backup = new ArrayList<>(results);
                             initFragments();
                         }
@@ -135,7 +135,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                         public void onClick(DialogInterface dialog, int which) {
                             LogUtil.logI("重新检查，清空数据");
                             results = new ArrayList<>();
-                            DataUtil.cleanData(context, plan.getIdentifier());
+                            DataUtil.cleanData(context, plan.getSysId(),aq_lh_id);
                             initFragments();
                         }
                     })
@@ -368,7 +368,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                     result = results.get(i);
                 } else {
                     result = new CheckResult();
-                    result.setIdentifier(plan.getIdentifier());
+                    result.setIdentifier(plan.getSysId());
                     result.setAq_lh_id(aq_lh_id);
                     result.setNum(i + 1);
                     results.add(result);

@@ -49,8 +49,8 @@ public class Constants {
             ")";
 
     public final static String CREATE_CHECK_PLAN_TABLE = "create table checkplan(" +
-            "identifier Integer primary key," +
-            "sysId int(12)," +
+            "identifier int(20)," +
+            "sysId Integer primary key," +
             "name char(30)," +
             "state int(1)," +
             "address varchar(50)," +
@@ -94,8 +94,8 @@ public class Constants {
     //修改checkplan表
     public final static String CREATE_TEMP_TABLE = "alter table checkplan rename to _temp_checkplan";
     public final static String CREATE_NEW_CHECKPALN = "create table checkplan(" +
-            "identifier Integer primary key," +
-            "sysId int(12)," +
+            "identifier int(20)," +
+            "sysId Integer primary key,," +
             "name char(30)," +
             "state int(1)," +
             "address varchar(50)," +
@@ -144,8 +144,8 @@ public class Constants {
     //修改checkplan1表
     public final static String CREATE_TEMP_TABLE1 = "alter table checkplan rename to _temp_checkplan";
     public final static String CREATE_NEW_CHECKPALN1 = "create table checkplan(" +
-            "identifier Integer primary key," +
-            "sysId int(12)," +
+            "identifier int(20)," +
+            "sysId Integer primary key," +
             "name char(30)," +
             "state int(1)," +
             "address varchar(50)," +
@@ -174,6 +174,7 @@ public class Constants {
             ")";
     //public final static String INSERT_DATA_UserInfo = "insert into UserInfo select *,'' from _temp_UserInfo";
     public final static String DROP_TEMP2 = "drop table _temp_UserInfo";
+    public final static String INSERT_DATA_CHECKPLAN2 = "insert into checkplan select * from _temp_checkplan";
     /*
     *正式IP地址
     * */

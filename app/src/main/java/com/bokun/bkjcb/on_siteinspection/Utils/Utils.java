@@ -335,6 +335,12 @@ public class Utils {
         Date date = new Date(System.currentTimeMillis());
         return new SimpleDateFormat(template, Locale.CHINA).format(date);
     }
+    /**
+     * 获取当前日期
+     */
+    public static String getDate(String template,Date date) {
+        return new SimpleDateFormat(template, Locale.CHINA).format(date);
+    }
 
     /**
      * 获取当前日期

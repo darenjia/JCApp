@@ -105,7 +105,7 @@ public class UploadHelper {
             type = plan.getType();
             CheckPlan checkPlan = DataUtil.queryCheckPlan(context, plan.getSysGcxxdjh());
             remotePaths.add(String.valueOf(checkPlan.getSysId()));
-            results = DataUtil.readData(context, checkPlan.getIdentifier(), projectPlan.getAq_lh_id());
+            results = DataUtil.readData(context, checkPlan.getSysId(), projectPlan.getAq_lh_id());
             resultList.add(results);
             Gson gson = new Gson();
             JsonElement element = gson.toJsonTree(results);

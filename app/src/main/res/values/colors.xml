@@ -32,6 +32,7 @@
     <color name="red_gray">#ff5454</color>
     <color name="blue">#4A89DC</color>
     <color name="green">#37BC9B</color>
+    <color name="green_low">#7bc8b4</color>
     <color name="blue_low">#50afe6</color>
     <color name="accent">#BDBDBD</color>
     <color name="text_color">#6D6D6D</color>

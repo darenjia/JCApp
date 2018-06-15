@@ -3,6 +3,7 @@ package com.bokun.bkjcb.on_siteinspection.Http;
 import android.text.TextUtils;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
+import com.bokun.bkjcb.on_siteinspection.Domain.District;
 import com.bokun.bkjcb.on_siteinspection.Domain.JsonResult;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProgressDetail;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
@@ -296,8 +297,9 @@ public class JsonParser {
 
         return jsonResult;
     }
-    public static ArrayList<ProgressDetail> getProgressDetail(String json){
-        ArrayList<ProgressDetail> results= new ArrayList<>();
+
+    public static ArrayList<ProgressDetail> getProgressDetail(String json) {
+        ArrayList<ProgressDetail> results = new ArrayList<>();
         if (json.equals("{}")) {
             return results;
         }
@@ -312,12 +314,15 @@ public class JsonParser {
         return results;
     }
 
-    private void  getData(String json, Class c) {
+    public static ArrayList<District> getDistrict(String json) {
+        ArrayList<District> list = new ArrayList<>();
         com.google.gson.JsonParser parser = new com.google.gson.JsonParser();
         JsonArray array = parser.parse(json).getAsJsonArray();
         Gson gson = new Gson();
         for (JsonElement element : array) {
-
+            District district = gson.fromJson(element, District.class);
+            list.add(district);
         }
+        return list;
     }
 }

@@ -143,7 +143,7 @@ public class FeedBackActivity extends AppCompatActivity implements OnItemClickLi
 
                 String content = comment_content.getText().toString().trim();
                 if (content.equals("")) {
-                    Toast.makeText(getApplicationContext(), "发布的内容不能为空",
+                    Toast.makeText(getApplicationContext(), "提交的内容不能为空",
                             Toast.LENGTH_SHORT).show();
                     return;
                 }

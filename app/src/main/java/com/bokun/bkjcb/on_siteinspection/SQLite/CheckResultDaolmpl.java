@@ -46,10 +46,10 @@ public class CheckResultDaolmpl extends CheckResultDao {
     }
 
     @Override
-    public ArrayList<CheckResult> queryCheckResult(int Identifier, String aq_lh_id) {
+    public ArrayList<CheckResult> queryCheckResult(int sysId, String aq_lh_id) {
         ArrayList<CheckResult> list = new ArrayList<>();
         CheckResult result;
-        Cursor cursor = database.query("checkresult", null, "identifier = ? and aq_lh_id = ?", new String[]{String.valueOf(Identifier), aq_lh_id}, null, null, "num ASC");
+        Cursor cursor = database.query("checkresult", null, "identifier = ? and aq_lh_id = ?", new String[]{String.valueOf(sysId), aq_lh_id}, null, null, "num ASC");
         while (cursor.moveToNext()) {
             result = new CheckResult();
             result.setId(cursor.getInt(cursor.getColumnIndex("id")));

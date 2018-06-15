@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -8,10 +8,136 @@
         android:id="@+id/refresh_progress"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <ListView
-            android:id="@+id/list_progress"
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:divider="@null"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/condition_down"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:padding="3dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/down_g" />
+
+            <ListView
+                android:id="@+id/list_progress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null" />
+        </LinearLayout>
+
     </android.support.v4.widget.SwipeRefreshLayout>
-</LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/condition"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@color/yellow"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="全市"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+            <org.angmarch.views.NiceSpinner
+                android:id="@+id/nice_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <TextView
+                android:id="@+id/start_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/time_bg"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="起始时间"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:padding="5dp"
+                android:text="-"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/end_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/time_bg"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="截止时间"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_reset"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@color/colorAccent"
+                android:text="重置"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btn_con"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimaryDark"
+                android:text="确认"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/condition_up"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:padding="3dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/up_g" />
+    </LinearLayout>
+</FrameLayout>

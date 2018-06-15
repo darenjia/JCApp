@@ -15,4 +15,11 @@
             android:title="@string/action_settings"
             app:showAsAction="ifRoom|withText" />
     </group>
+    <group android:id="@+id/menu_condition">
+        <item
+            android:id="@+id/action_condition"
+            android:orderInCategory="50"
+            android:title="筛选"
+            app:showAsAction="ifRoom|withText" />
+    </group>
 </menu>
