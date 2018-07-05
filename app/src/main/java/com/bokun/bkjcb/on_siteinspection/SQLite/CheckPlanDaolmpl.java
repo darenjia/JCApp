@@ -243,13 +243,13 @@ public class CheckPlanDaolmpl extends CheckPlanDao {
 
     @Override
     public boolean updateCheckPlanState(CheckPlan plan) {
-        int state = queryCheckPlanState(plan.getIdentifier(), plan.getPlan_type());
+        int state = queryCheckPlanState(plan.getSysId(), plan.getPlan_type());
         if (state == -1) {
             return false;
         }
         ContentValues values = new ContentValues();
         values.put("state", plan.getState());
-        int isSuccess = db.update("checkplan", values, "identifier = ?", new String[]{String.valueOf(plan.getIdentifier())});
+        int isSuccess = db.update("checkplan", values, "sysId = ?", new String[]{String.valueOf(plan.getSysId())});
 
         return isSuccess != 0;
     }

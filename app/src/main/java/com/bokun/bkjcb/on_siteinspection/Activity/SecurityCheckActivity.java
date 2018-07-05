@@ -291,8 +291,8 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         deleteGarbage();
-                        saveData(1, null);
-                        setResultData(1);
+                        saveData(0, null);
+                        setResultData(0);
                         finish();
                     }
                 })
