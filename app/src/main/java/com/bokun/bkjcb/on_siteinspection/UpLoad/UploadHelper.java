@@ -103,7 +103,7 @@ public class UploadHelper {
         for (String str : strings) {
             plan = DataUtil.getFinishedPlan(str);
             type = plan.getType();
-            CheckPlan checkPlan = DataUtil.queryCheckPlan(context, plan.getSysGcxxdjh());
+            CheckPlan checkPlan = DataUtil.queryCheckPlan(context, plan.getSysID());
             remotePaths.add(String.valueOf(checkPlan.getSysId()));
             results = DataUtil.readData(context, checkPlan.getSysId(), projectPlan.getAq_lh_id());
             resultList.add(results);

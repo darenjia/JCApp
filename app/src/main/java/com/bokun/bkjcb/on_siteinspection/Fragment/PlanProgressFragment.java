@@ -69,14 +69,14 @@ public class PlanProgressFragment extends MainFragment implements RequestListene
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_progress);
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorRecycler));
         listView = (ListView) view.findViewById(R.id.list_progress);
-        startTime = view.findViewById(R.id.start_time);
-        endTime = view.findViewById(R.id.end_time);
+        startTime = (TextView) view.findViewById(R.id.start_time);
+        endTime = (TextView) view.findViewById(R.id.end_time);
         spinner = view.findViewById(R.id.nice_spinner);
-        reset = view.findViewById(R.id.btn_reset);
-        confirm = view.findViewById(R.id.btn_con);
-        conditionsView = view.findViewById(R.id.condition);
-        down = view.findViewById(R.id.condition_down);
-        up = view.findViewById(R.id.condition_up);
+        reset = (Button) view.findViewById(R.id.btn_reset);
+        confirm = (Button) view.findViewById(R.id.btn_con);
+        conditionsView = (LinearLayout) view.findViewById(R.id.condition);
+        down = (ImageView) view.findViewById(R.id.condition_down);
+        up = (ImageView) view.findViewById(R.id.condition_up);
         setListener();
         return view;
     }
@@ -140,8 +140,8 @@ public class PlanProgressFragment extends MainFragment implements RequestListene
     @Override
     protected void getDataFailed() {
         refreshLayout.setRefreshing(false);
-        districts = new ArrayList<>();
-        districts.add(0, new District("", ""));
+        /*districts = new ArrayList<>();
+        districts.add(0, new District("", ""));*/
     }
 
     private void setListener() {
@@ -277,6 +277,9 @@ public class PlanProgressFragment extends MainFragment implements RequestListene
     }
 
     private void showAnimate() {
+        if (districts==null){
+            getDistrict();
+        }
         int height = LocalTools.dip2px(context, 200);
         conditionsView.setVisibility(View.VISIBLE);
         Animation animation = new TranslateAnimation(0, 0, -height, 0);
