@@ -165,12 +165,13 @@ public class InfoActivity extends BaseActivity implements OnErrorListener, Reque
         fileName = getIntent().getStringExtra("url");
         checkPlan = (CheckPlan) getIntent().getSerializableExtra("plan");
         if (TextUtils.isEmpty(fileName) && checkPlan != null) {
-//            fileName = checkPlan.getUrl();
+            //fileName = checkPlan.getUrl();
             HttpRequestVo request = new HttpRequestVo();
             request.getRequestDataMap().put("SysId", String.valueOf(checkPlan.getSysId()));
             request.setMethodName("Getpdf");
             HttpManager httpManager = new HttpManager(this, this, request, 2);
             httpManager.postRequest();
+            //getUrlSuccess(fileName);
             return;
         }
         if (fileName == null || fileName.equals("")) {
@@ -292,7 +293,7 @@ public class InfoActivity extends BaseActivity implements OnErrorListener, Reque
     private void getUrlSuccess(String url) {
         if (NetworkUtils.isEnable(this)) {
             fileName = JsonParser.getURL(url);
-//            XLog.i(fileName);
+            //fileName = url;
             LoadData loadData = new LoadData();
             loadData.execute();
         }

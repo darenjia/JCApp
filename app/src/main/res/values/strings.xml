@@ -21,7 +21,7 @@
     <string name="table_construction_name">工程名称</string>
     <string name="table_construction_id">工程登记号</string>
     <string name="table_construction_address">工程地址</string>
-    <!--<string name="table_construction_tel">联系电话</string>-->
+    <string name="table_construction_district">工程区属</string>
     <string name="table_construction_area">建筑面积</string>
     <string name="table_construction_type">使用业态</string>
     <string name="table_construction_manager">管理单位</string>

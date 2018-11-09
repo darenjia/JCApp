@@ -27,6 +27,7 @@ public class ConstructionDetailView {
     private TextView mViewManager;
     private TextView mViewUser;
     private TextView mTitle;
+    private TextView mQuxian;
     private Button mButtonCheck;
     private Button mButtonLook;
     private View resView;
@@ -62,6 +63,7 @@ public class ConstructionDetailView {
 //        mViewTel.setText("");
         mViewArea.setText(checkPlan.getArea() + "m²");
         mViewType.setText(checkPlan.getType());
+        mQuxian.setText(checkPlan.getQuxian());
         mViewManager.setText("");
         mViewUser.setText("");
         if (flag) {
@@ -102,6 +104,7 @@ public class ConstructionDetailView {
         mViewUser = (TextView) resView.findViewById(R.id.construction_user);
         mButtonCheck = (Button) resView.findViewById(R.id.btn_check);
         mButtonLook = (Button) resView.findViewById(R.id.btn_detail);
+        mQuxian = resView.findViewById(R.id.construction_district);
     }
 
 }

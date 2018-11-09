@@ -123,6 +123,7 @@ public class ProjectPlanDao {
             result.setAQ_JCTZ_sfjc(cursor.getInt(cursor.getColumnIndex("AQ_JCTZ_sfjc")));
             result.setAq_lh_seqid(cursor.getString(cursor.getColumnIndex("aq_lh_seqid")));
             result.setAq_lh_allbj(cursor.getString(cursor.getColumnIndex("aq_lh_allbj")));
+            result.setAq_jctype(cursor.getString(cursor.getColumnIndex("aq_jctype")));
             if (result.getAQ_JCTZ_sfjc() == 2 || result.getAQ_JCTZ_sfjc() == 3) {
                 list.add(result);
             }

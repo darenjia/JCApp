@@ -12,6 +12,7 @@ import com.bokun.bkjcb.on_siteinspection.Domain.CheckPlan;
 import com.bokun.bkjcb.on_siteinspection.Domain.ProjectPlan;
 import com.bokun.bkjcb.on_siteinspection.R;
 import com.github.zagum.expandicon.ExpandIconView;
+import com.haozhang.lib.SlantedTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +94,21 @@ public class ExpandableListViewAdapter extends BaseExpandableListAdapter {
         title.setText(plan_list.get(groupPosition).getAq_lh_jcmc());
         quxian.setText(plan_list.get(groupPosition).getAq_lh_szqx());
         time.setText(plan_list.get(groupPosition).getAq_lh_jcrq());
-
+        SlantedTextView type = view.findViewById(R.id.group_type);
+        switch (plan_list.get(groupPosition).getAq_jctype()){
+            case "0":
+                type.setText("日常");
+                type.setSlantedBackgroundColor(getColor(1));
+                break;
+            case "1":
+                type.setText("联合");
+                type.setSlantedBackgroundColor(getColor(3));
+                break;
+            case "3":
+                type.setText("专项");
+                type.setSlantedBackgroundColor(getColor(2));
+                break;
+        }
         if (isExpanded) {
             icon.setState(ExpandIconView.LESS, false);
         } else {

@@ -1,44 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/plan_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#F5F7FA"
-    android:id="@+id/plan_layout"
     android:foreground="?attr/selectableItemBackground">
 
-    <TextView
-        android:id="@+id/group_title"
-        style="@style/expandablelistview_group"
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:text="@string/action_sign_in_short"
-        android:textColor="@color/text_color1"
-        android:textSize="18sp" />
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/group_title"
+            style="@style/expandablelistview_group"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:paddingLeft="20dp"
+            android:paddingStart="20dp"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="@string/action_sign_in_short"
+            android:textColor="@color/text_color1"
+            android:textSize="18sp" />
+
+        <com.haozhang.lib.SlantedTextView
+            android:id="@+id/group_type"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:slantedBackgroundColor="@color/red_gray"
+            app:slantedLength="20dp"
+            app:slantedMode="left"
+            app:slantedText="日常"
+            app:slantedTextColor="@color/white"
+            app:slantedTextSize="8sp" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/group_quxian"
         style="@style/expandablelistview_group"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:maxLines="1"
         android:layout_weight="0.6"
-        android:text="@string/app_name"
         android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/app_name"
         android:textColor="@color/text_color"
         android:textSize="@dimen/mid_font" />
 
     <TextView
         android:id="@+id/group_time"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:paddingLeft="10dp"
         android:layout_width="100dp"
         android:layout_height="match_parent"
-        android:gravity="left"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
         android:text="2018/04/31"
         android:textColor="@color/text_color"
         android:textSize="@dimen/mid_font" />

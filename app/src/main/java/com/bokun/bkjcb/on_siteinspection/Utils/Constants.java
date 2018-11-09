@@ -185,19 +185,19 @@ public class Constants {
     public static final String FTP_USER_DEFAULT = "zgzx1";
     public static final String FTP_PASSWORD_DEFAULT = "zgzx";
     public static final String URL = "http://183.194.241.115:9003/downpdf/Temp/";
-    public static final String URL_SOFT = "http://183.194.241.115:9001/Aqgl/xiazaiapp";
+    public static final String URL_SOFT = "http://183.194.241.115:9002/Handler/DownloadFile.ashx?isjcapp=1&fenlei=jcapp";
 
 
     /*
     * 测试IP地址
     * */
-    public static String TEST_HTTPURL = "http://183.194.241.115:9003/zgzxjkWebService.asmx";
+    public static String TEST_HTTPURL = "http://192.168.5.14:8080/zgzxjkWebService.asmx";
     /*  public static String FTP_HOST_DEFAULT = "192.168.100.136";
       public static final int FTP_HOST_PORT = 18000;
       public static final String FTP_USER_DEFAULT = "zgzx1";
       public static final String FTP_PASSWORD_DEFAULT = "zgzx";*/
-    public static final String TEST_URL = "http://183.194.241.115:9003/downpdf/Temp/";
-    public static final String URL_CHECK = "http://183.194.241.115:9003/zgzxjkWebService.asmx";
+    public static final String TEST_URL = "http://192.168.5.14:8080/downpdf/Temp/";
+    public static final String URL_CHECK = "http://192.168.5.14:8080/zgzxjkWebService.asmx";
 //    public static final String URL_SOFT = "http://101.231.52.50:8081/Aqgl/xiazaiapp";
     /**
      * ftp状态
