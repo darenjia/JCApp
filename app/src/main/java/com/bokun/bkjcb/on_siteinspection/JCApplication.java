@@ -2,6 +2,7 @@ package com.bokun.bkjcb.on_siteinspection;
 
 import android.app.Application;
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.User;
 import com.elvishew.xlog.LogConfiguration;
@@ -10,6 +11,11 @@ import com.elvishew.xlog.XLog;
 import com.elvishew.xlog.printer.AndroidPrinter;
 import com.elvishew.xlog.printer.Printer;
 import com.facebook.stetho.Stetho;
+import com.tencent.bugly.crashreport.CrashReport;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
  * Created by DengShuai on 2017/6/2.
@@ -59,14 +65,47 @@ public class JCApplication extends Application {
                 config,                                                // 指定日志配置，如果不指定，会默认使用 new LogConfiguration.Builder().build()
                 androidPrinter                                        // 添加任意多的打印器。如果没有添加任何打印器，会默认使用 AndroidPrinter(Android)/ConsolePrinter(java)
         );
+        Context context = getApplicationContext();
+// 获取当前包名
+        String packageName = context.getPackageName();
+// 获取当前进程名
+        String processName = getProcessName(android.os.Process.myPid());
+// 设置是否为上报进程
+        CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
+        strategy.setUploadProcess(processName == null || processName.equals(packageName));
+        //CrashReport.initCrashReport(getApplicationContext(), "a019da39b7", false);
+        CrashReport.initCrashReport(context, "a019da39b7", false, strategy);
     }
 
     public static Context getContext() {
         return context;
     }
 
+    private static String getProcessName(int pid) {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader("/proc/" + pid + "/cmdline"));
+            String processName = reader.readLine();
+            if (!TextUtils.isEmpty(processName)) {
+                processName = processName.trim();
+            }
+            return processName;
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        }
+        return null;
+    }
+
     public static boolean isDebug() {
-        if(BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             return true;
         }
         return false;

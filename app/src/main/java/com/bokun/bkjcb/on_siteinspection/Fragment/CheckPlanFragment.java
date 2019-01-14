@@ -229,7 +229,9 @@ public class CheckPlanFragment extends MainFragment implements RequestListener, 
         listview.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                createDailog(constuctions.get(groupPosition).get(childPosition), groupPosition, childPosition);
+                if(projectPlans.size()>0) {
+                    createDailog(constuctions.get(groupPosition).get(childPosition), groupPosition, childPosition);
+                }
                 return true;
             }
         });

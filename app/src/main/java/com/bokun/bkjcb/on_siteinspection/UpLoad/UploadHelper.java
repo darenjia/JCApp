@@ -197,7 +197,7 @@ public class UploadHelper {
         if (JCApplication.isDebug()) {
             path = "Test/" + projectId + "/" + remotePaths.get(flag);
         } else {
-            path = "downpdf/" + projectId + "/" + remotePaths.get(flag);
+            path = "/Aqgl/downpdf/" + projectId + "/" + remotePaths.get(flag);
         }
         LogUtil.logI("上传路径：" + path);
         task = new FtpUploadTask().newInstance(pathMap, path, new OnFinishedListener() {

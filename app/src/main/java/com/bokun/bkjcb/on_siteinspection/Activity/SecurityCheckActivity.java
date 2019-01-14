@@ -88,8 +88,8 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
         btn_next = (ImageView) findViewById(R.id.btn_next);
         page_num = (TextView) findViewById(R.id.txt_page);
 
-             /*判断该检查是否检查*/
-        isChecked = DataUtil.queryCheckPlanState(this, plan.getSysId(),plan.getPlan_type()) != 0;
+        /*判断该检查是否检查*/
+        isChecked = DataUtil.queryCheckPlanState(this, plan.getSysId(), plan.getPlan_type()) != 0;
 
     }
 
@@ -135,7 +135,8 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                         public void onClick(DialogInterface dialog, int which) {
                             LogUtil.logI("重新检查，清空数据");
                             results = new ArrayList<>();
-                            DataUtil.cleanData(context, plan.getSysId(),aq_lh_id);
+                            DataUtil.cleanData(context, plan.getSysId(), aq_lh_id);
+                            updatePlanState(1);
                             initFragments();
                         }
                     })
@@ -144,6 +145,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
             dialog.show();
 
         } else {
+            updatePlanState(1);
             results = new ArrayList<>();
             initFragments();
         }
@@ -192,7 +194,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
 
     @Override
     public void onPageSelected(int position) {
-        LogUtil.logI("fragment position:" + position);
+        //LogUtil.logI("fragment position:" + position);
         /*if (mMenu != null) {
             if (position != 14) {
                 mMenu.findItem(R.id.btn_submit).setVisible(false);
@@ -276,7 +278,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                 .setNegativeButton("保存退出", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        saveData(1, null);
+                        saveData(null);
                         setResultData(1);
                         finish();
                     }
@@ -287,7 +289,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                         dialog.dismiss();
                     }
                 })
-                .setNeutralButton("直接退出", new DialogInterface.OnClickListener() {
+                /*.setNeutralButton("直接退出", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         deleteGarbage();
@@ -295,7 +297,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                         setResultData(0);
                         finish();
                     }
-                })
+                })*/
                 .show();
     }
 
@@ -314,8 +316,12 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
         }
     }
 
-    private boolean saveData(int state, String time) {
+    private void updatePlanState(int state) {
         plan.setState(state);
+        DataUtil.updateCheckPlanState(this, plan);
+    }
+
+    private boolean saveData(String time) {
         if (time != null) {
             FinishedPlan finishedPlan = new FinishedPlan();
             finishedPlan.setFinishedTime(time);
@@ -326,7 +332,7 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
             finishedPlan.setType(isTemp ? 1 : 0);
             DataUtil.saveFinishedPlan(finishedPlan);
         }
-        DataUtil.updateCheckPlanState(this, plan);
+
         return DataUtil.saveData(this, results);
     }
 
@@ -355,7 +361,8 @@ public class SecurityCheckActivity extends BaseActivity implements ViewPager.OnP
                     lastFragment.setClickListener(new LastFragment.OnClick() {
                         @Override
                         public void onClick(String time) {
-                            boolean is = saveData(2, time);
+                            saveData(time);
+                            updatePlanState(2);
                             Toast.makeText(SecurityCheckActivity.this, "数据已储存", Toast.LENGTH_SHORT).show();
                             setResultData(2);
                             finish();

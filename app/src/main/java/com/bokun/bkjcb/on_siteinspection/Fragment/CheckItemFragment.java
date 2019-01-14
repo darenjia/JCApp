@@ -29,11 +29,13 @@ import android.widget.Toast;
 
 import com.bokun.bkjcb.on_siteinspection.Domain.CheckResult;
 import com.bokun.bkjcb.on_siteinspection.R;
+import com.bokun.bkjcb.on_siteinspection.SQLite.DataUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.CropUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.LocalTools;
 import com.bokun.bkjcb.on_siteinspection.Utils.LogUtil;
 import com.bokun.bkjcb.on_siteinspection.Utils.Utils;
 import com.bokun.bkjcb.on_siteinspection.View.ImagePreview;
+import com.elvishew.xlog.XLog;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -165,7 +167,7 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission_group.STORAGE) != PackageManager.PERMISSION_GRANTED) {
             path = Environment.getExternalStorageDirectory() + "/CheckApp";
             File file = new File(path);
-            if (!file.exists()&&file.mkdir()) {
+            if (!file.exists() && file.mkdir()) {
                 creatSnackBar(R.string.make_error_file_sdcard);
             }
         } else {
@@ -366,7 +368,7 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
 //        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             if (file != null) {
-             /*获取当前系统的android版本号*/
+                /*获取当前系统的android版本号*/
 //                LogUtil.logI("currentapiVersion====>" + currentapiVersion);
                 if (currentapiVersion < 24) {
                     uri = Uri.fromFile(file);
@@ -543,5 +545,13 @@ public class CheckItemFragment extends BaseFragment implements View.OnClickListe
         return width;
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (result != null) {
+            XLog.d("FragmentStop!SaveData::" + result.getNum());
+            DataUtil.saveData(getContext(), result);
+        }
 
+    }
 }

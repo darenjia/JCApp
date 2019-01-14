@@ -31,12 +31,31 @@ public class DataUtil {
         try {
             for (int i = 0; i < results.size(); i++) {
                 result = results.get(i);
-                if (result.getId() != -1 && daolmpl.queryById(result.getIdentifier(), result.getAq_lh_id())) {
+                if (daolmpl.queryById(result.getIdentifier(), result.getAq_lh_id(),result.getNum())) {
                     daolmpl.updateCheckResult(result);
                 } else {
                     daolmpl.insertCheckResult(result);
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            daolmpl.closeDatabase();
+            return false;
+        }
+        daolmpl.closeDatabase();
+        return true;
+    }
+
+    public static boolean saveData(Context context, CheckResult result) {
+        CheckResultDaolmpl daolmpl = new CheckResultDaolmpl(context);
+        try {
+
+            if (daolmpl.queryById(result.getIdentifier(), result.getAq_lh_id(),result.getNum())) {
+                daolmpl.updateCheckResult(result);
+            } else {
+                daolmpl.insertCheckResult(result);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             daolmpl.closeDatabase();
@@ -60,14 +79,14 @@ public class DataUtil {
         return results;
     }
 
-    public static void cleanData(Context context, int sysId,String aq_lh_id_) {
+    public static void cleanData(Context context, int sysId, String aq_lh_id_) {
         CheckResultDaolmpl daolmpl = new CheckResultDaolmpl(context);
         CheckPlanDaolmpl planDaolmpl = new CheckPlanDaolmpl(context);
         if (planDaolmpl.queryCheckPlan(sysId) == null) {
             planDaolmpl.colseDateBase();
             return;
         }
-        ArrayList<CheckResult> results = daolmpl.queryCheckResult(sysId,aq_lh_id_);
+        ArrayList<CheckResult> results = daolmpl.queryCheckResult(sysId, aq_lh_id_);
         FileUtils.deleteFile(results);
         if (results.size() > 0) {
             daolmpl.clean(sysId, results.get(0).getAq_lh_id());

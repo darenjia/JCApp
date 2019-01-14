@@ -75,6 +75,13 @@ public class CheckResultDaolmpl extends CheckResultDao {
         }
         return false;
     }
+    public boolean queryById(int Identifier, String aq_lh_id,int number) {
+        Cursor cursor = database.query("checkresult", null, "identifier = ? and aq_lh_id = ? and num = ?", new String[]{String.valueOf(Identifier), aq_lh_id,String.valueOf(number)}, null, null, "num ASC");
+        while (cursor.moveToNext()) {
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public boolean updateCheckResult(CheckResult result) {
@@ -87,7 +94,7 @@ public class CheckResultDaolmpl extends CheckResultDao {
         values.put("audio", LocalTools.changeToString(result.getAudioUrls()));
         values.put("image", LocalTools.changeToString(result.getImageUrls()));
         values.put("video", LocalTools.changeToString(result.getVideoUrls()));
-        long isSuccess = database.update("checkresult", values, "id = ?", new String[]{String.valueOf(result.getId())});
+        long isSuccess = database.update("checkresult", values, "identifier = ? and aq_lh_id = ? and num = ?", new String[]{String.valueOf(result.getIdentifier()),result.getAq_lh_id(), String.valueOf(result.getNum())});
         return isSuccess != 0;
     }
 

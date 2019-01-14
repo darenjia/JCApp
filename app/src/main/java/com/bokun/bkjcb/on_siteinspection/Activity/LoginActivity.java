@@ -257,6 +257,7 @@ public class LoginActivity extends BaseActivity implements RequestListener {
     }
 
     private void setError(EditText view, String message) {
+        //CrashReport.testJavaCrash();
         try {
             view.setError(message);
             view.requestFocus();
